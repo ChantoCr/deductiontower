@@ -98,6 +98,8 @@ Repository
   ↓
 Domain Entities
   ↓
+Catalog Validation
+  ↓
 Game Engine
 ```
 
@@ -141,6 +143,7 @@ Domain services should be unit tested first.
 Important services:
 
 - TraitFilterEngine
+- TraitCatalogValidator
 - GameEngine
 - HintEngine
 - MatchRulesEngine

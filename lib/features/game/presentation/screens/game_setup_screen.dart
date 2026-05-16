@@ -1,17 +1,19 @@
 import 'package:anime_deduction_tower/app/router.dart';
+import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_button.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class GameSetupScreen extends StatelessWidget {
+class GameSetupScreen extends ConsumerWidget {
   const GameSetupScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AppScaffold(
       title: 'Game Setup',
       child: ListView(
@@ -34,7 +36,10 @@ class GameSetupScreen extends StatelessWidget {
           AppButton(
             label: 'Continue to Secret Selection',
             icon: Icons.arrow_forward,
-            onPressed: () => context.go(AppRoutes.categorySelection),
+            onPressed: () {
+              ref.read(categorySelectionControllerProvider.notifier).reset();
+              context.go(AppRoutes.categorySelection);
+            },
           ),
         ],
       ),

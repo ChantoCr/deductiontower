@@ -48,6 +48,18 @@ Represents a secret playable category.
 }
 ```
 
+## Catalog Validation
+
+During loading, the app validates the local catalog before categories are shown to players.
+
+Rules:
+
+- Every category tag must exist in the tag catalog.
+- Every character tag must exist in the tag catalog.
+- Duplicate IDs should be treated as invalid data.
+- A category must have at least `minCharacters` matching characters.
+- Invalid categories should be filtered out of selection UI.
+
 ## GameMatch
 
 Represents one match.

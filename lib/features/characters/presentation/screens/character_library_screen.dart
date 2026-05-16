@@ -1,60 +1,56 @@
-import 'package:anime_deduction_tower/core/enums/difficulty_level.dart';
-import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
+import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/widgets/character_card.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CharacterLibraryScreen extends StatelessWidget {
+class CharacterLibraryScreen extends ConsumerWidget {
   const CharacterLibraryScreen({super.key});
 
-  static const _previewCharacters = [
-    Character(
-      id: 'shadow_ninja',
-      name: 'Shadow Ninja',
-      series: 'Original',
-      tags: ['black_hair', 'uses_sword', 'has_tragic_past'],
-      difficulty: DifficultyLevel.medium,
-      popularity: 8,
-    ),
-    Character(
-      id: 'solar_fighter',
-      name: 'Solar Fighter',
-      series: 'Original',
-      tags: ['protagonist', 'has_transformation'],
-      difficulty: DifficultyLevel.easy,
-      popularity: 9,
-    ),
-    Character(
-      id: 'void_beast',
-      name: 'Void Beast',
-      series: 'Original',
-      tags: ['villain', 'non_human', 'has_transformation'],
-      difficulty: DifficultyLevel.medium,
-      popularity: 7,
-    ),
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final charactersAsync = ref.watch(charactersProvider);
+
     return AppScaffold(
       title: 'Character Library',
-      child: ListView(
-        children: [
-          const Text('Sample Character Data', style: AppTextStyles.title),
-          const SizedBox(height: AppSpacing.sm),
-          const Text(
-            'This placeholder screen previews the original, anime-inspired dataset used for the foundation phase.',
-            style: AppTextStyles.body,
+      child: charactersAsync.when(
+        data: (characters) => ListView.separated(
+          itemCount: characters.length + 1,
+          separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Character Data Library', style: AppTextStyles.title),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Loaded ${characters.length} original, anime-inspired characters from local JSON.',
+                      style: AppTextStyles.body,
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return CharacterCard(character: characters[index - 1]);
+          },
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Failed to Load Characters', style: AppTextStyles.title),
+              const SizedBox(height: AppSpacing.sm),
+              Text('$error'),
+            ],
           ),
-          const SizedBox(height: AppSpacing.lg),
-          const CharacterCard(character: _previewCharacters[0]),
-          const SizedBox(height: AppSpacing.md),
-          const CharacterCard(character: _previewCharacters[1]),
-          const SizedBox(height: AppSpacing.md),
-          const CharacterCard(character: _previewCharacters[2]),
-        ],
+        ),
       ),
     );
   }

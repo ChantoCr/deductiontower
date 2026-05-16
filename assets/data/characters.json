@@ -43,5 +43,68 @@
     "tags": ["villain", "non_human", "has_transformation"],
     "difficulty": "medium",
     "popularity": 7
+  },
+  {
+    "id": "ember_ronin",
+    "name": "Ember Ronin",
+    "series": "Original",
+    "image": "assets/images/placeholders/ember_ronin.png",
+    "tags": ["black_hair", "uses_sword", "protagonist"],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "lunar_oracle",
+    "name": "Lunar Oracle",
+    "series": "Original",
+    "image": "assets/images/placeholders/lunar_oracle.png",
+    "tags": ["white_hair", "protagonist", "has_tragic_past"],
+    "difficulty": "medium",
+    "popularity": 7
+  },
+  {
+    "id": "iron_revenant",
+    "name": "Iron Revenant",
+    "series": "Original",
+    "image": "assets/images/placeholders/iron_revenant.png",
+    "tags": ["villain", "black_hair", "has_transformation"],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "storm_samurai",
+    "name": "Storm Samurai",
+    "series": "Original",
+    "image": "assets/images/placeholders/storm_samurai.png",
+    "tags": ["black_hair", "uses_sword", "protagonist"],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "eclipse_dragon",
+    "name": "Eclipse Dragon",
+    "series": "Original",
+    "image": "assets/images/placeholders/eclipse_dragon.png",
+    "tags": ["villain", "non_human", "has_transformation"],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "blaze_guardian",
+    "name": "Blaze Guardian",
+    "series": "Original",
+    "image": "assets/images/placeholders/blaze_guardian.png",
+    "tags": ["protagonist", "has_transformation", "black_hair"],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "abyss_duelist",
+    "name": "Abyss Duelist",
+    "series": "Original",
+    "image": "assets/images/placeholders/abyss_duelist.png",
+    "tags": ["villain", "uses_sword", "black_hair"],
+    "difficulty": "medium",
+    "popularity": 8
   }
 ]
