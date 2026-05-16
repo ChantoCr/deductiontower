@@ -1,0 +1,3 @@
+class WrongGuessEffect {
+  const WrongGuessEffect();
+}

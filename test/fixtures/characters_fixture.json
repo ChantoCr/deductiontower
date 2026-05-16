@@ -1,0 +1,5 @@
+[
+  {"id": "shadow_ninja", "name": "Shadow Ninja", "series": "Original", "image": null, "tags": ["black_hair", "uses_sword"], "difficulty": "medium", "popularity": 8},
+  {"id": "crimson_emperor", "name": "Crimson Emperor", "series": "Original", "image": null, "tags": ["villain"], "difficulty": "medium", "popularity": 7},
+  {"id": "night_swordsman", "name": "Night Swordsman", "series": "Original", "image": null, "tags": ["black_hair", "uses_sword"], "difficulty": "easy", "popularity": 6}
+]

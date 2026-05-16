@@ -1,0 +1,4 @@
+[
+  {"id": "black_hair", "label": "Black Hair", "tagId": "black_hair", "difficulty": "easy", "minCharacters": 2, "hintType": "appearance"},
+  {"id": "villain", "label": "Villain", "tagId": "villain", "difficulty": "easy", "minCharacters": 1, "hintType": "role"}
+]

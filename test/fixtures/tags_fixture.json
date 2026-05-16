@@ -1,0 +1,5 @@
+[
+  {"id": "black_hair", "label": "Black Hair", "type": "appearance", "difficulty": "easy"},
+  {"id": "villain", "label": "Villain", "type": "role", "difficulty": "easy"},
+  {"id": "uses_sword", "label": "Uses Sword", "type": "weapon", "difficulty": "easy"}
+]

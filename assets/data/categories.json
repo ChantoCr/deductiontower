@@ -1,0 +1,42 @@
+[
+  {
+    "id": "black_hair",
+    "label": "Black Hair",
+    "tagId": "black_hair",
+    "difficulty": "easy",
+    "minCharacters": 5,
+    "hintType": "appearance"
+  },
+  {
+    "id": "protagonist",
+    "label": "Protagonist",
+    "tagId": "protagonist",
+    "difficulty": "easy",
+    "minCharacters": 5,
+    "hintType": "role"
+  },
+  {
+    "id": "villain",
+    "label": "Villain",
+    "tagId": "villain",
+    "difficulty": "easy",
+    "minCharacters": 5,
+    "hintType": "role"
+  },
+  {
+    "id": "uses_sword",
+    "label": "Uses Sword",
+    "tagId": "uses_sword",
+    "difficulty": "easy",
+    "minCharacters": 5,
+    "hintType": "weapon"
+  },
+  {
+    "id": "has_transformation",
+    "label": "Has Transformation",
+    "tagId": "has_transformation",
+    "difficulty": "medium",
+    "minCharacters": 5,
+    "hintType": "power"
+  }
+]

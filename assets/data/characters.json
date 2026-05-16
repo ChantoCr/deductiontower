@@ -1,0 +1,47 @@
+[
+  {
+    "id": "shadow_ninja",
+    "name": "Shadow Ninja",
+    "series": "Original",
+    "image": "assets/images/placeholders/shadow_ninja.png",
+    "tags": ["black_hair", "uses_sword", "has_tragic_past"],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "solar_fighter",
+    "name": "Solar Fighter",
+    "series": "Original",
+    "image": "assets/images/placeholders/solar_fighter.png",
+    "tags": ["protagonist", "has_transformation"],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "crimson_emperor",
+    "name": "Crimson Emperor",
+    "series": "Original",
+    "image": "assets/images/placeholders/crimson_emperor.png",
+    "tags": ["villain", "has_transformation", "non_human"],
+    "difficulty": "medium",
+    "popularity": 7
+  },
+  {
+    "id": "white_blade_master",
+    "name": "White Blade Master",
+    "series": "Original",
+    "image": "assets/images/placeholders/white_blade_master.png",
+    "tags": ["white_hair", "uses_sword"],
+    "difficulty": "easy",
+    "popularity": 6
+  },
+  {
+    "id": "void_beast",
+    "name": "Void Beast",
+    "series": "Original",
+    "image": "assets/images/placeholders/void_beast.png",
+    "tags": ["villain", "non_human", "has_transformation"],
+    "difficulty": "medium",
+    "popularity": 7
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "black_hair",
+    "label": "Black Hair",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "white_hair",
+    "label": "White Hair",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "protagonist",
+    "label": "Protagonist",
+    "type": "role",
+    "difficulty": "easy"
+  },
+  {
+    "id": "villain",
+    "label": "Villain",
+    "type": "role",
+    "difficulty": "easy"
+  },
+  {
+    "id": "uses_sword",
+    "label": "Uses Sword",
+    "type": "weapon",
+    "difficulty": "easy"
+  },
+  {
+    "id": "has_transformation",
+    "label": "Has Transformation",
+    "type": "power",
+    "difficulty": "medium"
+  },
+  {
+    "id": "non_human",
+    "label": "Non-Human",
+    "type": "origin",
+    "difficulty": "medium"
+  },
+  {
+    "id": "has_tragic_past",
+    "label": "Has Tragic Past",
+    "type": "story",
+    "difficulty": "medium"
+  }
+]
