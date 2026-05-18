@@ -18,7 +18,7 @@ class AnimatedLogo extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.32),
+              color: AppColors.primary.withValues(alpha: 0.32),
               blurRadius: 28,
             ),
           ],

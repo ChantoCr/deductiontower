@@ -113,6 +113,7 @@ A player wins by correctly identifying the opponent's hidden trait.
 - Local JSON files for MVP
 - Hive or SharedPreferences for local persistence
 - Firebase or Supabase planned for online multiplayer
+- Optional prototype import path for external anime datasets after transformation
 
 ### Future AI
 
@@ -398,6 +399,26 @@ flutter test
 ```
 
 Core game logic must be covered with unit tests.
+
+---
+
+## External Anime Data Option
+
+We evaluated the `myanimelist-jikan-database` repository as a possible prototype source for anime, manga, character, and people data.
+
+Short answer:
+- yes, it can work for **private prototype imports**
+- no, it is **not game-ready as-is** for our deduction system
+
+Why:
+- it provides large identity datasets
+- but our game still needs curated tags, categories, difficulty, and legal-safe release decisions
+
+See:
+- `docs/EXTERNAL_ANIME_DATA.md`
+
+Prototype import preview files now live under:
+- `assets/data/imports/`
 
 ---
 

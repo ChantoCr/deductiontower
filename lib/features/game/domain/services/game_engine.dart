@@ -101,6 +101,40 @@ class GameEngine {
     return switchTurn(updatedMatch);
   }
 
+  GameMatch resolveHintRequest({
+    required GameMatch match,
+    required String hintMessage,
+    DateTime? createdAt,
+  }) {
+    final currentPlayer = match.currentPlayer;
+    if (currentPlayer.hintsRemaining <= 0) {
+      throw StateError('Current player has no hints remaining.');
+    }
+
+    final updatedCurrentPlayer = currentPlayer.copyWith(
+      hintsRemaining: currentPlayer.hintsRemaining - 1,
+    );
+
+    final matchWithConsumedHint = _replacePlayer(
+      match: match,
+      updatedPlayer: updatedCurrentPlayer,
+    );
+
+    final updatedMatch = recordTurn(
+      matchWithConsumedHint,
+      Turn(
+        id: IdGenerator.next('turn'),
+        playerId: currentPlayer.id,
+        actionType: TurnActionType.requestHint,
+        value: hintMessage,
+        wasCorrect: false,
+        createdAt: createdAt ?? DateTime.now(),
+      ),
+    );
+
+    return switchTurn(updatedMatch);
+  }
+
   GameMatch finishMatch({
     required GameMatch match,
     required String winnerId,
@@ -139,5 +173,20 @@ class GameEngine {
       winnerId: winnerId,
       endReason: MatchEndReason.surrender,
     );
+  }
+
+  GameMatch _replacePlayer({
+    required GameMatch match,
+    required Player updatedPlayer,
+  }) {
+    if (updatedPlayer.id == match.playerOne.id) {
+      return match.copyWith(playerOne: updatedPlayer);
+    }
+
+    if (updatedPlayer.id == match.playerTwo.id) {
+      return match.copyWith(playerTwo: updatedPlayer);
+    }
+
+    throw StateError('Player ${updatedPlayer.id} does not belong to this match.');
   }
 }

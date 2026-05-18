@@ -119,8 +119,11 @@ Recently applied:
 - connected real trait-filter-based pool generation from selected categories
 - wired the turn transition screen to create and store the active match
 - connected the match screen to the real shared pool in controller state
-- added real character guess, trait guess, and surrender state updates
-- updated the result screen to read real match state
+- added tap-to-autofill character selection from the pool
+- added real character guess, trait guess, hint request, and surrender state updates
+- reused the turn transition screen between turns for safer local multiplayer flow
+- expanded the result screen with real timeline details
+- added `NEXT_CHAT_PROMPT.md` for quick reuse
 - updated docs and skills to reflect the no-lives rule set
 
 ---
@@ -202,12 +205,11 @@ Continue PR 3 with deeper gameplay wiring and polish.
 
 Recommended next scope:
 
-1. **Prompted trait guess UX improvements**
-2. **Character guess feedback polish**
-3. **Hint request state and deduction flow**
-4. **Optional turn transition after every action**
-5. **Result details expansion**
-6. **More controller and engine edge-case tests**
+1. **Turn transition polish and secret-info safety checks**
+2. **Hint UX refinement and per-player deduction improvements**
+3. **More controller and engine invalid-action tests**
+4. **Match flow cleanup before Flame integration**
+5. **Optional richer prompt/replay/export tooling**
 
 ---
 
@@ -273,5 +275,5 @@ Rules:
 ## Final Status
 
 Docs and code now reflect the no-lives rule set plus shared character pool browsing/search.
-PR 3 now has a working match initialization flow, real pool generation, controller-backed match state, real trait guess resolution, and surrender resolution.
-The next meaningful step is polishing the interactive flow around those systems and continuing deeper gameplay behavior.
+PR 3 now has a working match initialization flow, real pool generation, controller-backed match state, real character guessing, real trait guessing, private hint requests, surrender resolution, and pass-the-device transitions between turns.
+The next meaningful step is polishing the interaction flow, tightening edge-case handling, and preparing the match layer for later Flame presentation work.

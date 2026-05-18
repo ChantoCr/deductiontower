@@ -1,5 +1,7 @@
 import 'package:anime_deduction_tower/app/router.dart';
+import 'package:anime_deduction_tower/core/enums/match_status.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
+import 'package:anime_deduction_tower/features/game/domain/entities/game_match.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
@@ -18,6 +20,28 @@ class TurnTransitionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final match = ref.watch(matchControllerProvider);
+    final isExistingMatch = match != null;
+    final isCompletedMatch = match?.status == MatchStatus.completed;
+
+    final title = isCompletedMatch
+        ? 'Match Complete'
+        : isExistingMatch
+        ? 'Pass the Device'
+        : 'Prepare the First Player';
+
+    final description = isCompletedMatch
+        ? 'The match has ended. Open the result screen to review the winner, end reason, and turn summary.'
+        : isExistingMatch
+        ? 'Hand the device to ${match.currentPlayer.name}. Their secret trait card and guessing tools will appear on the next screen.'
+        : 'Use this protected screen before revealing the first secret trait and starting the live match.';
+
+    final buttonLabel = isCompletedMatch
+        ? 'View Result'
+        : isExistingMatch
+        ? 'Continue Match'
+        : 'Start Match';
+
     return AppScaffold(
       title: 'Pass the Phone',
       child: Center(
@@ -25,57 +49,85 @@ class TurnTransitionScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Prepare the Next Player', style: AppTextStyles.title),
+              Text(title, style: AppTextStyles.title),
               const SizedBox(height: AppSpacing.md),
-              const Text(
-                'Use this protected screen before revealing the next secret trait or starting the match.',
+              Text(
+                description,
                 textAlign: TextAlign.center,
               ),
+              if (isExistingMatch && !isCompletedMatch) ...[
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  'Turns played: ${match.turns.length} • Pool size: ${match.characterPoolIds.length}',
+                  style: AppTextStyles.subtitle,
+                  textAlign: TextAlign.center,
+                ),
+              ],
               const SizedBox(height: AppSpacing.xl),
               AppButton(
-                label: 'Start Match',
-                icon: Icons.play_circle_outline,
-                onPressed: () async {
-                  final selectionState = ref.read(categorySelectionControllerProvider);
-                  final setupState = ref.read(gameSetupControllerProvider);
-
-                  if (!selectionState.isComplete ||
-                      selectionState.playerOneTraitId == null ||
-                      selectionState.playerTwoTraitId == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Complete secret trait selection before starting the match.'),
-                      ),
-                    );
-                    return;
-                  }
-
-                  final catalog = await ref.read(validatedTraitCatalogProvider.future);
-                  final characters = await ref.read(charactersProvider.future);
-
-                  ref
-                      .read(matchControllerProvider.notifier)
-                      .initializeMatch(
-                        playerOneName: setupState.playerOneName,
-                        playerTwoName: setupState.playerTwoName,
-                        hintsPerPlayer: setupState.hints,
-                        playerOneTraitId: selectionState.playerOneTraitId!,
-                        playerTwoTraitId: selectionState.playerTwoTraitId!,
-                        categories: catalog.validCategories,
-                        characters: characters,
-                      );
-
-                  if (!context.mounted) {
-                    return;
-                  }
-
-                  context.go(AppRoutes.match);
-                },
+                label: buttonLabel,
+                icon: isCompletedMatch
+                    ? Icons.emoji_events_outlined
+                    : isExistingMatch
+                    ? Icons.visibility_outlined
+                    : Icons.play_circle_outline,
+                onPressed: () => _handleContinue(context, ref, match: match),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _handleContinue(
+    BuildContext context,
+    WidgetRef ref, {
+    required GameMatch? match,
+  }) async {
+    if (match != null) {
+      if (match.status == MatchStatus.completed) {
+        context.go(AppRoutes.result);
+        return;
+      }
+
+      context.go(AppRoutes.match);
+      return;
+    }
+
+    final selectionState = ref.read(categorySelectionControllerProvider);
+    final setupState = ref.read(gameSetupControllerProvider);
+
+    if (!selectionState.isComplete ||
+        selectionState.playerOneTraitId == null ||
+        selectionState.playerTwoTraitId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Complete secret trait selection before starting the match.'),
+        ),
+      );
+      return;
+    }
+
+    final catalog = await ref.read(validatedTraitCatalogProvider.future);
+    final characters = await ref.read(charactersProvider.future);
+
+    ref
+        .read(matchControllerProvider.notifier)
+        .initializeMatch(
+          playerOneName: setupState.playerOneName,
+          playerTwoName: setupState.playerTwoName,
+          hintsPerPlayer: setupState.hints,
+          playerOneTraitId: selectionState.playerOneTraitId!,
+          playerTwoTraitId: selectionState.playerTwoTraitId!,
+          categories: catalog.validCategories,
+          characters: characters,
+        );
+
+    if (!context.mounted) {
+      return;
+    }
+
+    context.go(AppRoutes.match);
   }
 }

@@ -94,7 +94,7 @@ class CategorySelectionScreen extends ConsumerWidget {
                                         vertical: 6,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: AppColors.success.withOpacity(0.16),
+                                        color: AppColors.success.withValues(alpha: 0.16),
                                         borderRadius: BorderRadius.circular(999),
                                       ),
                                       child: const Text(

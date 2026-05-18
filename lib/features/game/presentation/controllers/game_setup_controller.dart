@@ -28,11 +28,33 @@ class GameSetupState {
 class GameSetupController extends StateNotifier<GameSetupState> {
   GameSetupController() : super(const GameSetupState());
 
+  void updatePlayerOneName(String value) {
+    state = state.copyWith(
+      playerOneName: _normalizeName(value, fallback: 'Player 1'),
+    );
+  }
+
+  void updatePlayerTwoName(String value) {
+    state = state.copyWith(
+      playerTwoName: _normalizeName(value, fallback: 'Player 2'),
+    );
+  }
+
   void updatePlayerNames({required String playerOneName, required String playerTwoName}) {
     state = state.copyWith(
-      playerOneName: playerOneName,
-      playerTwoName: playerTwoName,
+      playerOneName: _normalizeName(playerOneName, fallback: 'Player 1'),
+      playerTwoName: _normalizeName(playerTwoName, fallback: 'Player 2'),
     );
+  }
+
+  void updateHints(int value) {
+    final sanitizedHints = value.clamp(GameConstants.minHints, GameConstants.maxHints);
+    state = state.copyWith(hints: sanitizedHints);
+  }
+
+  String _normalizeName(String value, {required String fallback}) {
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? fallback : trimmed;
   }
 }
 

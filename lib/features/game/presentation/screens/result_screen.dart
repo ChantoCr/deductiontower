@@ -1,6 +1,10 @@
 import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/core/enums/match_end_reason.dart';
+import 'package:anime_deduction_tower/core/enums/turn_action_type.dart';
+import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
+import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
+import 'package:anime_deduction_tower/features/game/domain/entities/turn.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
@@ -21,6 +25,10 @@ class ResultScreen extends ConsumerWidget {
     final categories = ref.watch(validatedTraitCatalogProvider).maybeWhen(
       data: (catalog) => catalog.validCategories,
       orElse: () => const <TraitCategory>[],
+    );
+    final characters = ref.watch(charactersProvider).maybeWhen(
+      data: (data) => data,
+      orElse: () => const <Character>[],
     );
 
     if (match == null) {
@@ -55,6 +63,14 @@ class ResultScreen extends ConsumerWidget {
 
     final playerOneTrait = _findTraitLabel(categories, match.playerOne.secretTraitId);
     final playerTwoTrait = _findTraitLabel(categories, match.playerTwo.secretTraitId);
+    final timelineItems = _buildTimelineItems(
+      turns: match.turns,
+      categories: categories,
+      characters: characters,
+      playerOneName: match.playerOne.name,
+      playerTwoName: match.playerTwo.name,
+      playerOneId: match.playerOne.id,
+    );
 
     return AppScaffold(
       title: 'Result',
@@ -76,6 +92,24 @@ class ResultScreen extends ConsumerWidget {
               ],
             ),
           ),
+          if (timelineItems.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.md),
+            AppCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Turn Timeline', style: AppTextStyles.title),
+                  const SizedBox(height: AppSpacing.sm),
+                  ...timelineItems.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                      child: Text('• $item'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: AppSpacing.xl),
           AppButton(
             label: 'Rematch Setup',
@@ -98,6 +132,46 @@ class ResultScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  List<String> _buildTimelineItems({
+    required List<Turn> turns,
+    required List<TraitCategory> categories,
+    required List<Character> characters,
+    required String playerOneName,
+    required String playerTwoName,
+    required String playerOneId,
+  }) {
+    return turns.reversed.take(6).map((turn) {
+      final playerName = turn.playerId == playerOneId ? playerOneName : playerTwoName;
+
+      switch (turn.actionType) {
+        case TurnActionType.guessCharacter:
+          final characterName = _findCharacterName(characters, turn.value);
+          final outcome = turn.wasCorrect ? 'correct' : 'wrong';
+          return '$playerName guessed $characterName ($outcome)';
+        case TurnActionType.guessTrait:
+          final traitLabel = _findTraitLabel(categories, turn.value) ?? turn.value;
+          final outcome = turn.wasCorrect ? 'correct' : 'wrong';
+          return '$playerName guessed trait $traitLabel ($outcome)';
+        case TurnActionType.requestHint:
+          return '$playerName requested a private hint';
+        case TurnActionType.surrender:
+          return '$playerName surrendered';
+        case TurnActionType.pass:
+          return '$playerName passed the turn';
+      }
+    }).toList();
+  }
+
+  String _findCharacterName(List<Character> characters, String characterId) {
+    for (final character in characters) {
+      if (character.id == characterId) {
+        return character.name;
+      }
+    }
+
+    return characterId;
   }
 
   String? _findTraitLabel(List<TraitCategory> categories, String? traitId) {

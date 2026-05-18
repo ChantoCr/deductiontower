@@ -18,7 +18,7 @@ class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.background,
       cardColor: AppColors.surface,
-      dividerColor: AppColors.muted.withOpacity(0.24),
+      dividerColor: AppColors.muted.withValues(alpha: 0.24),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         foregroundColor: AppColors.text,

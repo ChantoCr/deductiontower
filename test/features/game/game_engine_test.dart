@@ -40,6 +40,14 @@ void main() {
       difficulty: DifficultyLevel.medium,
       popularity: 7,
     );
+    const wrongCharacter = Character(
+      id: 'shadow_ninja',
+      name: 'Shadow Ninja',
+      series: 'Original',
+      tags: ['black_hair'],
+      difficulty: DifficultyLevel.medium,
+      popularity: 8,
+    );
 
     final match = engine.createMatch(
       matchId: 'match_1',
@@ -72,6 +80,18 @@ void main() {
       expect(updatedMatch.currentPlayerId, 'player_two');
     });
 
+    test('records and resolves an incorrect character guess', () {
+      final updatedMatch = engine.resolveCharacterGuess(
+        match: match,
+        guessedCharacter: wrongCharacter,
+        opponentSecretTrait: opponentTrait,
+      );
+
+      expect(updatedMatch.turns, hasLength(1));
+      expect(updatedMatch.turns.single.wasCorrect, isFalse);
+      expect(updatedMatch.currentPlayerId, 'player_two');
+    });
+
     test('finishes the match with a correct trait guess', () {
       final updatedMatch = engine.resolveTraitGuess(
         match: match,
@@ -83,6 +103,47 @@ void main() {
       expect(updatedMatch.winnerId, 'player_one');
       expect(updatedMatch.endReason, MatchEndReason.correctTraitGuess);
       expect(updatedMatch.turns.single.wasCorrect, isTrue);
+    });
+
+    test('switches turn after an incorrect trait guess', () {
+      final updatedMatch = engine.resolveTraitGuess(
+        match: match,
+        guessedTraitId: 'black_hair',
+        opponentSecretTrait: opponentTrait,
+      );
+
+      expect(updatedMatch.status, MatchStatus.inProgress);
+      expect(updatedMatch.winnerId, isNull);
+      expect(updatedMatch.turns.single.wasCorrect, isFalse);
+      expect(updatedMatch.currentPlayerId, 'player_two');
+    });
+
+    test('consumes a hint and switches turn', () {
+      final updatedMatch = engine.resolveHintRequest(
+        match: match,
+        hintMessage: 'The trait is related to role.',
+      );
+
+      expect(updatedMatch.playerOne.hintsRemaining, 1);
+      expect(updatedMatch.turns.single.value, 'The trait is related to role.');
+      expect(updatedMatch.currentPlayerId, 'player_two');
+    });
+
+    test('throws when current player has no hints remaining', () {
+      final emptyHintMatch = engine.createMatch(
+        matchId: 'match_2',
+        playerOne: playerOne.copyWith(hintsRemaining: 0),
+        playerTwo: playerTwo,
+        characterPoolIds: const ['shadow_ninja', 'crimson_emperor'],
+      );
+
+      expect(
+        () => engine.resolveHintRequest(
+          match: emptyHintMatch,
+          hintMessage: 'No hint should be granted.',
+        ),
+        throwsStateError,
+      );
     });
 
     test('finishes the match by surrender and records the action', () {

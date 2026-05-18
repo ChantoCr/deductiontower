@@ -4,10 +4,12 @@ import 'package:anime_deduction_tower/features/game/domain/entities/guess_result
 import 'package:anime_deduction_tower/features/game/domain/entities/player.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
 import 'package:anime_deduction_tower/features/game/domain/services/game_engine.dart';
+import 'package:anime_deduction_tower/features/game/domain/services/hint_engine.dart';
 import 'package:anime_deduction_tower/features/game/domain/services/trait_filter_engine.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final gameEngineProvider = Provider<GameEngine>((ref) => const GameEngine());
+final hintEngineProvider = Provider<HintEngine>((ref) => const HintEngine());
 final traitFilterEngineProvider = Provider<TraitFilterEngine>(
   (ref) => const TraitFilterEngine(),
 );
@@ -15,12 +17,15 @@ final traitFilterEngineProvider = Provider<TraitFilterEngine>(
 class MatchController extends StateNotifier<GameMatch?> {
   MatchController({
     required GameEngine gameEngine,
+    required HintEngine hintEngine,
     required TraitFilterEngine traitFilterEngine,
   }) : _gameEngine = gameEngine,
+       _hintEngine = hintEngine,
        _traitFilterEngine = traitFilterEngine,
        super(null);
 
   final GameEngine _gameEngine;
+  final HintEngine _hintEngine;
   final TraitFilterEngine _traitFilterEngine;
 
   void setMatch(GameMatch match) => state = match;
@@ -131,6 +136,21 @@ class MatchController extends StateNotifier<GameMatch?> {
     );
   }
 
+  String requestHint({
+    required List<TraitCategory> categories,
+  }) {
+    final match = _requireMatch();
+    final opponentSecretTrait = _findOpponentSecretTrait(match, categories);
+    final hintMessage = _hintEngine.generateHint(opponentSecretTrait);
+
+    state = _gameEngine.resolveHintRequest(
+      match: match,
+      hintMessage: hintMessage,
+    );
+
+    return hintMessage;
+  }
+
   void surrenderCurrentPlayer() {
     final match = _requireMatch();
 
@@ -189,6 +209,7 @@ class MatchController extends StateNotifier<GameMatch?> {
 final matchControllerProvider = StateNotifierProvider<MatchController, GameMatch?>(
   (ref) => MatchController(
     gameEngine: ref.watch(gameEngineProvider),
+    hintEngine: ref.watch(hintEngineProvider),
     traitFilterEngine: ref.watch(traitFilterEngineProvider),
   ),
 );

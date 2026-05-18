@@ -1,0 +1,56 @@
+[
+  {
+    "id": "sasuke_uchiha",
+    "name": "Sasuke Uchiha",
+    "series": "Naruto",
+    "image": null,
+    "tags": ["black_hair", "uses_sword", "has_tragic_past"],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "levi_ackerman",
+    "name": "Levi Ackerman",
+    "series": "Attack on Titan",
+    "image": null,
+    "tags": ["black_hair", "uses_sword", "has_tragic_past"],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "monkey_d_luffy",
+    "name": "Monkey D. Luffy",
+    "series": "One Piece",
+    "image": null,
+    "tags": ["protagonist", "has_transformation"],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "ichigo_kurosaki",
+    "name": "Ichigo Kurosaki",
+    "series": "Bleach",
+    "image": null,
+    "tags": ["protagonist", "uses_sword", "has_transformation"],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "vegeta",
+    "name": "Vegeta",
+    "series": "Dragon Ball",
+    "image": null,
+    "tags": ["black_hair", "villain", "has_transformation", "non_human"],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "frieza",
+    "name": "Frieza",
+    "series": "Dragon Ball",
+    "image": null,
+    "tags": ["villain", "has_transformation", "non_human"],
+    "difficulty": "medium",
+    "popularity": 7
+  }
+]

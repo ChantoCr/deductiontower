@@ -1,0 +1,62 @@
+[
+  {
+    "mal_id": 13,
+    "name": "Sasuke Uchiha",
+    "name_kanji": "うちはサスケ",
+    "nicknames": ["Sasuke-kun"],
+    "favorites": 52745,
+    "about": "A rival character with a tragic backstory and sword-based combat in later arcs.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/sasuke.jpg",
+    "url": "https://myanimelist.net/character/13/Sasuke_Uchiha"
+  },
+  {
+    "mal_id": 45627,
+    "name": "Levi Ackerman",
+    "name_kanji": "リヴァイ・アッカーマン",
+    "nicknames": ["Captain Levi"],
+    "favorites": 87421,
+    "about": "An elite soldier known for bladed combat and a severe personal history.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/levi.jpg",
+    "url": "https://myanimelist.net/character/45627/Levi_Ackerman"
+  },
+  {
+    "mal_id": 5,
+    "name": "Monkey D. Luffy",
+    "name_kanji": "モンキー・D・ルフィ",
+    "nicknames": ["Straw Hat"],
+    "favorites": 90314,
+    "about": "A cheerful lead character with multiple transformation-like forms.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/luffy.jpg",
+    "url": "https://myanimelist.net/character/5/Monkey_D_Luffy"
+  },
+  {
+    "mal_id": 3202,
+    "name": "Ichigo Kurosaki",
+    "name_kanji": "黒崎一護",
+    "nicknames": ["Berry"],
+    "favorites": 31420,
+    "about": "A main character who fights with a sword and unlocks several power states.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/ichigo.jpg",
+    "url": "https://myanimelist.net/character/3202/Ichigo_Kurosaki"
+  },
+  {
+    "mal_id": 465,
+    "name": "Vegeta",
+    "name_kanji": "ベジータ",
+    "nicknames": ["Prince of All Saiyans"],
+    "favorites": 36550,
+    "about": "A proud Saiyan warrior with multiple transformations and antagonist history.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/vegeta.jpg",
+    "url": "https://myanimelist.net/character/465/Vegeta"
+  },
+  {
+    "mal_id": 2547,
+    "name": "Frieza",
+    "name_kanji": "フリーザ",
+    "nicknames": ["Freeza"],
+    "favorites": 18210,
+    "about": "A famous non-human villain known for transformation forms.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/frieza.jpg",
+    "url": "https://myanimelist.net/character/2547/Frieza"
+  }
+]

@@ -49,7 +49,7 @@ class CharacterLibraryScreen extends ConsumerWidget {
                               label: Text(tag.label),
                               selected: filterState.selectedTagId == tag.id,
                               onSelected: (_) => controller.selectTag(tag.id),
-                              selectedColor: AppColors.secondary.withOpacity(0.18),
+                              selectedColor: AppColors.secondary.withValues(alpha: 0.18),
                               side: BorderSide.none,
                             ),
                           )
@@ -67,7 +67,7 @@ class CharacterLibraryScreen extends ConsumerWidget {
                               label: Text(_labelForDifficulty(difficulty)),
                               selected: filterState.selectedDifficulty == difficulty,
                               onSelected: (_) => controller.selectDifficulty(difficulty),
-                              selectedColor: AppColors.primary.withOpacity(0.18),
+                              selectedColor: AppColors.primary.withValues(alpha: 0.18),
                               side: BorderSide.none,
                             ),
                           )

@@ -13,12 +13,12 @@ class AppCard extends StatelessWidget {
       width: double.infinity,
       padding: padding ?? const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.surface.withOpacity(0.92),
+        color: AppColors.surface.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.primary.withOpacity(0.16)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.16)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
+            color: AppColors.primary.withValues(alpha: 0.12),
             blurRadius: 24,
             offset: const Offset(0, 12),
           ),

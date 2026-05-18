@@ -28,7 +28,7 @@ class CharacterCard extends StatelessWidget {
                 .map(
                   (tag) => Chip(
                     label: Text(tag),
-                    backgroundColor: AppColors.primary.withOpacity(0.12),
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.12),
                     side: BorderSide.none,
                   ),
                 )

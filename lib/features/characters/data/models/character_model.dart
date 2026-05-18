@@ -43,4 +43,16 @@ class CharacterModel {
       popularity: popularity,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'series': series,
+      'image': image,
+      'tags': tags,
+      'difficulty': difficulty.name,
+      'popularity': popularity,
+    };
+  }
 }

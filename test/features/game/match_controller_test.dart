@@ -4,6 +4,7 @@ import 'package:anime_deduction_tower/core/enums/match_status.dart';
 import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
 import 'package:anime_deduction_tower/features/game/domain/services/game_engine.dart';
+import 'package:anime_deduction_tower/features/game/domain/services/hint_engine.dart';
 import 'package:anime_deduction_tower/features/game/domain/services/trait_filter_engine.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +13,7 @@ void main() {
   group('MatchController', () {
     final controller = MatchController(
       gameEngine: const GameEngine(),
+      hintEngine: const HintEngine(),
       traitFilterEngine: const TraitFilterEngine(),
     );
 
@@ -65,16 +67,20 @@ void main() {
       controller.clear();
     });
 
-    test('initializes a match with a shared character pool from both traits', () {
+    void initializeStandardMatch({int hintsPerPlayer = 2}) {
       controller.initializeMatch(
         playerOneName: 'Player 1',
         playerTwoName: 'Player 2',
-        hintsPerPlayer: 2,
+        hintsPerPlayer: hintsPerPlayer,
         playerOneTraitId: 'black_hair',
         playerTwoTraitId: 'villain',
         categories: categories,
         characters: characters,
       );
+    }
+
+    test('initializes a match with a shared character pool from both traits', () {
+      initializeStandardMatch();
 
       final match = controller.state;
 
@@ -85,16 +91,36 @@ void main() {
       expect(match.characterPoolIds, ['shadow_ninja', 'abyss_duelist', 'crimson_emperor']);
     });
 
-    test('submits a correct trait guess and completes the match', () {
-      controller.initializeMatch(
-        playerOneName: 'Player 1',
-        playerTwoName: 'Player 2',
-        hintsPerPlayer: 2,
-        playerOneTraitId: 'black_hair',
-        playerTwoTraitId: 'villain',
-        categories: categories,
+    test('submits a character guess and advances the turn', () {
+      initializeStandardMatch();
+
+      final result = controller.submitCharacterGuess(
+        characterId: 'crimson_emperor',
         characters: characters,
+        categories: categories,
       );
+
+      expect(result.isCorrect, isTrue);
+      expect(controller.state!.currentPlayerId, 'player_two');
+      expect(controller.state!.turns.single.value, 'crimson_emperor');
+    });
+
+    test('submits an incorrect trait guess and keeps the match alive', () {
+      initializeStandardMatch();
+
+      final result = controller.submitTraitGuess(
+        guessedTraitId: 'black_hair',
+        categories: categories,
+      );
+
+      expect(result.isCorrect, isFalse);
+      expect(controller.state!.status, MatchStatus.inProgress);
+      expect(controller.state!.winnerId, isNull);
+      expect(controller.state!.currentPlayerId, 'player_two');
+    });
+
+    test('submits a correct trait guess and completes the match', () {
+      initializeStandardMatch();
 
       final result = controller.submitTraitGuess(
         guessedTraitId: 'villain',
@@ -107,16 +133,28 @@ void main() {
       expect(controller.state!.endReason, MatchEndReason.correctTraitGuess);
     });
 
-    test('surrender completes the match and awards the opponent', () {
-      controller.initializeMatch(
-        playerOneName: 'Player 1',
-        playerTwoName: 'Player 2',
-        hintsPerPlayer: 2,
-        playerOneTraitId: 'black_hair',
-        playerTwoTraitId: 'villain',
-        categories: categories,
-        characters: characters,
+    test('requesting a hint consumes one hint and switches turn', () {
+      initializeStandardMatch();
+
+      final hint = controller.requestHint(categories: categories);
+
+      expect(hint, contains('role'));
+      expect(controller.state!.playerOne.hintsRemaining, 1);
+      expect(controller.state!.currentPlayerId, 'player_two');
+      expect(controller.state!.turns.single.actionType.name, 'requestHint');
+    });
+
+    test('requesting a hint with none remaining throws', () {
+      initializeStandardMatch(hintsPerPlayer: 0);
+
+      expect(
+        () => controller.requestHint(categories: categories),
+        throwsStateError,
       );
+    });
+
+    test('surrender completes the match and awards the opponent', () {
+      initializeStandardMatch();
 
       controller.surrenderCurrentPlayer();
 

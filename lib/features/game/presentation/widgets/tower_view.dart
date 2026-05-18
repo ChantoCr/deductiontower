@@ -27,9 +27,9 @@ class TowerView extends StatelessWidget {
                   child: Container(
                     height: 84,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.12),
+                      color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: AppColors.secondary.withOpacity(0.2)),
+                      border: Border.all(color: AppColors.secondary.withValues(alpha: 0.2)),
                     ),
                     alignment: Alignment.center,
                     child: Text('#${index + 1}'),
