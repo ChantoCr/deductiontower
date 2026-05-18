@@ -10,9 +10,13 @@ class CharacterPoolPanel extends ConsumerStatefulWidget {
   const CharacterPoolPanel({
     super.key,
     this.availableCharacterIds,
+    this.selectedCharacterId,
+    this.onCharacterSelected,
   });
 
   final List<String>? availableCharacterIds;
+  final String? selectedCharacterId;
+  final ValueChanged<Character>? onCharacterSelected;
 
   @override
   ConsumerState<CharacterPoolPanel> createState() => _CharacterPoolPanelState();
@@ -36,7 +40,7 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
               const Text('Character Pool', style: AppTextStyles.title),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Browse available guesses or search by character name before locking in a turn.',
+                'Browse available guesses or search by character name before locking in a turn. Tap a name to fill your current guess automatically.',
                 style: AppTextStyles.body,
               ),
               const SizedBox(height: AppSpacing.md),
@@ -58,9 +62,15 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
                     padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                     child: ListTile(
                       contentPadding: EdgeInsets.zero,
+                      selected: widget.selectedCharacterId == character.id,
+                      selectedTileColor: Theme.of(context).colorScheme.primary.withAlpha(24),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       title: Text(character.name),
                       subtitle: Text(character.series),
                       trailing: Text('★ ${character.popularity}'),
+                      onTap: () => widget.onCharacterSelected?.call(character),
                     ),
                   ),
                 ),

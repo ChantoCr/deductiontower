@@ -115,7 +115,12 @@ Recently applied:
 - removed lives from the current data model and setup placeholders
 - added match end reason support for surrender/correct trait guess structure
 - added shared character pool state to `GameMatch`
-- added an in-match character pool browser/search placeholder panel
+- added match creation flow inside `MatchController`
+- connected real trait-filter-based pool generation from selected categories
+- wired the turn transition screen to create and store the active match
+- connected the match screen to the real shared pool in controller state
+- added real character guess, trait guess, and surrender state updates
+- updated the result screen to read real match state
 - updated docs and skills to reflect the no-lives rule set
 
 ---
@@ -160,7 +165,10 @@ Recently applied:
 - `lib/features/game/presentation/controllers/game_setup_controller.dart`
 - `lib/features/game/presentation/controllers/match_controller.dart`
 - `lib/features/game/presentation/screens/game_setup_screen.dart`
+- `lib/features/game/presentation/screens/turn_transition_screen.dart`
 - `lib/features/game/presentation/screens/match_screen.dart`
+- `lib/features/game/presentation/screens/result_screen.dart`
+- `lib/features/game/presentation/widgets/category_guess_dialog.dart`
 - `lib/features/game/presentation/widgets/character_pool_panel.dart`
 - `lib/features/game/presentation/widgets/turn_panel.dart`
 
@@ -184,23 +192,22 @@ Recently applied:
 - `test/features/game/trait_catalog_validator_test.dart`
 - `test/features/game/category_selection_controller_test.dart`
 - `test/features/game/game_models_test.dart`
+- `test/features/game/match_controller_test.dart`
 
 ---
 
 ## Immediate Next Target
 
-Continue PR 3 with pure Dart game-engine wiring.
+Continue PR 3 with deeper gameplay wiring and polish.
 
-Recommended scope:
+Recommended next scope:
 
-1. **Match creation flow**
-2. **Trait filtering integration**
-3. **Character pool generation**
-4. **Character guess validation**
-5. **Trait guess validation**
-6. **Turn switching**
-7. **Winner detection**
-8. **Surrender resolution**
+1. **Prompted trait guess UX improvements**
+2. **Character guess feedback polish**
+3. **Hint request state and deduction flow**
+4. **Optional turn transition after every action**
+5. **Result details expansion**
+6. **More controller and engine edge-case tests**
 
 ---
 
@@ -265,5 +272,6 @@ Rules:
 
 ## Final Status
 
-Docs, skills, and placeholder code now reflect the no-lives rule set plus shared character pool browsing/search.
-The next meaningful step is completing the real game-engine flow around those rules.
+Docs and code now reflect the no-lives rule set plus shared character pool browsing/search.
+PR 3 now has a working match initialization flow, real pool generation, controller-backed match state, real trait guess resolution, and surrender resolution.
+The next meaningful step is polishing the interactive flow around those systems and continuing deeper gameplay behavior.
