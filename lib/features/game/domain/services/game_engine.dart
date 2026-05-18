@@ -1,3 +1,4 @@
+import 'package:anime_deduction_tower/core/enums/match_end_reason.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/game_match.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/turn.dart';
@@ -19,7 +20,30 @@ class GameEngine {
     return match.copyWith(turns: [...match.turns, turn]);
   }
 
-  GameMatch finishMatch(GameMatch match, String winnerId) {
-    return match.copyWith(status: MatchStatus.completed, winnerId: winnerId);
+  GameMatch finishMatch({
+    required GameMatch match,
+    required String winnerId,
+    required MatchEndReason endReason,
+  }) {
+    return match.copyWith(
+      status: MatchStatus.completed,
+      winnerId: winnerId,
+      endReason: endReason,
+    );
+  }
+
+  GameMatch surrenderMatch({
+    required GameMatch match,
+    required String surrenderingPlayerId,
+  }) {
+    final winnerId = surrenderingPlayerId == match.playerOne.id
+        ? match.playerTwo.id
+        : match.playerOne.id;
+
+    return finishMatch(
+      match: match,
+      winnerId: winnerId,
+      endReason: MatchEndReason.surrender,
+    );
   }
 }

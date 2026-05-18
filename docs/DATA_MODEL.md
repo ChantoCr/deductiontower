@@ -70,9 +70,16 @@ Fields:
 - playerOne
 - playerTwo
 - currentPlayerId
+- characterPoolIds
 - turns
 - status
 - winnerId
+- endReason
+
+### Notes
+
+- `characterPoolIds` is the shared list of guessable characters visible during the match.
+- `endReason` should distinguish at least `correctTraitGuess` and `surrender`.
 
 ## Player
 
@@ -84,8 +91,12 @@ Fields:
 - name
 - secretTraitId
 - validCharacterIds
-- lives
 - hintsRemaining
+
+### Notes
+
+- `validCharacterIds` represents characters that match the player's secret trait.
+- There is no `lives` field because the game has no life system.
 
 ## Turn
 
@@ -99,6 +110,14 @@ Fields:
 - value
 - wasCorrect
 - createdAt
+
+### Supported action types
+
+- guessCharacter
+- guessTrait
+- requestHint
+- surrender
+- pass
 
 ## GuessResult
 

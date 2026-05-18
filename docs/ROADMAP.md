@@ -36,6 +36,7 @@
 - Add category entity
 - Add local JSON loader
 - Add repositories
+- Add shared character pool-friendly sample data
 
 ---
 
@@ -46,10 +47,12 @@
 - Add Turn
 - Add Guess
 - Add GuessResult
+- Add character pool state
 - Add GameEngine
 - Add TraitFilterEngine
 - Add HintEngine
 - Add MatchRulesEngine
+- Add surrender handling
 - Add unit tests
 
 ---
@@ -60,6 +63,8 @@
 - Add category selection
 - Add turn transition
 - Add match screen
+- Add in-match character pool browser
+- Add in-match character search
 - Add result screen
 - Connect UI to game engine
 
@@ -73,6 +78,7 @@
 - Add animations
 - Add visual feedback
 - Improve mobile responsiveness
+- Polish pool search UX
 
 ---
 
@@ -93,6 +99,7 @@
 - Add AI explanation entity
 - Add AI panel
 - Add prompt templates
+- Support pool-aware AI explanations later
 
 ---
 

@@ -12,7 +12,8 @@ The game is powered by structured data.
 
 Characters have tags.  
 Traits/categories match tags.  
-The game filters characters based on selected traits.
+The game filters characters based on selected traits.  
+A curated shared character pool is built from that data for match play.
 
 Good data modeling is the heart of the game.
 
@@ -109,6 +110,7 @@ Fields:
 - Every category must map to a valid tag.
 - Every tag used by a character must exist in `tags.json`.
 - Every category must have enough valid characters.
+- The overall catalog should support a readable shared character pool.
 - Avoid subjective categories unless manually curated.
 - Avoid duplicate IDs.
 - Use snake_case IDs.
@@ -122,6 +124,7 @@ Start with:
 - 20 to 30 characters
 - 20 to 40 tags
 - 10 to 15 categories
+- enough overlap to build multiple fair shared pools
 
 The first data set can use original anime-inspired characters to avoid copyright issues.
 
@@ -143,6 +146,15 @@ A character matches a trait category if:
 
 `character.tags` contains `category.tagId`
 
+## Pool Design Rule
+
+The match pool should:
+
+- contain enough variety for deduction
+- include searchable, recognizable names
+- avoid being so large that browsing becomes slow
+- avoid being so small that the answer feels obvious
+
 ## Validation Ideas
 
 Add tests or scripts later to validate:
@@ -153,6 +165,7 @@ Add tests or scripts later to validate:
 - Categories with too few characters
 - Invalid image paths
 - Invalid difficulty values
+- Weak pool variety
 
 ## Anti-Patterns
 
@@ -163,3 +176,4 @@ Avoid:
 - Hardcoding category logic in Dart
 - Having a category with only one character
 - Using images without permission
+- Designing data around a lives-based ruleset

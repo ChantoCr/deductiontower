@@ -12,6 +12,11 @@ The main goal is to separate:
 - Flame visuals
 - AI integration
 
+The architecture must also keep two match concepts explicit:
+
+- the shared character pool available for guessing
+- the no-lives end conditions: correct trait guess or surrender
+
 ---
 
 ## Layers
@@ -29,10 +34,9 @@ Examples:
 - TraitCategory
 - GameEngine
 - TraitFilterEngine
+- MatchRulesEngine
 
 Domain must not import Flutter.
-
----
 
 ### Data
 
@@ -43,8 +47,6 @@ Responsible for:
 - Repository implementations
 - Future API integrations
 
----
-
 ### Presentation
 
 Responsible for:
@@ -53,8 +55,7 @@ Responsible for:
 - Widgets
 - Riverpod controllers
 - User interaction
-
----
+- Character pool browsing/search UI
 
 ### Flame Board
 
@@ -85,6 +86,8 @@ Riverpod Provider
 UI / Flame Board
 ```
 
+Character pool search can stay in presentation state, but the authoritative pool membership must come from match/domain state.
+
 ## Data Flow
 
 ```txt
@@ -99,6 +102,10 @@ Repository
 Domain Entities
   ↓
 Catalog Validation
+  ↓
+Trait Filtering
+  ↓
+Character Pool Construction
   ↓
 Game Engine
 ```
@@ -120,6 +127,8 @@ AI Hint / Explanation
   ↓
 UI Panel
 ```
+
+AI prompts may later receive the visible character pool, but AI must not determine official win/loss state.
 
 ## Dependency Rule
 
@@ -147,6 +156,14 @@ Important services:
 - GameEngine
 - HintEngine
 - MatchRulesEngine
+
+Important behaviors:
+
+- pool generation
+- character guess validation
+- trait guess resolution
+- surrender resolution
+- winner detection
 
 ## MVP Architecture Goal
 

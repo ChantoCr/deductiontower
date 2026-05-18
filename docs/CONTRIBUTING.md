@@ -8,6 +8,7 @@
 4. Write readable code.
 5. Keep game logic testable.
 6. Update docs when needed.
+7. If you change gameplay rules, update tests and remove outdated UI placeholders.
 
 ---
 
@@ -30,7 +31,9 @@ Examples:
 
 - `feat: initialize Flutter project foundation`
 - `feat: add character data model`
-- `feat: implement trait filter engine`
+- `feat: add character pool browser to match screen`
+- `feat: remove lives from match flow`
+- `feat: implement surrender end condition`
 - `test: add game engine unit tests`
 - `docs: update architecture guide`
 
@@ -42,3 +45,5 @@ Examples:
 - [ ] Adds tests for game logic if needed
 - [ ] Updates documentation if needed
 - [ ] Does not include copyrighted images
+- [ ] Does not reintroduce a life system
+- [ ] Keeps character pool behavior consistent across docs and code

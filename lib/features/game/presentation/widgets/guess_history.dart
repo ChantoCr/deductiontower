@@ -16,10 +16,12 @@ class GuessHistory extends StatelessWidget {
         children: [
           const Text('Guess History', style: AppTextStyles.title),
           const SizedBox(height: AppSpacing.sm),
-          ...items.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Text('• $item'),
-              )),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text('• $item'),
+            ),
+          ),
         ],
       ),
     );

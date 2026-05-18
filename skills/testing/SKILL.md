@@ -19,10 +19,11 @@ The game engine must be testable without Flutter widgets and without Flame.
 Prioritize tests for:
 
 - Trait filtering
+- Character pool generation
 - Character guess validation
 - Category guess validation
 - Turn switching
-- Lives handling
+- Surrender handling
 - Hint generation
 - Winner detection
 - Invalid data handling
@@ -63,6 +64,17 @@ Expected:
 - Goku and Sasuke match
 - Naruto does not match
 
+### Character Pool
+
+Given:
+
+- Selected categories and characters
+
+Expected:
+
+- the generated pool contains only allowed characters
+- the pool is preserved in match state
+
 ### Character Guess
 
 Given:
@@ -84,6 +96,18 @@ Given:
 Expected:
 
 - Guess is incorrect
+
+### Surrender
+
+Given:
+
+- Current player surrenders
+
+Expected:
+
+- Match status becomes completed
+- Opponent becomes winner
+- End reason is `surrender`
 
 ### Turn Switching
 
@@ -126,3 +150,4 @@ Avoid:
 - Network calls in tests
 - Tests that depend on timing/animations
 - Mixing UI tests with game engine tests
+- Writing tests around a lives system that no longer exists

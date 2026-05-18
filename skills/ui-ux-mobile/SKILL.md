@@ -48,6 +48,7 @@ Muted: #94A3B8
 - Smooth transitions.
 - Important actions must be obvious.
 - Secret information must be protected during local multiplayer.
+- Character pool browsing must feel fast and readable.
 
 ## Main Screens
 
@@ -83,6 +84,8 @@ Should show:
 - Optional timer
 - Start button
 
+Do not show lives because the game has no life system.
+
 ### Category Selection Screen
 
 Should protect secret information.
@@ -102,16 +105,19 @@ Should show:
 - Guess history
 - Hint button
 - Guess category button
-- Lives/hints
+- Character pool browser/search
+- Hints remaining
+- Surrender action
 
 ### Result Screen
 
 Should show:
 
 - Winner
+- End reason
 - Secret traits
 - Number of turns
-- Correct guesses
+- Character pool size
 - Hints used
 - Rematch button
 
@@ -148,6 +154,7 @@ Create reusable components:
 - TowerView
 - GuessHistory
 - HintPanel
+- CharacterPoolPanel
 
 ## Typography
 
@@ -187,6 +194,7 @@ Focus on:
 - Clean spacing
 - Smooth motion
 - Consistent theme
+- A polished pool search/browse experience
 
 ## Anti-Patterns
 
@@ -198,3 +206,4 @@ Avoid:
 - Unclear turn state
 - Secret information leaks
 - Too much text per screen
+- Showing lives anywhere in match flow

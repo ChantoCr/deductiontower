@@ -10,13 +10,19 @@ The project is designed as a professional portfolio piece focused on mobile game
 
 Anime Deduction Tower is a two-player deduction game inspired by anime character knowledge.
 
-Each player selects or receives a secret trait category. The opponent does not know that category. Players take turns guessing characters and trying to infer the hidden trait based on correct and incorrect guesses.
+Each player selects or receives a secret trait category. The opponent does not know that category. Players take turns guessing characters, reviewing the shared character pool, and trying to infer the hidden trait from correct and incorrect feedback.
+
+The match has **no life system**.
+A match ends only when:
+
+- a player correctly guesses the opponent's secret trait, or
+- a player surrenders.
 
 Example:
 
 - Player 1 secret trait: Black Hair
-- Valid characters: Goku, Vegeta, Sasuke, Madara, Levi
-- Player 2 must guess characters and deduce the hidden common trait.
+- Shared character pool: Shadow Ninja, Ember Ronin, Blaze Guardian, Abyss Duelist, Storm Samurai
+- Player 2 browses the pool, guesses characters, and deduces the hidden common trait.
 
 The game combines:
 
@@ -24,6 +30,7 @@ The game combines:
 - Character tag filtering
 - Hidden information
 - Strategic deduction
+- Shared character pool browsing and search
 - Mobile-first UI
 - Game-like visual effects with Flame
 - Future AI referee and online multiplayer support
@@ -47,9 +54,9 @@ Each player has a secret trait, such as:
 - Master/mentor
 - Has tragic past
 
-The game generates a tower of characters that match each secret trait.
+The game prepares a shared **character pool** for the match. During a turn, players can browse that pool or search for names before making a character guess or a final trait guess.
 
-Players take turns guessing characters. Each guess gives information that helps the opponent deduce the secret trait.
+Character guesses give information, but they do not remove lives because the game does not use lives. The decisive moment is the final trait guess or a surrender.
 
 A player wins by correctly identifying the opponent's hidden trait.
 
@@ -61,10 +68,13 @@ A player wins by correctly identifying the opponent's hidden trait.
 
 - Local two-player mode on one device
 - Secret trait selection
-- Character tower generation
+- Shared character pool generation
+- In-match character pool browsing
+- Character name search inside the pool
 - Turn-based guessing
 - Character guess validation
 - Category guess validation
+- Surrender action
 - Guess history
 - Hint system
 - Result screen
@@ -166,17 +176,34 @@ Example:
 - Trait: `black_hair`
 - Result: `Goku, Vegeta, Sasuke, Madara, Levi`
 
+### Character Pool System
+
+Each match uses a shared character pool that players can inspect while guessing.
+
+Responsibilities:
+
+- define which characters are available in the current match
+- allow browsing during the turn
+- support fast name search inside the pool
+- keep pool state separate from UI widgets
+
 ### Turn-Based Match Engine
 
 Controls:
 
 - Current player
 - Guess validation
-- Lives
+- Character pool state
 - Hints
 - Match status
 - Winner
+- End reason
 - Turn history
+
+A match ends only on:
+
+- correct secret trait guess
+- surrender
 
 ### Hint Engine
 
@@ -293,10 +320,11 @@ Agents must follow the architecture, folder structure, naming conventions, and r
 - Match model
 - Player model
 - Turn model
+- Character pool model
 - Guess validation
 - Trait filtering
 - Hint system
-- Win/loss logic
+- Win/surrender logic
 - Unit tests
 
 ### Phase 4 — Local Multiplayer
@@ -305,6 +333,7 @@ Agents must follow the architecture, folder structure, naming conventions, and r
 - Secret category selection
 - Turn transition screen
 - Match screen
+- Character pool browser/search
 - Result screen
 
 ### Phase 5 — Premium UI
@@ -390,4 +419,5 @@ This project demonstrates:
 
 ## Status
 
-Project planning and foundation phase.
+Foundation plus local data work is in place.
+The rules now target a no-lives match flow with surrender support and an in-match character pool browser/search experience.

@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 class TurnPanel extends StatelessWidget {
   const TurnPanel({
     required this.currentPlayer,
-    required this.lives,
     required this.hints,
     super.key,
   });
 
   final String currentPlayer;
-  final int lives;
   final int hints;
 
   @override
@@ -24,8 +22,11 @@ class TurnPanel extends StatelessWidget {
           const Text('Turn Panel', style: AppTextStyles.title),
           const SizedBox(height: AppSpacing.sm),
           Text('Current player: $currentPlayer'),
-          Text('Lives: $lives'),
           Text('Hints left: $hints'),
+          const SizedBox(height: AppSpacing.xs),
+          const Text(
+            'Match ends when a player surrenders or correctly guesses the opponent\'s secret trait.',
+          ),
         ],
       ),
     );

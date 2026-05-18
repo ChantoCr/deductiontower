@@ -25,11 +25,12 @@ The game should feel:
 
 1. Players enter a match.
 2. Each player receives or selects a secret trait.
-3. The system generates valid characters for each trait.
-4. Players take turns guessing characters.
-5. Guesses return correct/incorrect feedback.
-6. Players use deduction to infer the hidden trait.
-7. A player wins by correctly guessing the opponent's secret trait.
+3. The system generates a shared character pool.
+4. Players browse the pool or search for a name.
+5. Players take turns guessing characters.
+6. Guesses return correct/incorrect feedback.
+7. Players use deduction to infer the hidden trait.
+8. A player wins by correctly guessing the opponent's secret trait.
 
 ---
 
@@ -41,9 +42,12 @@ For the first playable version:
 - One device
 - Each player has one secret trait
 - Each player has a generated list of valid characters
+- The match has one shared guessable character pool
 - Players alternate turns
+- Players can browse/search the pool during their turn
 - Players can guess a character
 - Players can guess the opponent's trait
+- Players can surrender
 - Players have limited hints
 - The first player to guess the opponent's trait wins
 
@@ -56,10 +60,10 @@ Default MVP settings:
 ```txt
 Players: 2
 Mode: Local
-Lives: 3
+Lives: None
 Hints: 2
 Turn timer: Disabled initially
-Characters per tower: 5 to 8
+Character pool size: 8 to 12
 Difficulty: Easy/Medium
 ```
 
@@ -67,10 +71,13 @@ Difficulty: Easy/Medium
 
 Supported actions:
 
+- Browse character pool
+- Search character names
 - Guess character
 - Request hint
 - Guess secret trait
 - Pass turn
+- Surrender
 
 Future actions:
 
@@ -84,13 +91,15 @@ Future actions:
 
 A player wins when:
 
-They correctly guess the opponent's secret trait.
+- They correctly guess the opponent's secret trait.
+- The opponent surrenders.
 
-A player may lose when:
+A player loses when:
 
-- They run out of lives.
-- They incorrectly guess the final trait too many times.
-- They abandon the match.
+- They surrender.
+- The opponent correctly guesses their secret trait.
+
+Incorrect guesses should cost tempo or information, not lives.
 
 ## Hint Rules
 
@@ -118,6 +127,7 @@ Trait difficulty can be based on:
 - How many characters share it
 - How popular the characters are
 - Whether the trait is visual, story-based, or lore-based
+- How large or noisy the current pool feels
 
 Easy examples:
 
@@ -147,6 +157,7 @@ Hard examples:
 - Wrong guesses should still provide useful information.
 - Traits must be fair and not too subjective.
 - Categories should be curated carefully.
+- The character pool should be readable and searchable.
 - The game should be playable without AI.
 - AI should enhance the experience, not replace the core game.
 
@@ -156,6 +167,8 @@ Avoid:
 
 - Traits that are too subjective.
 - Categories with only one character.
+- A character pool so large that browsing feels tedious.
 - Categories that require obscure lore in easy mode.
 - Too much text on the main game screen.
 - Overcomplicated rules in the MVP.
+- Any life-based elimination rule.

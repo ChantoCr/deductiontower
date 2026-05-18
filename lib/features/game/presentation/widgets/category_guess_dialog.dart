@@ -8,7 +8,7 @@ class CategoryGuessDialog extends StatelessWidget {
     return AlertDialog(
       title: const Text('Guess the Trait'),
       content: const Text(
-        'This placeholder dialog will become the final category guess flow in the local multiplayer MVP.',
+        'This placeholder dialog will become the final secret trait guess flow. A correct trait guess should end the match immediately.',
       ),
       actions: [
         TextButton(

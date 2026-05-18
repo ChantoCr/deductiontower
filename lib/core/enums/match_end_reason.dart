@@ -1,0 +1,4 @@
+enum MatchEndReason {
+  correctTraitGuess,
+  surrender,
+}

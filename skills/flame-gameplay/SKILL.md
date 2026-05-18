@@ -29,6 +29,7 @@ Flame can handle:
 - Energy glow effects
 - Visual transitions
 - Tap/click interactions forwarded to controllers
+- Character pool visual emphasis or highlighting
 
 ---
 
@@ -39,9 +40,10 @@ Flame must not decide:
 - Who wins
 - Whether a trait is valid
 - Whether a guess is correct
-- How many lives a player has
+- Whether a player surrendered
 - Which player is current
 - How hints are generated
+- Which characters belong to the official pool
 
 Those belong in the domain game engine.
 
@@ -95,6 +97,7 @@ Flutter owns:
 - Input forms
 - Match state
 - Controllers
+- Character pool search UI
 
 Flame owns:
 

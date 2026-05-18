@@ -24,7 +24,7 @@ class GameSetupScreen extends ConsumerWidget {
               children: [
                 Text('Local Multiplayer Setup', style: AppTextStyles.title),
                 SizedBox(height: AppSpacing.sm),
-                Text('Player names, difficulty, hints, and timer options will be wired here in a future step.'),
+                Text('Player names, hint settings, and timer options will be wired here in a future step. This match format does not use lives.'),
               ],
             ),
           ),

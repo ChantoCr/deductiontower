@@ -88,6 +88,13 @@ Rules:
 - Controllers can use providers.
 - UI widgets should call controllers, not implement business rules.
 
+The current match state should eventually expose:
+
+- current player
+- shared character pool ids
+- hint counts
+- winner/end reason
+
 ## Routing
 
 Use GoRouter.
@@ -132,6 +139,9 @@ class Player {
 }
 ```
 
+Do not model lives in entities because the game has no life system.
+Model the shared character pool explicitly in match state instead.
+
 ## Data Model Rules
 
 Use model classes in the data layer when parsing JSON.
@@ -160,6 +170,7 @@ Extract:
 - Dialogs
 - Lists
 - Headers
+- Character pool browser/search widgets
 
 ## Error Handling
 
@@ -181,6 +192,7 @@ During the foundation phase, create:
 - Empty/skeleton domain classes
 - Empty/skeleton services
 - Sample JSON files
+- Character pool browsing/search placeholders
 
 Do not implement full gameplay yet unless requested.
 
@@ -194,3 +206,4 @@ Avoid:
 - Flame components calculating match rules
 - Giant global provider files
 - Hardcoded data in UI
+- Reintroducing life-based rules in setup or match widgets

@@ -36,7 +36,6 @@ void main() {
         'name': 'Player 1',
         'secretTraitId': 'black_hair',
         'validCharacterIds': ['shadow_ninja'],
-        'lives': 3,
         'hintsRemaining': 2,
       });
 
@@ -44,7 +43,7 @@ void main() {
 
       expect(model.secretTraitId, 'black_hair');
       expect(entity.validCharacterIds, ['shadow_ninja']);
-      expect(entity.lives, 3);
+      expect(entity.hintsRemaining, 2);
     });
 
     test('uses default values when optional fields are missing', () {
@@ -54,7 +53,6 @@ void main() {
       });
 
       expect(model.validCharacterIds, isEmpty);
-      expect(model.lives, 3);
       expect(model.hintsRemaining, 2);
     });
   });
@@ -132,6 +130,7 @@ void main() {
           'validCharacterIds': ['void_beast'],
         }),
         currentPlayerId: 'player_one',
+        characterPoolIds: const ['shadow_ninja', 'void_beast'],
         turns: [
           TurnModel.fromJson({
             'id': 'turn_1',
@@ -152,6 +151,7 @@ void main() {
       expect(entity.turns, hasLength(1));
       expect(entity.status, MatchStatus.inProgress);
       expect(entity.playerOne.name, 'Player 1');
+      expect(entity.characterPoolIds, ['shadow_ninja', 'void_beast']);
     });
   });
 }

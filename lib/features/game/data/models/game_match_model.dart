@@ -1,3 +1,4 @@
+import 'package:anime_deduction_tower/core/enums/match_end_reason.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
 import 'package:anime_deduction_tower/features/game/data/models/player_model.dart';
 import 'package:anime_deduction_tower/features/game/data/models/turn_model.dart';
@@ -11,7 +12,9 @@ class GameMatchModel {
     required this.currentPlayerId,
     required this.turns,
     required this.status,
+    this.characterPoolIds = const [],
     this.winnerId,
+    this.endReason,
   });
 
   final String id;
@@ -20,7 +23,9 @@ class GameMatchModel {
   final String currentPlayerId;
   final List<TurnModel> turns;
   final MatchStatus status;
+  final List<String> characterPoolIds;
   final String? winnerId;
+  final MatchEndReason? endReason;
 
   GameMatch toEntity() {
     return GameMatch(
@@ -30,7 +35,9 @@ class GameMatchModel {
       currentPlayerId: currentPlayerId,
       turns: turns.map((turn) => turn.toEntity()).toList(),
       status: status,
+      characterPoolIds: characterPoolIds,
       winnerId: winnerId,
+      endReason: endReason,
     );
   }
 }

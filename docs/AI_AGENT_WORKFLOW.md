@@ -25,6 +25,13 @@ Before coding, the agent must:
 6. Add or update tests if needed
 7. Update documentation if needed
 
+When gameplay rules change, the agent must also update:
+
+- end conditions
+- data model notes
+- test expectations
+- any UI placeholders that still show outdated rules
+
 ---
 
 ## PR Strategy
@@ -70,7 +77,7 @@ Prompts to agents should be specific.
 Good:
 
 ```txt
-Create the initial Flutter + Flame project structure following AGENTS.md. Add placeholder screens, routing, theme, docs, and skeleton domain entities. Do not implement full gameplay yet.
+Create the next core game engine step for Anime Deduction Tower. Keep the game no-lives, support surrender as a match-ending action, and wire a shared character pool that can be browsed or searched during guessing.
 ```
 
 Bad:
@@ -85,6 +92,7 @@ Agents should not:
 
 - Add online multiplayer before local mode
 - Add OpenAI calls before abstraction
+- Reintroduce a life system
 - Use copyrighted images
 - Mix UI and business logic
 - Ignore folder structure

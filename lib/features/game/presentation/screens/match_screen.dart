@@ -1,5 +1,6 @@
 import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/category_guess_dialog.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/character_pool_panel.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/guess_history.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/hint_panel.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/secret_trait_card.dart';
@@ -20,7 +21,7 @@ class MatchScreen extends StatelessWidget {
       title: 'Match',
       child: ListView(
         children: [
-          const TurnPanel(currentPlayer: 'Player 1', lives: 3, hints: 2),
+          const TurnPanel(currentPlayer: 'Player 1', hints: 2),
           const SizedBox(height: AppSpacing.md),
           const TowerView(label: 'Opponent Mystery Tower'),
           const SizedBox(height: AppSpacing.md),
@@ -31,8 +32,10 @@ class MatchScreen extends StatelessWidget {
           const GuessHistory(
             items: ['Player 1 guessed Shadow Ninja', 'Player 2 asked for a hint'],
           ),
+          const SizedBox(height: AppSpacing.md),
+          const CharacterPoolPanel(),
           const SizedBox(height: AppSpacing.lg),
-          const TextField(decoration: InputDecoration(labelText: 'Guess a character')),
+          const TextField(decoration: InputDecoration(labelText: 'Enter a character guess')),
           const SizedBox(height: AppSpacing.md),
           AppButton(
             label: 'Guess Secret Trait',
@@ -44,8 +47,9 @@ class MatchScreen extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           AppButton(
-            label: 'Finish Placeholder Match',
+            label: 'Surrender Match',
             icon: Icons.flag_outlined,
+            isPrimary: false,
             onPressed: () => context.go(AppRoutes.result),
           ),
         ],

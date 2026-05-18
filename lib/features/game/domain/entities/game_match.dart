@@ -1,3 +1,4 @@
+import 'package:anime_deduction_tower/core/enums/match_end_reason.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/player.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/turn.dart';
@@ -10,7 +11,9 @@ class GameMatch {
     required this.currentPlayerId,
     required this.turns,
     required this.status,
+    this.characterPoolIds = const [],
     this.winnerId,
+    this.endReason,
   });
 
   final String id;
@@ -19,7 +22,9 @@ class GameMatch {
   final String currentPlayerId;
   final List<Turn> turns;
   final MatchStatus status;
+  final List<String> characterPoolIds;
   final String? winnerId;
+  final MatchEndReason? endReason;
 
   Player get currentPlayer =>
       currentPlayerId == playerOne.id ? playerOne : playerTwo;
@@ -33,7 +38,9 @@ class GameMatch {
     String? currentPlayerId,
     List<Turn>? turns,
     MatchStatus? status,
+    List<String>? characterPoolIds,
     String? winnerId,
+    MatchEndReason? endReason,
   }) {
     return GameMatch(
       id: id,
@@ -42,7 +49,9 @@ class GameMatch {
       currentPlayerId: currentPlayerId ?? this.currentPlayerId,
       turns: turns ?? this.turns,
       status: status ?? this.status,
+      characterPoolIds: characterPoolIds ?? this.characterPoolIds,
       winnerId: winnerId ?? this.winnerId,
+      endReason: endReason ?? this.endReason,
     );
   }
 }

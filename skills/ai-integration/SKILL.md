@@ -100,6 +100,8 @@ Prompts should not reveal the answer unless the action is specifically to explai
 
 During a match, AI must avoid saying the secret trait directly.
 
+If a pool is provided to the AI, it should use that pool only for reasoning context and not invent characters outside it.
+
 ## Prompt Template Example
 
 ```txt
@@ -111,6 +113,7 @@ Give a subtle hint based only on the hint type.
 
 Hidden trait type: {{hintType}}
 Difficulty: {{difficulty}}
+Visible character pool: {{characterPool}}
 Correct guesses: {{correctGuesses}}
 Incorrect guesses: {{incorrectGuesses}}
 
@@ -127,6 +130,7 @@ When OpenAI is added later:
 - Keep AI behavior behind repository interfaces.
 - Add fallback behavior if AI fails.
 - The game must remain playable offline without AI.
+- AI must not decide official surrender/win state.
 
 ## Anti-Patterns
 

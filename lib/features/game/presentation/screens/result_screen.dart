@@ -22,9 +22,10 @@ class ResultScreen extends StatelessWidget {
               children: [
                 Text('Winner: Player 1', style: AppTextStyles.title),
                 SizedBox(height: AppSpacing.sm),
+                Text('Win Reason: Correct secret trait guess'),
                 Text('Secret Trait: Black Hair'),
                 Text('Turns: 8'),
-                Text('Correct guesses: 3'),
+                Text('Character Pool Size: 12'),
                 Text('Hints used: 1'),
               ],
             ),

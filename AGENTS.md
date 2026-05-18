@@ -61,13 +61,19 @@ Two players play on one device.
 
 Each player has a secret trait category. The opponent does not know it.
 
-Players take turns guessing characters and eventually try to identify the hidden trait.
+Players take turns browsing a shared character pool, guessing characters, and eventually trying to identify the hidden trait.
+
+The game does **not** use lives.
+A match ends only when:
+
+- a player correctly guesses the opponent's secret trait, or
+- a player surrenders.
 
 Example:
 
 - Secret trait: Black Hair
-- Valid characters: Goku, Vegeta, Sasuke, Madara, Levi
-- Opponent guesses characters and deduces the trait from correct/incorrect results.
+- Shared character pool: Shadow Ninja, Ember Ronin, Blaze Guardian, Abyss Duelist, Storm Samurai
+- Opponent browses the pool, guesses characters, and deduces the trait from correct/incorrect results.
 
 ---
 
@@ -197,6 +203,7 @@ test/
 - Do not put business rules inside widgets.
 - Do not hardcode large character datasets inside Dart files.
 - Use JSON files for initial character, tag, and category data.
+- Keep the shared character pool explicit in the game model.
 - Use readable names.
 - Prefer small focused classes.
 - Write code that a junior/mid developer can understand.
@@ -218,6 +225,7 @@ Examples:
 - `GameEngine`
 - `TraitFilterEngine`
 - `HintEngine`
+- `CharacterPoolPanel`
 
 File names should use snake_case:
 
@@ -225,6 +233,7 @@ File names should use snake_case:
 - `trait_category.dart`
 - `game_engine.dart`
 - `trait_filter_engine.dart`
+- `character_pool_panel.dart`
 
 ## State Management
 
@@ -293,6 +302,13 @@ Create basic versions of:
 
 During the foundation phase, screens can be simple placeholders but must follow the visual theme.
 
+The match screen should clearly support:
+
+- character pool browsing
+- character pool name search
+- secret trait guess flow
+- surrender flow
+
 ## Core Domain Entities
 
 Create initial domain entities for:
@@ -307,6 +323,9 @@ Create initial domain entities for:
 - GuessResult
 
 Keep them simple and immutable when possible.
+
+Model the shared character pool explicitly in match state.
+Do not model lives because the game has no life system.
 
 ## Core Services
 
@@ -344,7 +363,9 @@ Start with tests for:
 - Validating incorrect character guesses
 - Switching turns
 - Detecting winner
+- Handling surrender
 - Hint generation rules
+- Preserving character pool state
 
 Do not write widget tests until core logic is stable.
 
@@ -366,6 +387,7 @@ Not allowed in Flame layer:
 - Trait filtering rules
 - Guess validation rules
 - Player state decisions
+- Surrender resolution
 
 If Flame needs game state, it must receive already-computed data from the game feature.
 
@@ -437,6 +459,7 @@ Goal:
 - Data sources
 - Repositories
 - Character library
+- Shared character pool foundation
 
 ### Phase 3 — Game Engine
 
@@ -444,8 +467,10 @@ Goal:
 
 - Match logic
 - Turns
-- Guesses
-- Traits
+- Character guesses
+- Trait guesses
+- Character pool state
+- Surrender resolution
 - Hints
 - Tests
 
@@ -457,6 +482,7 @@ Goal:
 - Secret selection
 - Turn transition
 - Match play
+- In-match pool browsing/search
 - Result screen
 
 ### Phase 5 — UI Polish
@@ -513,6 +539,7 @@ Do not:
 - Mix UI and game rules.
 - Put all code in `main.dart`.
 - Hardcode all characters in widgets.
+- Add a life system.
 - Add online multiplayer before local mode works.
 - Add OpenAI calls before the AI abstraction exists.
 - Add copyrighted images.

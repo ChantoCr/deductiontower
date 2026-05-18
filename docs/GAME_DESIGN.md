@@ -8,7 +8,7 @@ Anime Deduction Tower
 
 ## High Concept
 
-Anime Deduction Tower is a mobile deduction game where players identify hidden character traits by guessing characters and analyzing feedback.
+Anime Deduction Tower is a mobile deduction game where players identify hidden character traits by guessing characters, reading feedback, and reasoning through a shared character pool.
 
 ---
 
@@ -22,12 +22,13 @@ The player feels like an anime strategist who uses character knowledge, deductio
 
 1. Start match.
 2. Secret trait is selected.
-3. Character tower is generated.
-4. Player guesses a character.
-5. Game gives feedback.
-6. Player updates their deduction.
-7. Player attempts to guess the secret trait.
-8. Winner is revealed.
+3. Shared character pool is generated.
+4. Player browses the pool or searches for a name.
+5. Player guesses a character.
+6. Game gives feedback.
+7. Player updates their deduction.
+8. Player attempts to guess the secret trait or chooses to surrender.
+9. Winner is revealed.
 
 ---
 
@@ -80,18 +81,21 @@ Default:
 
 - Players: 2
 - Hints: 2
-- Lives: 3
+- Lives: none
 - Turn timer: off
-- Character tower size: 5 to 8
+- Character pool size: 8 to 12
 
 ---
 
 ## Player Actions
 
+- Browse character pool
+- Search character names in the pool
 - Guess character
 - Guess trait
 - Request hint
 - Pass turn
+- Surrender
 
 ---
 
@@ -103,7 +107,12 @@ A player wins by correctly guessing the opponent's secret trait.
 
 ## Lose Condition
 
-A player may lose by running out of lives or making too many incorrect final trait guesses.
+A player loses when:
+
+- they surrender, or
+- the opponent correctly guesses their secret trait.
+
+Incorrect guesses do not remove lives because the game has no life system.
 
 ---
 
@@ -122,6 +131,7 @@ A player may lose by running out of lives or making too many incorrect final tra
 
 - Categories may feel unfair
 - Some players may not know enough anime
+- The character pool may feel too large or too small
 - Too many tags may make the game confusing
 - Copyrighted assets need to be avoided for public release
 
@@ -132,5 +142,7 @@ A player may lose by running out of lives or making too many incorrect final tra
 - Use difficulty levels
 - Start with easy categories
 - Provide hints
+- Keep the pool curated and readable
+- Allow name search in the pool
 - Use original placeholder characters
 - Allow custom data expansion later

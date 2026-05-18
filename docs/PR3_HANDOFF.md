@@ -8,13 +8,26 @@ A Flutter + Flame mobile deduction game where players discover hidden anime-insp
 
 ---
 
+## Current Rule Update
+
+The game no longer uses lives.
+A match should end only when:
+
+1. a player correctly guesses the opponent's secret trait, or
+2. a player surrenders.
+
+The match flow should also support a shared character pool that players can browse or search by name while guessing.
+
+---
+
 ## Core Product Direction
 
-This project has 3 main pillars:
+This project has 4 main pillars:
 
 1. **Data-driven character system**
-2. **Testable game engine**
-3. **Premium mobile game experience**
+2. **Shared character pool flow**
+3. **Testable game engine**
+4. **Premium mobile game experience**
 
 ---
 
@@ -28,6 +41,7 @@ This project has 3 main pillars:
 - Do not connect OpenAI yet.
 - Do not use copyrighted anime images.
 - Domain logic must remain testable without Flutter UI or Flame.
+- Do not reintroduce a life system.
 
 ---
 
@@ -82,79 +96,27 @@ Completed:
 - Initial tests and fixtures
 - Assets structure
 
-### Important compile issue already fixed
-A Chrome compile error happened because `CharacterLibraryScreen` used const widgets with indexed const list access.
-That was fixed by replacing the preview-only implementation with JSON-backed loading.
-
----
-
 # PR 2 — Local Data Foundation
 
 Completed:
-
-## Data loading and repositories
 - Character JSON loading
 - Tag JSON loading
 - Category JSON loading
 - Character repository wiring
 - Game category repository wiring
+- Character library filtering
+- Category validation
+- Category selection state
+- Repository and parsing tests
 
-## Character Library improvements
-- Character library now loads from local JSON
-- Real filtering by tag
-- Real filtering by difficulty
-- Combined filtering
-- Clear filters support
+# PR 3 — In Progress
 
-## Category Selection improvements
-- Category list loads from local JSON
-- Validation layer filters invalid categories
-- Category selection state added for Player 1 and Player 2
-- Category selection reset support
-- Protected local flow improved
-
-## Validation layer added
-Created:
-- `TraitCatalogValidator`
-- `TraitCatalogValidationIssue`
-- `TraitCatalogValidationResult`
-
-Validation currently checks:
-- duplicate tag IDs
-- duplicate category IDs
-- missing category tag references
-- invalid character tag references
-- categories without enough matching characters
-
-## Parsing/model tests added
-Tests now cover:
-- `CharacterModel`
-- `CharacterTagModel`
-- `TraitCategoryModel`
-- `PlayerModel`
-- `TurnModel`
-- `GuessModel`
-- `GameMatchModel`
-
-## Extra tests added
-- repository behavior tests
-- validation tests
-- category selection controller tests
-- character library controller tests
-- character library filter tests
-
----
-
-## Current Key Data Files
-
-### Assets
-- `assets/data/characters.json`
-- `assets/data/tags.json`
-- `assets/data/categories.json`
-
-### Note about dataset
-The original sample dataset was too small for categories with `minCharacters: 5`.
-The character catalog was expanded so the main categories now have enough characters for MVP validation.
+Recently applied:
+- removed lives from the current data model and setup placeholders
+- added match end reason support for surrender/correct trait guess structure
+- added shared character pool state to `GameMatch`
+- added an in-match character pool browser/search placeholder panel
+- updated docs and skills to reflect the no-lives rule set
 
 ---
 
@@ -172,7 +134,7 @@ The character catalog was expanded so the main categories now have enough charac
 - `lib/features/characters/presentation/providers/character_providers.dart`
 - `lib/features/characters/presentation/screens/character_library_screen.dart`
 
-### Game data/domain already present
+### Game data/domain
 - `lib/features/game/data/datasources/local_game_datasource.dart`
 - `lib/features/game/data/models/trait_category_model.dart`
 - `lib/features/game/data/models/player_model.dart`
@@ -194,16 +156,13 @@ The character catalog was expanded so the main categories now have enough charac
 - `lib/features/game/domain/services/match_rules_engine.dart`
 - `lib/features/game/domain/services/trait_catalog_validator.dart`
 
-### Game presentation already present
+### Game presentation
 - `lib/features/game/presentation/controllers/game_setup_controller.dart`
 - `lib/features/game/presentation/controllers/match_controller.dart`
-- `lib/features/game/presentation/controllers/category_selection_controller.dart`
-- `lib/features/game/presentation/providers/trait_category_providers.dart`
 - `lib/features/game/presentation/screens/game_setup_screen.dart`
-- `lib/features/game/presentation/screens/category_selection_screen.dart`
-- `lib/features/game/presentation/screens/turn_transition_screen.dart`
 - `lib/features/game/presentation/screens/match_screen.dart`
-- `lib/features/game/presentation/screens/result_screen.dart`
+- `lib/features/game/presentation/widgets/character_pool_panel.dart`
+- `lib/features/game/presentation/widgets/turn_panel.dart`
 
 ---
 
@@ -228,82 +187,20 @@ The character catalog was expanded so the main categories now have enough charac
 
 ---
 
-## Important Constraint From This Session
+## Immediate Next Target
 
-Flutter/Dart CLI was not available inside the coding environment used during this chat.
-So structure and code changes were made, but local verification must still be run manually with:
-
-```bash
-flutter clean
-flutter pub get
-flutter analyze
-flutter test
-flutter run -d chrome
-```
-
----
-
-## Next Target
-
-# PR 3 — Implement Core Game Engine
+Continue PR 3 with pure Dart game-engine wiring.
 
 Recommended scope:
 
 1. **Match creation flow**
 2. **Trait filtering integration**
-3. **Character guess validation**
-4. **Trait guess validation**
-5. **Turn switching**
-6. **Winner detection**
-
----
-
-## Recommended PR 3 Approach
-
-Keep PR 3 focused on pure Dart domain logic first.
-
-### Goal
-Build a real, testable game engine that does not depend on Flutter widgets or Flame.
-
-### Suggested implementation order
-
-#### 1. Match creation
-Create a proper match initialization flow that:
-- receives 2 players
-- receives or resolves both secret traits
-- filters valid characters for each player
-- creates initial `GameMatch`
-- sets current player
-- starts with `MatchStatus.inProgress`
-
-#### 2. Trait filtering integration
-Use `TraitFilterEngine` with real categories and characters to generate valid character pools.
-
-#### 3. Character guess validation
-Use `MatchRulesEngine` to check if a guessed character belongs to opponent secret trait.
-Return a `GuessResult` and record a `Turn`.
-
-#### 4. Trait guess validation
-Validate whether guessed trait matches opponent secret trait.
-If correct, finish match and set winner.
-If incorrect, define current MVP penalty behavior consistently.
-
-#### 5. Turn switching
-After valid actions, switch active player correctly.
-This should remain deterministic and easy to test.
-
-#### 6. Winner detection
-Winner should be detected through explicit game engine logic, not UI.
-
----
-
-## PR 3 Rules
-
-- Do not build the full playable UI flow yet.
-- Do not put game decisions in widgets.
-- Do not put game decisions in Flame.
-- Prefer domain services and plain Dart entities.
-- Add or update unit tests for every behavior change.
+3. **Character pool generation**
+4. **Character guess validation**
+5. **Trait guess validation**
+6. **Turn switching**
+7. **Winner detection**
+8. **Surrender resolution**
 
 ---
 
@@ -311,20 +208,19 @@ Winner should be detected through explicit game engine logic, not UI.
 
 Add or expand tests for:
 - creating a match successfully
-- generating valid character pools from selected trait
+- generating a valid shared character pool
 - validating correct character guess
 - validating incorrect character guess
 - validating correct trait guess
 - validating incorrect trait guess
 - switching turns after actions
 - setting winner correctly
+- resolving surrender correctly
 - preserving turn history
 
 ---
 
 ## Suggested Next Chat Prompt
-
-Use this exact prompt in the next chat:
 
 ```txt
 Continue Anime Deduction Tower with PR 3: Implement core game engine.
@@ -340,19 +236,22 @@ Before coding, read:
 - docs/PR3_HANDOFF.md
 
 Current status:
-- PR 1 foundation is done
-- PR 2 local data foundation is done
-- Character library filtering is implemented
-- Category validation and selection state are implemented
-- Model parsing tests are implemented
+- Foundation is done
+- Local data foundation is done
+- The game no longer uses lives
+- GameMatch now includes shared character pool state
+- Match UI includes a placeholder character pool browser/search panel
+- Surrender is now part of the intended end-state model
 
 Now implement PR 3 with this scope:
 1. match creation flow
 2. trait filtering integration
-3. character guess validation
-4. trait guess validation
-5. turn switching
-6. winner detection
+3. character pool generation
+4. character guess validation
+5. trait guess validation
+6. turn switching
+7. winner detection
+8. surrender resolution
 
 Rules:
 - Keep game logic pure Dart
@@ -364,7 +263,7 @@ Rules:
 
 ---
 
-## Final Status At End Of This Chat
+## Final Status
 
-Foundation and PR 2 are saved.
-The project is ready to begin **PR 3: core game engine** tomorrow.
+Docs, skills, and placeholder code now reflect the no-lives rule set plus shared character pool browsing/search.
+The next meaningful step is completing the real game-engine flow around those rules.
