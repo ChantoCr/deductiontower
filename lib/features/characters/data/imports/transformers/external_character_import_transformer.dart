@@ -8,11 +8,12 @@ class ExternalCharacterImportTransformer {
   CharacterModel transform({
     required ExternalCharacterImportModel source,
     required ExternalCharacterImportEnrichment enrichment,
+    String? seriesOverride,
   }) {
     return CharacterModel(
       id: _buildId(source.name),
       name: source.name,
-      series: enrichment.series,
+      series: seriesOverride ?? enrichment.series,
       image: enrichment.image,
       tags: enrichment.tags,
       difficulty: enrichment.difficulty,

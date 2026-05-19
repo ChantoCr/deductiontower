@@ -31,6 +31,7 @@ When gameplay rules change, the agent must also update:
 - data model notes
 - test expectations
 - any UI placeholders that still show outdated rules
+- import preview or promotion preview assets if import logic changes
 
 ---
 
@@ -50,11 +51,13 @@ Implement core game engine.
 
 ### PR 4
 
-Build local multiplayer flow.
+Continue importer review, validation, and catalog expansion tooling.
 
 ### PR 5
 
-Add premium UI.
+Polish local multiplayer flow and premium UI.
+
+Use `docs/PR4_HANDOFF.md` and `NEXT_CHAT_PROMPT.md` as the preferred next-chat starting points.
 
 ### PR 6
 
@@ -93,6 +96,7 @@ Agents should not:
 - Add online multiplayer before local mode
 - Add OpenAI calls before abstraction
 - Reintroduce a life system
+- Overwrite curated runtime character JSON directly from prototype imports
 - Use copyrighted images
 - Mix UI and business logic
 - Ignore folder structure

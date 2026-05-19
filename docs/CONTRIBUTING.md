@@ -34,6 +34,8 @@ Examples:
 - `feat: add character pool browser to match screen`
 - `feat: remove lives from match flow`
 - `feat: implement surrender end condition`
+- `feat: add MAL/Jikan import preview pipeline`
+- `feat: add curated character promotion preview`
 - `test: add game engine unit tests`
 - `docs: update architecture guide`
 
@@ -47,3 +49,5 @@ Examples:
 - [ ] Does not include copyrighted images
 - [ ] Does not reintroduce a life system
 - [ ] Keeps character pool behavior consistent across docs and code
+- [ ] Keeps import preview files separate from curated runtime JSON
+- [ ] Updates preview/promotion assets when import logic changes

@@ -27,6 +27,9 @@ Prioritize tests for:
 - Hint generation
 - Winner detection
 - Invalid data handling
+- Import duplicate detection
+- Import tag validation
+- Curated promotion preview generation
 
 ---
 

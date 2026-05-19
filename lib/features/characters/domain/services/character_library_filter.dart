@@ -8,13 +8,20 @@ class CharacterLibraryFilter {
     required List<Character> characters,
     String? tagId,
     DifficultyLevel? difficulty,
+    String searchQuery = '',
   }) {
+    final normalizedQuery = searchQuery.trim().toLowerCase();
+
     return characters.where((character) {
       final matchesTag = tagId == null || character.tags.contains(tagId);
       final matchesDifficulty =
           difficulty == null || character.difficulty == difficulty;
+      final matchesSearch =
+          normalizedQuery.isEmpty ||
+          character.name.toLowerCase().contains(normalizedQuery) ||
+          character.series.toLowerCase().contains(normalizedQuery);
 
-      return matchesTag && matchesDifficulty;
+      return matchesTag && matchesDifficulty && matchesSearch;
     }).toList();
   }
 }

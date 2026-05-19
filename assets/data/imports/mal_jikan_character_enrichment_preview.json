@@ -1,38 +1,478 @@
 {
+  "5": {
+    "series": "",
+    "animeMalId": 21,
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "hero",
+      "strong",
+      "fast",
+      "super_powers",
+      "young"
+    ],
+    "difficulty": "easy",
+    "aliases": [
+      "Straw Hat Luffy"
+    ],
+    "sourceReference": "https://myanimelist.net/character/5/Monkey_D_Luffy",
+    "importNotes": "Transformation tag is prototype-oriented and should be reviewed later.",
+    "image": null
+  },
+  "11": {
+    "series": "",
+    "animeMalId": 5114,
+    "tags": [
+      "protagonist",
+      "young",
+      "strong",
+      "fast",
+      "super_powers",
+      "has_tragic_past"
+    ],
+    "difficulty": "easy",
+    "aliases": [
+      "Ed"
+    ],
+    "sourceReference": "https://myanimelist.net/character/11/Edward_Elric",
+    "importNotes": "Expanded young protagonist batch import.",
+    "image": null
+  },
+  "12": {
+    "series": "",
+    "animeMalId": 5114,
+    "tags": [
+      "black_hair",
+      "hero",
+      "strategist",
+      "fire_user",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Flame Alchemist"
+    ],
+    "sourceReference": "https://myanimelist.net/character/12/Roy_Mustang",
+    "importNotes": "Expanded fire strategist batch import.",
+    "image": null
+  },
   "13": {
     "series": "Naruto",
-    "tags": ["black_hair", "uses_sword", "has_tragic_past"],
+    "animeMalId": 20,
+    "tags": [
+      "black_hair",
+      "uses_sword",
+      "has_tragic_past",
+      "rival",
+      "fast",
+      "super_powers",
+      "young"
+    ],
     "difficulty": "medium",
+    "aliases": [
+      "Sasuke-kun",
+      "Uchiha Sasuke"
+    ],
+    "sourceReference": "https://myanimelist.net/character/13/Sasuke_Uchiha",
+    "importNotes": "Prototype enrichment based on popular public character knowledge.",
+    "image": null
+  },
+  "14": {
+    "series": "",
+    "animeMalId": 20,
+    "tags": [
+      "black_hair",
+      "rival",
+      "has_tragic_past",
+      "strategist",
+      "super_powers",
+      "fast"
+    ],
+    "difficulty": "hard",
+    "aliases": [
+      "Itachi"
+    ],
+    "sourceReference": "https://myanimelist.net/character/14/Itachi_Uchiha",
+    "importNotes": "Expanded tragic strategist batch import.",
+    "image": null
+  },
+  "17": {
+    "series": "",
+    "animeMalId": 20,
+    "tags": [
+      "protagonist",
+      "has_tragic_past",
+      "hero",
+      "young",
+      "fast",
+      "super_powers"
+    ],
+    "difficulty": "easy",
+    "aliases": [
+      "Naruto"
+    ],
+    "sourceReference": "https://myanimelist.net/character/17/Naruto_Uzumaki",
+    "importNotes": "Approved batch import for protagonist and tragic-past overlap.",
+    "image": null
+  },
+  "62": {
+    "series": "",
+    "animeMalId": 21,
+    "tags": [
+      "uses_sword",
+      "has_tragic_past",
+      "strong",
+      "fast",
+      "muscular"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Pirate Hunter Zoro"
+    ],
+    "sourceReference": "https://myanimelist.net/character/62/Roronoa_Zoro",
+    "importNotes": "Approved batch import for sword-heavy roster expansion.",
+    "image": null
+  },
+  "85": {
+    "series": "",
+    "animeMalId": 20,
+    "tags": [
+      "white_hair",
+      "mentor",
+      "strong",
+      "fast",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Copy Ninja Kakashi"
+    ],
+    "sourceReference": "https://myanimelist.net/character/85/Kakashi_Hatake",
+    "importNotes": "Expanded mentor and strategy batch import.",
+    "image": null
+  },
+  "158": {
+    "series": "",
+    "animeMalId": 249,
+    "tags": [
+      "white_hair",
+      "uses_sword",
+      "demon",
+      "strong",
+      "fast",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Half-Demon"
+    ],
+    "sourceReference": "https://myanimelist.net/character/158/Inuyasha",
+    "importNotes": "Expanded demon sword batch import.",
+    "image": null
+  },
+  "349": {
+    "series": "",
+    "animeMalId": 269,
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_transformation",
+      "strong",
+      "super_powers",
+      "strategist"
+    ],
+    "difficulty": "hard",
+    "aliases": [
+      "Aizen"
+    ],
+    "sourceReference": "https://myanimelist.net/character/349/Sousuke_Aizen",
+    "importNotes": "Approved batch import for villain transformation overlap.",
+    "image": null
+  },
+  "423": {
+    "series": "",
+    "animeMalId": 223,
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "non_human",
+      "hero",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers",
+      "super_saiyan",
+      "alien",
+      "martial_artist"
+    ],
+    "difficulty": "easy",
+    "aliases": [
+      "Kakarot"
+    ],
+    "sourceReference": "https://myanimelist.net/character/423/Goku",
+    "importNotes": "Approved batch import for protagonist transformation coverage.",
+    "image": null
+  },
+  "465": {
+    "series": "Dragon Ball Z",
+    "animeMalId": 223,
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_transformation",
+      "non_human",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers",
+      "super_saiyan",
+      "alien",
+      "martial_artist",
+      "rival"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Prince of All Saiyans"
+    ],
+    "sourceReference": "https://myanimelist.net/character/465/Vegeta",
+    "importNotes": "Historical villain tag is for prototype category coverage and may be debated later.",
+    "image": null
+  },
+  "2547": {
+    "series": "",
+    "animeMalId": 223,
+    "tags": [
+      "villain",
+      "has_transformation",
+      "non_human",
+      "strong",
+      "fast",
+      "super_powers",
+      "alien"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Freeza"
+    ],
+    "sourceReference": "https://myanimelist.net/character/2547/Frieza",
+    "importNotes": "Useful prototype entry for villain/non-human overlap.",
+    "image": null
+  },
+  "3202": {
+    "series": "",
+    "animeMalId": 269,
+    "tags": [
+      "protagonist",
+      "uses_sword",
+      "has_transformation",
+      "strong",
+      "fast",
+      "super_powers",
+      "young"
+    ],
+    "difficulty": "easy",
+    "aliases": [
+      "Berry"
+    ],
+    "sourceReference": "https://myanimelist.net/character/3202/Ichigo_Kurosaki",
+    "importNotes": "Strong fit for early sword-based category tests.",
+    "image": null
+  },
+  "14492": {
+    "series": "",
+    "animeMalId": 20,
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_tragic_past",
+      "strong",
+      "fast",
+      "super_powers",
+      "strategist"
+    ],
+    "difficulty": "hard",
+    "aliases": [
+      "Ghost of the Uchiha"
+    ],
+    "sourceReference": "https://myanimelist.net/character/14492/Madara_Uchiha",
+    "importNotes": "Approved batch import for villain and black-hair overlap.",
+    "image": null
+  },
+  "40881": {
+    "series": "",
+    "animeMalId": 16498,
+    "tags": [
+      "black_hair",
+      "hero",
+      "strong",
+      "fast",
+      "stoic",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Mikasa"
+    ],
+    "sourceReference": "https://myanimelist.net/character/40881/Mikasa_Ackerman",
+    "importNotes": "Expanded stoic hero batch import.",
+    "image": null
+  },
+  "40882": {
+    "series": "",
+    "animeMalId": 16498,
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "has_tragic_past",
+      "young",
+      "strong",
+      "fast",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Eren Jaeger"
+    ],
+    "sourceReference": "https://myanimelist.net/character/40882/Eren_Yeager",
+    "importNotes": "Approved batch import for tragic transformation overlap.",
     "image": null
   },
   "45627": {
     "series": "Attack on Titan",
-    "tags": ["black_hair", "uses_sword", "has_tragic_past"],
+    "animeMalId": 16498,
+    "tags": [
+      "black_hair",
+      "uses_sword",
+      "has_tragic_past",
+      "fast",
+      "strong",
+      "stoic",
+      "hero"
+    ],
     "difficulty": "medium",
+    "aliases": [
+      "Captain Levi"
+    ],
+    "sourceReference": "https://myanimelist.net/character/45627/Levi_Ackerman",
+    "importNotes": "Kept sword-combat tag for prototype deduction fit.",
     "image": null
   },
-  "5": {
-    "series": "One Piece",
-    "tags": ["protagonist", "has_transformation"],
+  "87275": {
+    "series": "",
+    "animeMalId": 22319,
+    "tags": [
+      "black_hair",
+      "young",
+      "has_transformation",
+      "non_human",
+      "has_tragic_past",
+      "fast",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Kaneki"
+    ],
+    "sourceReference": "https://myanimelist.net/character/87275/Ken_Kaneki",
+    "importNotes": "Expanded transformation tragedy batch import.",
+    "image": null
+  },
+  "117909": {
+    "series": "",
+    "animeMalId": 31964,
+    "tags": [
+      "hero",
+      "mentor",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers"
+    ],
     "difficulty": "easy",
+    "aliases": [
+      "Symbol of Peace"
+    ],
+    "sourceReference": "https://myanimelist.net/character/117909/All_Might",
+    "importNotes": "Expanded hero mentor batch import.",
     "image": null
   },
-  "3202": {
-    "series": "Bleach",
-    "tags": ["protagonist", "uses_sword", "has_transformation"],
+  "117911": {
+    "series": "",
+    "animeMalId": 31964,
+    "tags": [
+      "hero",
+      "young",
+      "fire_user",
+      "ice_user",
+      "has_tragic_past",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Shoto"
+    ],
+    "sourceReference": "https://myanimelist.net/character/117911/Shoto_Todoroki",
+    "importNotes": "Expanded dual-element batch import.",
+    "image": null
+  },
+  "146715": {
+    "series": "",
+    "animeMalId": 38000,
+    "tags": [
+      "black_hair",
+      "protagonist",
+      "has_tragic_past",
+      "uses_sword",
+      "young",
+      "hero",
+      "fast"
+    ],
     "difficulty": "easy",
+    "aliases": [
+      "Tanjiro"
+    ],
+    "sourceReference": "https://myanimelist.net/character/146715/Tanjiro_Kamado",
+    "importNotes": "Approved batch import for protagonist tragic-past overlap.",
     "image": null
   },
-  "465": {
-    "series": "Dragon Ball",
-    "tags": ["black_hair", "villain", "has_transformation", "non_human"],
+  "146975": {
+    "series": "",
+    "animeMalId": 38000,
+    "tags": [
+      "black_hair",
+      "non_human",
+      "has_transformation",
+      "has_tragic_past",
+      "young",
+      "strong",
+      "fast",
+      "demon"
+    ],
     "difficulty": "medium",
+    "aliases": [
+      "Nezuko"
+    ],
+    "sourceReference": "https://myanimelist.net/character/146975/Nezuko_Kamado",
+    "importNotes": "Approved batch import for non-human tragic transformation overlap.",
     "image": null
   },
-  "2547": {
-    "series": "Dragon Ball",
-    "tags": ["villain", "has_transformation", "non_human"],
+  "164471": {
+    "series": "",
+    "animeMalId": 40748,
+    "tags": [
+      "white_hair",
+      "mentor",
+      "strong",
+      "fast",
+      "super_powers"
+    ],
     "difficulty": "medium",
+    "aliases": [
+      "Gojo"
+    ],
+    "sourceReference": "https://myanimelist.net/character/164471/Satoru_Gojo",
+    "importNotes": "Expanded mentor and power batch import.",
     "image": null
   }
 }

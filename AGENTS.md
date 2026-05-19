@@ -203,6 +203,8 @@ test/
 - Do not put business rules inside widgets.
 - Do not hardcode large character datasets inside Dart files.
 - Use JSON files for initial character, tag, and category data.
+- Keep external import preview data separate from curated runtime game data.
+- Do not overwrite curated runtime JSON directly when testing imports.
 - Keep the shared character pool explicit in the game model.
 - Use readable names.
 - Prefer small focused classes.
@@ -346,6 +348,13 @@ Use:
 - `assets/data/tags.json`
 - `assets/data/categories.json`
 
+Prototype import pipeline files:
+
+- `assets/data/imports/mal_jikan_characters_sample.json`
+- `assets/data/imports/mal_jikan_character_enrichment_preview.json`
+- `assets/data/imports/characters_import_preview.json`
+- `assets/data/imports/characters_curated_promotion_preview.json`
+
 Initial files can contain small sample data.
 
 Avoid copyrighted images in public assets.
@@ -432,6 +441,8 @@ Maintain:
 - `docs/ROADMAP.md`
 - `docs/DATA_MODEL.md`
 - `docs/AI_AGENT_WORKFLOW.md`
+- `docs/EXTERNAL_ANIME_DATA.md`
+- `docs/PR4_HANDOFF.md`
 
 When adding a major system, update documentation.
 
@@ -546,12 +557,17 @@ Do not:
 - Ignore the Skills folder.
 - Remove documentation without replacing it.
 
-## First Requested Task For Agent
+## Current Saved Context
 
-Initialize the Flutter + Flame project foundation for Anime Deduction Tower.
+The current saved repo state already includes:
 
-Create the base folder structure, documentation files, placeholder screens, theme system, routing, local asset folders, sample JSON data files, and empty/skeleton domain classes and services.
+- no-lives match rules
+- shared character pool generation and browsing
+- tap-to-autofill guessing from the pool
+- protected turn reveal flow for local multiplayer secrecy
+- private hint requests and result timeline flow
+- editable setup for names and hints
+- prototype MAL/Jikan-style character import preview tooling
+- curated promotion preview generation for imported characters
 
-Do not implement full gameplay yet.
-
-Focus on structure, maintainability, and future scalability.
+Use `docs/PR4_HANDOFF.md` and `NEXT_CHAT_PROMPT.md` for the next chat handoff.

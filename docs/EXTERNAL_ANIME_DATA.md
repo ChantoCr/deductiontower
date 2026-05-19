@@ -209,26 +209,46 @@ Code:
 - `lib/features/characters/data/imports/models/external_character_import_model.dart`
 - `lib/features/characters/data/imports/models/external_character_import_enrichment.dart`
 - `lib/features/characters/data/imports/transformers/external_character_import_transformer.dart`
+- `lib/features/characters/data/imports/datasources/local_external_character_import_datasource.dart`
+- `lib/features/characters/data/imports/services/external_character_import_preview_service.dart`
+- `lib/features/characters/data/imports/services/external_character_import_preview_importer.dart`
 
 Prototype data files kept separate from curated gameplay JSON:
 - `assets/data/imports/mal_jikan_characters_sample.json`
 - `assets/data/imports/mal_jikan_character_enrichment_preview.json`
 - `assets/data/imports/characters_import_preview.json`
+- `assets/data/imports/characters_curated_promotion_preview.json`
 
 This means the project can now:
 1. read MAL/Jikan-style character records
-2. apply a manual enrichment layer for series/tags/difficulty
-3. transform them into our internal character schema
-4. preview transformed output without touching the main curated runtime dataset
+2. read optional MAL/Jikan-style anime records for series-title lookup
+3. apply a manual enrichment layer for series/tags/difficulty plus optional import metadata
+4. validate enrichment tags against the current tag catalog
+5. detect duplicate source `mal_id` values during import
+6. detect duplicate transformed ids during import
+7. generate structured preview validation reports and review-queue entries
+8. suggest lightweight candidate tags from external `about` text
+9. use an explicit approval asset to gate reviewed-only promotion
+10. transform them into our internal character schema
+11. preview transformed output without touching the main curated runtime dataset
+12. promote only approved preview characters into a merged gameplay-ready preview JSON with structured conflict reporting
+13. regenerate preview files with:
+   - `dart run tool/generate_characters_import_preview.dart`
+   - `dart run tool/generate_characters_import_review_queue.dart`
+   - `dart run tool/generate_characters_curated_promotion_preview.dart`
 
 ## Suggested Next Implementation Step
 
 If you want to expand this source further, the best next code task is:
 
-1. add a small import script or utility that reads raw external JSON
-2. load enrichment mappings from JSON
-3. export a larger transformed preview set automatically
+1. expand the tag suggestion vocabulary beyond the current lightweight keyword rules
+2. export a larger transformed preview set automatically
+3. add anime/series conflict review when enrichment series and imported anime titles disagree
 4. manually review tags/categories before using them in live match generation
+
+See also:
+- `docs/PR4_HANDOFF.md`
+- `NEXT_CHAT_PROMPT.md`
 
 ## Recommendation Summary
 

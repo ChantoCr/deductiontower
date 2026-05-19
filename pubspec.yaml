@@ -26,6 +26,7 @@ flutter:
     - assets/data/characters.json
     - assets/data/tags.json
     - assets/data/categories.json
+    - assets/data/imports/
     - assets/images/characters/
     - assets/images/backgrounds/
     - assets/images/icons/

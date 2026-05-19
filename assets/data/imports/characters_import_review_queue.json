@@ -1,0 +1,639 @@
+[
+  {
+    "malId": 13,
+    "name": "Sasuke Uchiha",
+    "animeMalId": 20,
+    "transformedId": "sasuke_uchiha",
+    "resolvedSeries": "Naruto",
+    "animeSeriesTitle": "Naruto",
+    "seriesResolutionSource": "enrichment",
+    "tags": [
+      "black_hair",
+      "uses_sword",
+      "has_tragic_past",
+      "rival",
+      "fast",
+      "super_powers",
+      "young"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Sasuke-kun",
+      "Uchiha Sasuke"
+    ],
+    "sourceReference": "https://myanimelist.net/character/13/Sasuke_Uchiha",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 45627,
+    "name": "Levi Ackerman",
+    "animeMalId": 16498,
+    "transformedId": "levi_ackerman",
+    "resolvedSeries": "Attack on Titan",
+    "animeSeriesTitle": "Attack on Titan",
+    "seriesResolutionSource": "enrichment",
+    "tags": [
+      "black_hair",
+      "uses_sword",
+      "has_tragic_past",
+      "fast",
+      "strong",
+      "stoic",
+      "hero"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Captain Levi"
+    ],
+    "sourceReference": "https://myanimelist.net/character/45627/Levi_Ackerman",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 5,
+    "name": "Monkey D. Luffy",
+    "animeMalId": 21,
+    "transformedId": "monkey_d_luffy",
+    "resolvedSeries": "One Piece",
+    "animeSeriesTitle": "One Piece",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "hero",
+      "strong",
+      "fast",
+      "super_powers",
+      "young"
+    ],
+    "suggestedTags": [
+      "black_hair"
+    ],
+    "difficulty": "easy",
+    "aliases": [
+      "Straw Hat Luffy"
+    ],
+    "sourceReference": "https://myanimelist.net/character/5/Monkey_D_Luffy",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 3202,
+    "name": "Ichigo Kurosaki",
+    "animeMalId": 269,
+    "transformedId": "ichigo_kurosaki",
+    "resolvedSeries": "Bleach",
+    "animeSeriesTitle": "Bleach",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "protagonist",
+      "uses_sword",
+      "has_transformation",
+      "strong",
+      "fast",
+      "super_powers",
+      "young"
+    ],
+    "suggestedTags": [],
+    "difficulty": "easy",
+    "aliases": [
+      "Berry"
+    ],
+    "sourceReference": "https://myanimelist.net/character/3202/Ichigo_Kurosaki",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 465,
+    "name": "Vegeta",
+    "animeMalId": 223,
+    "transformedId": "vegeta",
+    "resolvedSeries": "Dragon Ball Z",
+    "animeSeriesTitle": "Dragon Ball",
+    "seriesResolutionSource": "enrichment",
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_transformation",
+      "non_human",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers",
+      "super_saiyan",
+      "alien",
+      "martial_artist",
+      "rival"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Prince of All Saiyans"
+    ],
+    "sourceReference": "https://myanimelist.net/character/465/Vegeta",
+    "reviewStatus": "pending",
+    "issues": [
+      {
+        "code": "series_mismatch",
+        "message": "Series mismatch for external character 465 (Vegeta): enrichment series \"Dragon Ball Z\" differs from anime lookup \"Dragon Ball\".",
+        "isBlocking": false,
+        "sourceMalId": 465,
+        "characterName": "Vegeta",
+        "characterId": null,
+        "tagId": null
+      }
+    ]
+  },
+  {
+    "malId": 2547,
+    "name": "Frieza",
+    "animeMalId": 223,
+    "transformedId": "frieza",
+    "resolvedSeries": "Dragon Ball",
+    "animeSeriesTitle": "Dragon Ball",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "villain",
+      "has_transformation",
+      "non_human",
+      "strong",
+      "fast",
+      "super_powers",
+      "alien"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Freeza"
+    ],
+    "sourceReference": "https://myanimelist.net/character/2547/Frieza",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 17,
+    "name": "Naruto Uzumaki",
+    "animeMalId": 20,
+    "transformedId": "naruto_uzumaki",
+    "resolvedSeries": "Naruto",
+    "animeSeriesTitle": "Naruto",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "protagonist",
+      "has_tragic_past",
+      "hero",
+      "young",
+      "fast",
+      "super_powers"
+    ],
+    "suggestedTags": [],
+    "difficulty": "easy",
+    "aliases": [
+      "Naruto"
+    ],
+    "sourceReference": "https://myanimelist.net/character/17/Naruto_Uzumaki",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 62,
+    "name": "Roronoa Zoro",
+    "animeMalId": 21,
+    "transformedId": "roronoa_zoro",
+    "resolvedSeries": "One Piece",
+    "animeSeriesTitle": "One Piece",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "uses_sword",
+      "has_tragic_past",
+      "strong",
+      "fast",
+      "muscular"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Pirate Hunter Zoro"
+    ],
+    "sourceReference": "https://myanimelist.net/character/62/Roronoa_Zoro",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 423,
+    "name": "Goku",
+    "animeMalId": 223,
+    "transformedId": "goku",
+    "resolvedSeries": "Dragon Ball",
+    "animeSeriesTitle": "Dragon Ball",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "non_human",
+      "hero",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers",
+      "super_saiyan",
+      "alien",
+      "martial_artist"
+    ],
+    "suggestedTags": [],
+    "difficulty": "easy",
+    "aliases": [
+      "Kakarot"
+    ],
+    "sourceReference": "https://myanimelist.net/character/423/Goku",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 40882,
+    "name": "Eren Yeager",
+    "animeMalId": 16498,
+    "transformedId": "eren_yeager",
+    "resolvedSeries": "Attack on Titan",
+    "animeSeriesTitle": "Attack on Titan",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "has_tragic_past",
+      "young",
+      "strong",
+      "fast",
+      "super_powers"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Eren Jaeger"
+    ],
+    "sourceReference": "https://myanimelist.net/character/40882/Eren_Yeager",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 14492,
+    "name": "Madara Uchiha",
+    "animeMalId": 20,
+    "transformedId": "madara_uchiha",
+    "resolvedSeries": "Naruto",
+    "animeSeriesTitle": "Naruto",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_tragic_past",
+      "strong",
+      "fast",
+      "super_powers",
+      "strategist"
+    ],
+    "suggestedTags": [],
+    "difficulty": "hard",
+    "aliases": [
+      "Ghost of the Uchiha"
+    ],
+    "sourceReference": "https://myanimelist.net/character/14492/Madara_Uchiha",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 349,
+    "name": "Sousuke Aizen",
+    "animeMalId": 269,
+    "transformedId": "sousuke_aizen",
+    "resolvedSeries": "Bleach",
+    "animeSeriesTitle": "Bleach",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_transformation",
+      "strong",
+      "super_powers",
+      "strategist"
+    ],
+    "suggestedTags": [],
+    "difficulty": "hard",
+    "aliases": [
+      "Aizen"
+    ],
+    "sourceReference": "https://myanimelist.net/character/349/Sousuke_Aizen",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 146715,
+    "name": "Tanjiro Kamado",
+    "animeMalId": 38000,
+    "transformedId": "tanjiro_kamado",
+    "resolvedSeries": "Demon Slayer: Kimetsu no Yaiba",
+    "animeSeriesTitle": "Demon Slayer: Kimetsu no Yaiba",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "black_hair",
+      "protagonist",
+      "has_tragic_past",
+      "uses_sword",
+      "young",
+      "hero",
+      "fast"
+    ],
+    "suggestedTags": [],
+    "difficulty": "easy",
+    "aliases": [
+      "Tanjiro"
+    ],
+    "sourceReference": "https://myanimelist.net/character/146715/Tanjiro_Kamado",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 146975,
+    "name": "Nezuko Kamado",
+    "animeMalId": 38000,
+    "transformedId": "nezuko_kamado",
+    "resolvedSeries": "Demon Slayer: Kimetsu no Yaiba",
+    "animeSeriesTitle": "Demon Slayer: Kimetsu no Yaiba",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "black_hair",
+      "non_human",
+      "has_transformation",
+      "has_tragic_past",
+      "young",
+      "strong",
+      "fast",
+      "demon"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Nezuko"
+    ],
+    "sourceReference": "https://myanimelist.net/character/146975/Nezuko_Kamado",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 85,
+    "name": "Kakashi Hatake",
+    "animeMalId": 20,
+    "transformedId": "kakashi_hatake",
+    "resolvedSeries": "Naruto",
+    "animeSeriesTitle": "Naruto",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "white_hair",
+      "mentor",
+      "strong",
+      "fast",
+      "strategist",
+      "super_powers"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Copy Ninja Kakashi"
+    ],
+    "sourceReference": "https://myanimelist.net/character/85/Kakashi_Hatake",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 14,
+    "name": "Itachi Uchiha",
+    "animeMalId": 20,
+    "transformedId": "itachi_uchiha",
+    "resolvedSeries": "Naruto",
+    "animeSeriesTitle": "Naruto",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "black_hair",
+      "rival",
+      "has_tragic_past",
+      "strategist",
+      "super_powers",
+      "fast"
+    ],
+    "suggestedTags": [],
+    "difficulty": "hard",
+    "aliases": [
+      "Itachi"
+    ],
+    "sourceReference": "https://myanimelist.net/character/14/Itachi_Uchiha",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 164471,
+    "name": "Satoru Gojo",
+    "animeMalId": 40748,
+    "transformedId": "satoru_gojo",
+    "resolvedSeries": "Jujutsu Kaisen",
+    "animeSeriesTitle": "Jujutsu Kaisen",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "white_hair",
+      "mentor",
+      "strong",
+      "fast",
+      "super_powers"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Gojo"
+    ],
+    "sourceReference": "https://myanimelist.net/character/164471/Satoru_Gojo",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 11,
+    "name": "Edward Elric",
+    "animeMalId": 5114,
+    "transformedId": "edward_elric",
+    "resolvedSeries": "Fullmetal Alchemist: Brotherhood",
+    "animeSeriesTitle": "Fullmetal Alchemist: Brotherhood",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "protagonist",
+      "young",
+      "strong",
+      "fast",
+      "super_powers",
+      "has_tragic_past"
+    ],
+    "suggestedTags": [],
+    "difficulty": "easy",
+    "aliases": [
+      "Ed"
+    ],
+    "sourceReference": "https://myanimelist.net/character/11/Edward_Elric",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 12,
+    "name": "Roy Mustang",
+    "animeMalId": 5114,
+    "transformedId": "roy_mustang",
+    "resolvedSeries": "Fullmetal Alchemist: Brotherhood",
+    "animeSeriesTitle": "Fullmetal Alchemist: Brotherhood",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "black_hair",
+      "hero",
+      "strategist",
+      "fire_user",
+      "super_powers"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Flame Alchemist"
+    ],
+    "sourceReference": "https://myanimelist.net/character/12/Roy_Mustang",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 117909,
+    "name": "All Might",
+    "animeMalId": 31964,
+    "transformedId": "all_might",
+    "resolvedSeries": "My Hero Academia",
+    "animeSeriesTitle": "My Hero Academia",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "hero",
+      "mentor",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers"
+    ],
+    "suggestedTags": [
+      "martial_artist"
+    ],
+    "difficulty": "easy",
+    "aliases": [
+      "Symbol of Peace"
+    ],
+    "sourceReference": "https://myanimelist.net/character/117909/All_Might",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 117911,
+    "name": "Shoto Todoroki",
+    "animeMalId": 31964,
+    "transformedId": "shoto_todoroki",
+    "resolvedSeries": "My Hero Academia",
+    "animeSeriesTitle": "My Hero Academia",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "hero",
+      "young",
+      "fire_user",
+      "ice_user",
+      "has_tragic_past",
+      "strong"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Shoto"
+    ],
+    "sourceReference": "https://myanimelist.net/character/117911/Shoto_Todoroki",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 87275,
+    "name": "Ken Kaneki",
+    "animeMalId": 22319,
+    "transformedId": "ken_kaneki",
+    "resolvedSeries": "Tokyo Ghoul",
+    "animeSeriesTitle": "Tokyo Ghoul",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "black_hair",
+      "young",
+      "has_transformation",
+      "non_human",
+      "has_tragic_past",
+      "fast",
+      "strong"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Kaneki"
+    ],
+    "sourceReference": "https://myanimelist.net/character/87275/Ken_Kaneki",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 158,
+    "name": "Inuyasha",
+    "animeMalId": 249,
+    "transformedId": "inuyasha",
+    "resolvedSeries": "Inuyasha",
+    "animeSeriesTitle": "Inuyasha",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "white_hair",
+      "uses_sword",
+      "demon",
+      "strong",
+      "fast",
+      "has_tragic_past"
+    ],
+    "suggestedTags": [
+      "non_human",
+      "martial_artist"
+    ],
+    "difficulty": "medium",
+    "aliases": [
+      "Half-Demon"
+    ],
+    "sourceReference": "https://myanimelist.net/character/158/Inuyasha",
+    "reviewStatus": "pending",
+    "issues": []
+  },
+  {
+    "malId": 40881,
+    "name": "Mikasa Ackerman",
+    "animeMalId": 16498,
+    "transformedId": "mikasa_ackerman",
+    "resolvedSeries": "Attack on Titan",
+    "animeSeriesTitle": "Attack on Titan",
+    "seriesResolutionSource": "anime_lookup",
+    "tags": [
+      "black_hair",
+      "hero",
+      "strong",
+      "fast",
+      "stoic",
+      "has_tragic_past"
+    ],
+    "suggestedTags": [],
+    "difficulty": "medium",
+    "aliases": [
+      "Mikasa"
+    ],
+    "sourceReference": "https://myanimelist.net/character/40881/Mikasa_Ackerman",
+    "reviewStatus": "pending",
+    "issues": []
+  }
+]

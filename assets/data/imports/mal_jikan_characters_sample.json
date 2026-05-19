@@ -3,7 +3,9 @@
     "mal_id": 13,
     "name": "Sasuke Uchiha",
     "name_kanji": "うちはサスケ",
-    "nicknames": ["Sasuke-kun"],
+    "nicknames": [
+      "Sasuke-kun"
+    ],
     "favorites": 52745,
     "about": "A rival character with a tragic backstory and sword-based combat in later arcs.",
     "main_picture": "https://cdn.myanimelist.net/images/characters/sample/sasuke.jpg",
@@ -13,7 +15,9 @@
     "mal_id": 45627,
     "name": "Levi Ackerman",
     "name_kanji": "リヴァイ・アッカーマン",
-    "nicknames": ["Captain Levi"],
+    "nicknames": [
+      "Captain Levi"
+    ],
     "favorites": 87421,
     "about": "An elite soldier known for bladed combat and a severe personal history.",
     "main_picture": "https://cdn.myanimelist.net/images/characters/sample/levi.jpg",
@@ -23,9 +27,11 @@
     "mal_id": 5,
     "name": "Monkey D. Luffy",
     "name_kanji": "モンキー・D・ルフィ",
-    "nicknames": ["Straw Hat"],
+    "nicknames": [
+      "Straw Hat"
+    ],
     "favorites": 90314,
-    "about": "A cheerful lead character with multiple transformation-like forms.",
+    "about": "A cheerful black-haired lead character with multiple transformation-like forms.",
     "main_picture": "https://cdn.myanimelist.net/images/characters/sample/luffy.jpg",
     "url": "https://myanimelist.net/character/5/Monkey_D_Luffy"
   },
@@ -33,7 +39,9 @@
     "mal_id": 3202,
     "name": "Ichigo Kurosaki",
     "name_kanji": "黒崎一護",
-    "nicknames": ["Berry"],
+    "nicknames": [
+      "Berry"
+    ],
     "favorites": 31420,
     "about": "A main character who fights with a sword and unlocks several power states.",
     "main_picture": "https://cdn.myanimelist.net/images/characters/sample/ichigo.jpg",
@@ -43,7 +51,9 @@
     "mal_id": 465,
     "name": "Vegeta",
     "name_kanji": "ベジータ",
-    "nicknames": ["Prince of All Saiyans"],
+    "nicknames": [
+      "Prince of All Saiyans"
+    ],
     "favorites": 36550,
     "about": "A proud Saiyan warrior with multiple transformations and antagonist history.",
     "main_picture": "https://cdn.myanimelist.net/images/characters/sample/vegeta.jpg",
@@ -53,10 +63,228 @@
     "mal_id": 2547,
     "name": "Frieza",
     "name_kanji": "フリーザ",
-    "nicknames": ["Freeza"],
+    "nicknames": [
+      "Freeza"
+    ],
     "favorites": 18210,
     "about": "A famous non-human villain known for transformation forms.",
     "main_picture": "https://cdn.myanimelist.net/images/characters/sample/frieza.jpg",
     "url": "https://myanimelist.net/character/2547/Frieza"
+  },
+  {
+    "mal_id": 17,
+    "name": "Naruto Uzumaki",
+    "name_kanji": "うずまきナルト",
+    "nicknames": [
+      "Number One Hyperactive Knucklehead Ninja"
+    ],
+    "favorites": 61234,
+    "about": "A lead character driven by a painful past and relentless resolve.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/naruto.jpg",
+    "url": "https://myanimelist.net/character/17/Naruto_Uzumaki"
+  },
+  {
+    "mal_id": 62,
+    "name": "Roronoa Zoro",
+    "name_kanji": "ロロノア・ゾロ",
+    "nicknames": [
+      "Pirate Hunter"
+    ],
+    "favorites": 44120,
+    "about": "A swordsman famed for swordsmanship, bladed combat, and a severe personal history.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/zoro.jpg",
+    "url": "https://myanimelist.net/character/62/Roronoa_Zoro"
+  },
+  {
+    "mal_id": 423,
+    "name": "Goku",
+    "name_kanji": "孫悟空",
+    "nicknames": [
+      "Kakarot"
+    ],
+    "favorites": 95840,
+    "about": "A Saiyan lead character with multiple transformations and alien heritage.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/goku.jpg",
+    "url": "https://myanimelist.net/character/423/Goku"
+  },
+  {
+    "mal_id": 40882,
+    "name": "Eren Yeager",
+    "name_kanji": "エレン・イェーガー",
+    "nicknames": [
+      "Eren Jaeger"
+    ],
+    "favorites": 60315,
+    "about": "A main character haunted by loss who gains multiple transformation forms.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/eren.jpg",
+    "url": "https://myanimelist.net/character/40882/Eren_Yeager"
+  },
+  {
+    "mal_id": 14492,
+    "name": "Madara Uchiha",
+    "name_kanji": "うちはマダラ",
+    "nicknames": [
+      "Ghost of the Uchiha"
+    ],
+    "favorites": 28754,
+    "about": "A black-haired antagonist with a tragic history and overwhelming presence.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/madara.jpg",
+    "url": "https://myanimelist.net/character/14492/Madara_Uchiha"
+  },
+  {
+    "mal_id": 349,
+    "name": "Sousuke Aizen",
+    "name_kanji": "藍染惣右介",
+    "nicknames": [
+      "Aizen"
+    ],
+    "favorites": 33110,
+    "about": "A black-haired villain who transforms and manipulates events from the shadows.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/aizen.jpg",
+    "url": "https://myanimelist.net/character/349/Sousuke_Aizen"
+  },
+  {
+    "mal_id": 146715,
+    "name": "Tanjiro Kamado",
+    "name_kanji": "竈門炭治郎",
+    "nicknames": [
+      "Tanjiro"
+    ],
+    "favorites": 51890,
+    "about": "A black-haired lead character marked by a traumatic past.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/tanjiro.jpg",
+    "url": "https://myanimelist.net/character/146715/Tanjiro_Kamado"
+  },
+  {
+    "mal_id": 146975,
+    "name": "Nezuko Kamado",
+    "name_kanji": "竈門禰豆子",
+    "nicknames": [
+      "Nezuko"
+    ],
+    "favorites": 47220,
+    "about": "A black-haired non-human girl with transformation-like states and a tragic past.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/nezuko.jpg",
+    "url": "https://myanimelist.net/character/146975/Nezuko_Kamado"
+  },
+  {
+    "mal_id": 85,
+    "name": "Kakashi Hatake",
+    "name_kanji": "はたけカカシ",
+    "nicknames": [
+      "Copy Ninja Kakashi"
+    ],
+    "favorites": 45500,
+    "about": "A white-haired mentor known for speed, strategy, and powerful techniques.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/kakashi.jpg",
+    "url": "https://myanimelist.net/character/85/Kakashi_Hatake"
+  },
+  {
+    "mal_id": 14,
+    "name": "Itachi Uchiha",
+    "name_kanji": "うちはイタチ",
+    "nicknames": [
+      "Itachi"
+    ],
+    "favorites": 48300,
+    "about": "A black-haired rival and strategist with a tragic past and overwhelming powers.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/itachi.jpg",
+    "url": "https://myanimelist.net/character/14/Itachi_Uchiha"
+  },
+  {
+    "mal_id": 164471,
+    "name": "Satoru Gojo",
+    "name_kanji": "五条悟",
+    "nicknames": [
+      "Gojo"
+    ],
+    "favorites": 68800,
+    "about": "A white-haired mentor famed for speed, strength, and overwhelming super powers.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/gojo.jpg",
+    "url": "https://myanimelist.net/character/164471/Satoru_Gojo"
+  },
+  {
+    "mal_id": 11,
+    "name": "Edward Elric",
+    "name_kanji": "エドワード・エルリック",
+    "nicknames": [
+      "Ed"
+    ],
+    "favorites": 53400,
+    "about": "A young lead character with strong abilities, a tragic past, and alchemy-like powers.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/edward.jpg",
+    "url": "https://myanimelist.net/character/11/Edward_Elric"
+  },
+  {
+    "mal_id": 12,
+    "name": "Roy Mustang",
+    "name_kanji": "ロイ・マスタング",
+    "nicknames": [
+      "Flame Alchemist"
+    ],
+    "favorites": 29100,
+    "about": "A black-haired strategist who uses fire and carries himself like a future hero.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/roy.jpg",
+    "url": "https://myanimelist.net/character/12/Roy_Mustang"
+  },
+  {
+    "mal_id": 117909,
+    "name": "All Might",
+    "name_kanji": "オールマイト",
+    "nicknames": [
+      "Symbol of Peace"
+    ],
+    "favorites": 41200,
+    "about": "A muscular hero, mentor, and super-powered fighter known for immense strength and speed.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/all_might.jpg",
+    "url": "https://myanimelist.net/character/117909/All_Might"
+  },
+  {
+    "mal_id": 117911,
+    "name": "Shoto Todoroki",
+    "name_kanji": "轟焦凍",
+    "nicknames": [
+      "Shoto"
+    ],
+    "favorites": 51800,
+    "about": "A young hero who uses both fire and ice and is marked by a painful family past.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/shoto.jpg",
+    "url": "https://myanimelist.net/character/117911/Shoto_Todoroki"
+  },
+  {
+    "mal_id": 87275,
+    "name": "Ken Kaneki",
+    "name_kanji": "金木研",
+    "nicknames": [
+      "Kaneki"
+    ],
+    "favorites": 47250,
+    "about": "A black-haired young man with transformation states, non-human traits, speed, and a tragic past.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/kaneki.jpg",
+    "url": "https://myanimelist.net/character/87275/Ken_Kaneki"
+  },
+  {
+    "mal_id": 158,
+    "name": "Inuyasha",
+    "name_kanji": "犬夜叉",
+    "nicknames": [
+      "Half-Demon"
+    ],
+    "favorites": 22300,
+    "about": "A white-haired sword fighter with demon blood, strength, speed, and a tragic history.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/inuyasha.jpg",
+    "url": "https://myanimelist.net/character/158/Inuyasha"
+  },
+  {
+    "mal_id": 40881,
+    "name": "Mikasa Ackerman",
+    "name_kanji": "ミカサ・アッカーマン",
+    "nicknames": [
+      "Mikasa"
+    ],
+    "favorites": 39100,
+    "about": "A black-haired hero known for speed, strength, stoic resolve, and a tragic past.",
+    "main_picture": "https://cdn.myanimelist.net/images/characters/sample/mikasa.jpg",
+    "url": "https://myanimelist.net/character/40881/Mikasa_Ackerman"
   }
 ]

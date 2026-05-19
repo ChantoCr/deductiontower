@@ -1,36 +1,48 @@
-Continue Anime Deduction Tower after the latest PR 3 gameplay wiring.
+Continue Anime Deduction Tower with the next MAL/Jikan character import expansion batch and richer tag pass.
 
 Before coding, read:
 - README.md
 - AGENTS.md
 - docs/ARCHITECTURE.md
 - docs/DATA_MODEL.md
-- docs/PR3_HANDOFF.md
+- docs/EXTERNAL_ANIME_DATA.md
+- docs/PR4_HANDOFF.md
 - skills/flutter-architecture/SKILL.md
+- skills/character-data-modeling/SKILL.md
 - skills/testing/SKILL.md
-- skills/game-design/SKILL.md
 
 Current status:
-- The game has no lives
-- Match creation is wired from selected traits
-- Shared character pool is generated and stored in MatchController
-- Match screen uses the real pool
-- Character names can be tapped to autofill guesses
-- Character guess, trait guess, hint request, and surrender all update real match state
-- Turn transition screen is reused between turns
-- Result screen reads real match data and timeline
+- the game has no lives
+- shared character pool gameplay is already wired
+- protected local turn reveal is implemented
+- setup names and hint count are editable and connected
+- import preview, review queue, approval, and curated promotion preview pipelines already exist
+- duplicate source mal_id detection is implemented
+- duplicate transformed ids and tag validation are implemented
+- expanded tag suggestions with false-positive control are implemented
+- structured import/promotion validation reports are implemented
+- optional anime-series lookup support is implemented
+- reviewed-only promotion filtering through an explicit approval asset is implemented
+- review-time enrichment/anime series mismatch reporting is implemented
+- current imported characters have been merged into `assets/data/characters.json`
+- the runtime catalog currently contains 36 characters
+- the tag catalog has been expanded significantly for richer descriptors
+- character library supports name/series search and shows an imported badge for non-original entries
+- promotion tooling skips identical already-promoted imports as non-blocking
+- preview, review queue, approval-aware promotion, and promotion output files already have tests
 
-Next suggested scope:
-1. refine hint UX and hint consumption edge cases
-2. improve turn transition polish and secret-information safety
-3. add more controller/domain tests for invalid actions
-4. connect hint and result summaries to richer data displays
-5. start preparing the match flow for Flame visual integration without moving business logic out of domain
+Important runtime note:
+- if the app was already running when JSON assets changed, do a full restart to reload the updated catalog
+
+Next scope:
+1. add another larger external source batch so the runtime catalog keeps moving toward broad MAL/Jikan coverage
+2. continue adding richer tags whenever character identity clearly justifies them
+3. keep using approval + promotion flow rather than bypassing validation
 
 Rules:
 - Keep game logic pure Dart
-- Keep UI free of business rules
-- Do not reintroduce lives
-- Do not leak private hint text into public turn history
-- Add tests for every behavior change
-- Update docs if a gameplay system changes
+- Keep import logic in the data/import layer
+- Do not overwrite curated runtime character JSON automatically unless explicitly requested
+- Preserve protected local multiplayer secrecy
+- Add tests for each new validation/reporting behavior
+- Update docs and preview assets if the pipeline changes

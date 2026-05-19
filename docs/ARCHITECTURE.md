@@ -110,6 +110,39 @@ Character Pool Construction
 Game Engine
 ```
 
+## External Import Flow
+
+```txt
+MAL/Jikan-style sample character data
+  ↓
+Optional anime/series sample data
+  ↓
+External import datasource
+  ↓
+Enrichment metadata
+  ↓
+Duplicate/tag validation + structured report
+  ↓
+Tag suggestion helper from about text
+  ↓
+Transformer
+  ↓
+characters_import_preview.json
+  ↓
+characters_import_review_queue.json
+  ↓
+manual approval asset
+  ↓
+Promotion service + structured report + approved-only filter
+  ↓
+characters_curated_promotion_preview.json
+```
+
+Important rules:
+- preview import files must remain separate from curated runtime assets until explicitly reviewed
+- review queue data should be treated as approval tooling, not live runtime content
+- promotion preview should only include imported characters explicitly marked approved
+
 ## AI Flow
 
 Future:
@@ -164,6 +197,10 @@ Important behaviors:
 - trait guess resolution
 - surrender resolution
 - winner detection
+- protected local turn reveal flow
+- import duplicate detection
+- import tag validation
+- curated promotion preview generation
 
 ## MVP Architecture Goal
 

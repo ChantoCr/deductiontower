@@ -1,5 +1,7 @@
 # PR3 Handoff — Anime Deduction Tower
 
+> Historical handoff note: this file is now mostly superseded by `docs/PR4_HANDOFF.md` for the next chat.
+
 ## Project
 
 **Anime Deduction Tower**
@@ -275,5 +277,9 @@ Rules:
 ## Final Status
 
 Docs and code now reflect the no-lives rule set plus shared character pool browsing/search.
-PR 3 now has a working match initialization flow, real pool generation, controller-backed match state, real character guessing, real trait guessing, private hint requests, surrender resolution, and pass-the-device transitions between turns.
-The next meaningful step is polishing the interaction flow, tightening edge-case handling, and preparing the match layer for later Flame presentation work.
+PR 3 now has a working match initialization flow, real pool generation, controller-backed match state, real character guessing, real trait guessing, private hint requests, surrender resolution, protected turn reveal, editable setup wiring, and pass-the-device transitions between turns.
+Prototype external import preview and curated promotion preview tooling were also added after the original PR 3 scope.
+
+For the next chat, use:
+- `docs/PR4_HANDOFF.md`
+- `NEXT_CHAT_PROMPT.md`

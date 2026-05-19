@@ -4,7 +4,15 @@
     "name": "Sasuke Uchiha",
     "series": "Naruto",
     "image": null,
-    "tags": ["black_hair", "uses_sword", "has_tragic_past"],
+    "tags": [
+      "black_hair",
+      "uses_sword",
+      "has_tragic_past",
+      "rival",
+      "fast",
+      "super_powers",
+      "young"
+    ],
     "difficulty": "medium",
     "popularity": 9
   },
@@ -13,7 +21,15 @@
     "name": "Levi Ackerman",
     "series": "Attack on Titan",
     "image": null,
-    "tags": ["black_hair", "uses_sword", "has_tragic_past"],
+    "tags": [
+      "black_hair",
+      "uses_sword",
+      "has_tragic_past",
+      "fast",
+      "strong",
+      "stoic",
+      "hero"
+    ],
     "difficulty": "medium",
     "popularity": 9
   },
@@ -22,7 +38,15 @@
     "name": "Monkey D. Luffy",
     "series": "One Piece",
     "image": null,
-    "tags": ["protagonist", "has_transformation"],
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "hero",
+      "strong",
+      "fast",
+      "super_powers",
+      "young"
+    ],
     "difficulty": "easy",
     "popularity": 9
   },
@@ -31,16 +55,37 @@
     "name": "Ichigo Kurosaki",
     "series": "Bleach",
     "image": null,
-    "tags": ["protagonist", "uses_sword", "has_transformation"],
+    "tags": [
+      "protagonist",
+      "uses_sword",
+      "has_transformation",
+      "strong",
+      "fast",
+      "super_powers",
+      "young"
+    ],
     "difficulty": "easy",
     "popularity": 8
   },
   {
     "id": "vegeta",
     "name": "Vegeta",
-    "series": "Dragon Ball",
+    "series": "Dragon Ball Z",
     "image": null,
-    "tags": ["black_hair", "villain", "has_transformation", "non_human"],
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_transformation",
+      "non_human",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers",
+      "super_saiyan",
+      "alien",
+      "martial_artist",
+      "rival"
+    ],
     "difficulty": "medium",
     "popularity": 8
   },
@@ -49,8 +94,312 @@
     "name": "Frieza",
     "series": "Dragon Ball",
     "image": null,
-    "tags": ["villain", "has_transformation", "non_human"],
+    "tags": [
+      "villain",
+      "has_transformation",
+      "non_human",
+      "strong",
+      "fast",
+      "super_powers",
+      "alien"
+    ],
     "difficulty": "medium",
     "popularity": 7
+  },
+  {
+    "id": "naruto_uzumaki",
+    "name": "Naruto Uzumaki",
+    "series": "Naruto",
+    "image": null,
+    "tags": [
+      "protagonist",
+      "has_tragic_past",
+      "hero",
+      "young",
+      "fast",
+      "super_powers"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "roronoa_zoro",
+    "name": "Roronoa Zoro",
+    "series": "One Piece",
+    "image": null,
+    "tags": [
+      "uses_sword",
+      "has_tragic_past",
+      "strong",
+      "fast",
+      "muscular"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "goku",
+    "name": "Goku",
+    "series": "Dragon Ball",
+    "image": null,
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "non_human",
+      "hero",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers",
+      "super_saiyan",
+      "alien",
+      "martial_artist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "eren_yeager",
+    "name": "Eren Yeager",
+    "series": "Attack on Titan",
+    "image": null,
+    "tags": [
+      "protagonist",
+      "has_transformation",
+      "has_tragic_past",
+      "young",
+      "strong",
+      "fast",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "madara_uchiha",
+    "name": "Madara Uchiha",
+    "series": "Naruto",
+    "image": null,
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_tragic_past",
+      "strong",
+      "fast",
+      "super_powers",
+      "strategist"
+    ],
+    "difficulty": "hard",
+    "popularity": 8
+  },
+  {
+    "id": "sousuke_aizen",
+    "name": "Sousuke Aizen",
+    "series": "Bleach",
+    "image": null,
+    "tags": [
+      "black_hair",
+      "villain",
+      "has_transformation",
+      "strong",
+      "super_powers",
+      "strategist"
+    ],
+    "difficulty": "hard",
+    "popularity": 8
+  },
+  {
+    "id": "tanjiro_kamado",
+    "name": "Tanjiro Kamado",
+    "series": "Demon Slayer: Kimetsu no Yaiba",
+    "image": null,
+    "tags": [
+      "black_hair",
+      "protagonist",
+      "has_tragic_past",
+      "uses_sword",
+      "young",
+      "hero",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "nezuko_kamado",
+    "name": "Nezuko Kamado",
+    "series": "Demon Slayer: Kimetsu no Yaiba",
+    "image": null,
+    "tags": [
+      "black_hair",
+      "non_human",
+      "has_transformation",
+      "has_tragic_past",
+      "young",
+      "strong",
+      "fast",
+      "demon"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "kakashi_hatake",
+    "name": "Kakashi Hatake",
+    "series": "Naruto",
+    "image": null,
+    "tags": [
+      "white_hair",
+      "mentor",
+      "strong",
+      "fast",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "itachi_uchiha",
+    "name": "Itachi Uchiha",
+    "series": "Naruto",
+    "image": null,
+    "tags": [
+      "black_hair",
+      "rival",
+      "has_tragic_past",
+      "strategist",
+      "super_powers",
+      "fast"
+    ],
+    "difficulty": "hard",
+    "popularity": 8
+  },
+  {
+    "id": "satoru_gojo",
+    "name": "Satoru Gojo",
+    "series": "Jujutsu Kaisen",
+    "image": null,
+    "tags": [
+      "white_hair",
+      "mentor",
+      "strong",
+      "fast",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "edward_elric",
+    "name": "Edward Elric",
+    "series": "Fullmetal Alchemist: Brotherhood",
+    "image": null,
+    "tags": [
+      "protagonist",
+      "young",
+      "strong",
+      "fast",
+      "super_powers",
+      "has_tragic_past"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "roy_mustang",
+    "name": "Roy Mustang",
+    "series": "Fullmetal Alchemist: Brotherhood",
+    "image": null,
+    "tags": [
+      "black_hair",
+      "hero",
+      "strategist",
+      "fire_user",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "all_might",
+    "name": "All Might",
+    "series": "My Hero Academia",
+    "image": null,
+    "tags": [
+      "hero",
+      "mentor",
+      "strong",
+      "fast",
+      "muscular",
+      "super_powers"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "shoto_todoroki",
+    "name": "Shoto Todoroki",
+    "series": "My Hero Academia",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "fire_user",
+      "ice_user",
+      "has_tragic_past",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "ken_kaneki",
+    "name": "Ken Kaneki",
+    "series": "Tokyo Ghoul",
+    "image": null,
+    "tags": [
+      "black_hair",
+      "young",
+      "has_transformation",
+      "non_human",
+      "has_tragic_past",
+      "fast",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "inuyasha",
+    "name": "Inuyasha",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "white_hair",
+      "uses_sword",
+      "demon",
+      "strong",
+      "fast",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "popularity": 7
+  },
+  {
+    "id": "mikasa_ackerman",
+    "name": "Mikasa Ackerman",
+    "series": "Attack on Titan",
+    "image": null,
+    "tags": [
+      "black_hair",
+      "hero",
+      "strong",
+      "fast",
+      "stoic",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
   }
 ]

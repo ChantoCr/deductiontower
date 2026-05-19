@@ -31,6 +31,14 @@ void main() {
         difficulty: DifficultyLevel.hard,
         popularity: 9,
       ),
+      Character(
+        id: 'sasuke_uchiha',
+        name: 'Sasuke Uchiha',
+        series: 'Naruto',
+        tags: ['black_hair', 'uses_sword'],
+        difficulty: DifficultyLevel.medium,
+        popularity: 9,
+      ),
     ];
 
     test('filters by tag', () {
@@ -58,7 +66,21 @@ void main() {
         difficulty: DifficultyLevel.medium,
       );
 
-      expect(result.map((character) => character.id), ['shadow_ninja']);
+      expect(result.map((character) => character.id), ['shadow_ninja', 'sasuke_uchiha']);
+    });
+
+    test('filters by search query against name and series', () {
+      final byName = filter.apply(
+        characters: characters,
+        searchQuery: 'sasuke',
+      );
+      final bySeries = filter.apply(
+        characters: characters,
+        searchQuery: 'naruto',
+      );
+
+      expect(byName.map((character) => character.id), ['sasuke_uchiha']);
+      expect(bySeries.map((character) => character.id), ['sasuke_uchiha']);
     });
   });
 }

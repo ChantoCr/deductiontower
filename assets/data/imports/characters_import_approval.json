@@ -1,0 +1,146 @@
+[
+  {
+    "malId": 13,
+    "transformedId": "sasuke_uchiha",
+    "approvalStatus": "approved",
+    "notes": "Approved for prototype sword and tragic-past coverage."
+  },
+  {
+    "malId": 45627,
+    "transformedId": "levi_ackerman",
+    "approvalStatus": "approved",
+    "notes": "Approved for sword-combat and tragic-past category coverage in runtime catalog."
+  },
+  {
+    "malId": 5,
+    "transformedId": "monkey_d_luffy",
+    "approvalStatus": "approved",
+    "notes": "Approved for protagonist and transformation overlap testing."
+  },
+  {
+    "malId": 3202,
+    "transformedId": "ichigo_kurosaki",
+    "approvalStatus": "approved",
+    "notes": "Approved for protagonist, sword, and transformation overlap in runtime catalog."
+  },
+  {
+    "malId": 465,
+    "transformedId": "vegeta",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime import visibility; series mismatch remains reviewable but non-blocking."
+  },
+  {
+    "malId": 2547,
+    "transformedId": "frieza",
+    "approvalStatus": "approved",
+    "notes": "Approved for villain, transformation, and non-human overlap testing."
+  },
+  {
+    "malId": 17,
+    "transformedId": "naruto_uzumaki",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime protagonist and tragic-past coverage."
+  },
+  {
+    "malId": 62,
+    "transformedId": "roronoa_zoro",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime sword and tragic-past coverage."
+  },
+  {
+    "malId": 423,
+    "transformedId": "goku",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime protagonist, transformation, and non-human coverage."
+  },
+  {
+    "malId": 40882,
+    "transformedId": "eren_yeager",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime tragic transformation coverage."
+  },
+  {
+    "malId": 14492,
+    "transformedId": "madara_uchiha",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime villain and black-hair coverage."
+  },
+  {
+    "malId": 349,
+    "transformedId": "sousuke_aizen",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime villain transformation coverage."
+  },
+  {
+    "malId": 146715,
+    "transformedId": "tanjiro_kamado",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime protagonist tragic-past coverage."
+  },
+  {
+    "malId": 146975,
+    "transformedId": "nezuko_kamado",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime non-human transformation coverage."
+  },
+  {
+    "malId": 85,
+    "transformedId": "kakashi_hatake",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime mentor strategy coverage."
+  },
+  {
+    "malId": 14,
+    "transformedId": "itachi_uchiha",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime rival strategist coverage."
+  },
+  {
+    "malId": 164471,
+    "transformedId": "satoru_gojo",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime power and mentor coverage."
+  },
+  {
+    "malId": 11,
+    "transformedId": "edward_elric",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime young protagonist coverage."
+  },
+  {
+    "malId": 12,
+    "transformedId": "roy_mustang",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime fire strategist coverage."
+  },
+  {
+    "malId": 117909,
+    "transformedId": "all_might",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime hero mentor coverage."
+  },
+  {
+    "malId": 117911,
+    "transformedId": "shoto_todoroki",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime elemental hero coverage."
+  },
+  {
+    "malId": 87275,
+    "transformedId": "ken_kaneki",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime transformation tragedy coverage."
+  },
+  {
+    "malId": 158,
+    "transformedId": "inuyasha",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime demon sword coverage."
+  },
+  {
+    "malId": 40881,
+    "transformedId": "mikasa_ackerman",
+    "approvalStatus": "approved",
+    "notes": "Approved for runtime stoic hero coverage."
+  }
+]

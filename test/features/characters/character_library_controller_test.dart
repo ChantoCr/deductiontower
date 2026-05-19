@@ -24,15 +24,26 @@ void main() {
       expect(controller.state.selectedDifficulty, isNull);
     });
 
+    test('stores trimmed search query', () {
+      final controller = CharacterLibraryController();
+
+      controller.setSearchQuery('  naruto  ');
+
+      expect(controller.state.searchQuery, 'naruto');
+      expect(controller.state.hasFilters, isTrue);
+    });
+
     test('clears all filters', () {
       final controller = CharacterLibraryController();
 
       controller.selectTag('villain');
       controller.selectDifficulty(DifficultyLevel.hard);
+      controller.setSearchQuery('goku');
       controller.clearFilters();
 
       expect(controller.state.selectedTagId, isNull);
       expect(controller.state.selectedDifficulty, isNull);
+      expect(controller.state.searchQuery, isEmpty);
       expect(controller.state.hasFilters, isFalse);
     });
   });

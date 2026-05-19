@@ -65,6 +65,8 @@ Responsible for product features:
 - settings
 - home
 
+The `characters/data/imports/` area is specifically for prototype external import tooling and must stay separate from normal runtime repositories unless explicitly promoted.
+
 ### shared
 
 Responsible for reusable UI:
@@ -145,6 +147,13 @@ Model the shared character pool explicitly in match state instead.
 ## Data Model Rules
 
 Use model classes in the data layer when parsing JSON.
+
+For external import work, keep this separation:
+- raw external model
+- enrichment model
+- transformer
+- preview/promotion service
+- curated runtime model
 
 Example:
 

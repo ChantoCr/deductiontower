@@ -5,24 +5,30 @@ class CharacterLibraryState {
   const CharacterLibraryState({
     this.selectedTagId,
     this.selectedDifficulty,
+    this.searchQuery = '',
   });
 
   final String? selectedTagId;
   final DifficultyLevel? selectedDifficulty;
+  final String searchQuery;
 
-  bool get hasFilters => selectedTagId != null || selectedDifficulty != null;
+  bool get hasFilters =>
+      selectedTagId != null || selectedDifficulty != null || searchQuery.isNotEmpty;
 
   CharacterLibraryState copyWith({
     String? selectedTagId,
     DifficultyLevel? selectedDifficulty,
+    String? searchQuery,
     bool clearTag = false,
     bool clearDifficulty = false,
+    bool clearSearchQuery = false,
   }) {
     return CharacterLibraryState(
       selectedTagId: clearTag ? null : selectedTagId ?? this.selectedTagId,
       selectedDifficulty: clearDifficulty
           ? null
           : selectedDifficulty ?? this.selectedDifficulty,
+      searchQuery: clearSearchQuery ? '' : searchQuery ?? this.searchQuery,
     );
   }
 }
@@ -40,6 +46,10 @@ class CharacterLibraryController extends StateNotifier<CharacterLibraryState> {
     state = state.selectedDifficulty == difficulty
         ? state.copyWith(clearDifficulty: true)
         : state.copyWith(selectedDifficulty: difficulty);
+  }
+
+  void setSearchQuery(String value) {
+    state = state.copyWith(searchQuery: value.trim());
   }
 
   void clearFilters() {

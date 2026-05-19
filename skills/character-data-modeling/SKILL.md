@@ -27,6 +27,10 @@ Use:
 assets/data/characters.json
 assets/data/tags.json
 assets/data/categories.json
+assets/data/imports/mal_jikan_characters_sample.json
+assets/data/imports/mal_jikan_character_enrichment_preview.json
+assets/data/imports/characters_import_preview.json
+assets/data/imports/characters_curated_promotion_preview.json
 ```
 
 ## Character Schema
@@ -162,9 +166,12 @@ Add tests or scripts later to validate:
 - Missing tags
 - Empty categories
 - Duplicate IDs
+- Duplicate transformed import IDs
+- Duplicate source external IDs
 - Categories with too few characters
 - Invalid image paths
 - Invalid difficulty values
+- Invalid imported tag references
 - Weak pool variety
 
 ## Anti-Patterns
@@ -175,5 +182,6 @@ Avoid:
 - Mixing Spanish and English IDs
 - Hardcoding category logic in Dart
 - Having a category with only one character
+- Promoting imported preview data directly into runtime assets without review
 - Using images without permission
 - Designing data around a lives-based ruleset

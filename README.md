@@ -71,13 +71,16 @@ A player wins by correctly identifying the opponent's hidden trait.
 - Shared character pool generation
 - In-match character pool browsing
 - Character name search inside the pool
+- Tap-to-autofill character guessing from the pool
 - Turn-based guessing
 - Character guess validation
 - Category guess validation
+- Private hint flow
+- Protected pass-the-device turn reveal flow
 - Surrender action
 - Guess history
-- Hint system
-- Result screen
+- Result timeline screen
+- Editable setup for player names and hints
 - Local JSON data source
 - Clean game engine with unit tests
 
@@ -420,6 +423,17 @@ See:
 Prototype import preview files now live under:
 - `assets/data/imports/`
 
+That import folder now supports:
+- raw MAL/Jikan-style sample character data
+- optional MAL/Jikan-style sample anime data for series lookup
+- enrichment metadata with aliases/source reference/import notes
+- transformed character preview output
+- import review queue output
+- explicit import approval asset for reviewed-only promotion
+- curated promotion preview output
+- duplicate source-id, duplicate transformed-id, and tag validation in the import pipeline
+- lightweight tag suggestions from external about text
+
 ---
 
 ## Portfolio Positioning
@@ -440,5 +454,26 @@ This project demonstrates:
 
 ## Status
 
-Foundation plus local data work is in place.
-The rules now target a no-lives match flow with surrender support and an in-match character pool browser/search experience.
+Foundation, local data, core match flow, protected local multiplayer turns, and prototype external character import tooling are all saved.
+
+Current implemented state includes:
+- no-lives rule set
+- shared character pool generation
+- tap-to-autofill character guesses
+- trait guess, hint, surrender, and result flow
+- protected turn reveal to avoid stale secret leaks
+- editable setup for names and hints
+- external MAL/Jikan-style import preview, review queue, approval, and curated promotion preview assets
+- structured import/promotion validation reporting plus optional anime-series lookup support
+- reviewed-only promotion filtering through an explicit approval asset
+- currently approved sample imports merged into `assets/data/characters.json`, so they are part of the live app catalog
+- expanded tag catalog for richer imported-character descriptors like hero, young, strong, fast, muscular, super powers, super saiyan, fire user, ice user, mentor, rival, strategist, and more
+- character library name/series search plus imported-character badge support for easier verification in-app
+
+If the app is already running after JSON asset updates, use a full restart so the refreshed character catalog is reloaded.
+
+The runtime catalog now includes the original starter roster plus multiple approved external-import batches, and future MAL/Jikan expansion can continue in additional reviewed batches.
+
+For the next handoff, see:
+- `docs/PR4_HANDOFF.md`
+- `NEXT_CHAT_PROMPT.md`

@@ -46,5 +46,107 @@
     "label": "Has Tragic Past",
     "type": "story",
     "difficulty": "medium"
+  },
+  {
+    "id": "hero",
+    "label": "Hero",
+    "type": "role",
+    "difficulty": "easy"
+  },
+  {
+    "id": "rival",
+    "label": "Rival",
+    "type": "role",
+    "difficulty": "medium"
+  },
+  {
+    "id": "mentor",
+    "label": "Mentor",
+    "type": "role",
+    "difficulty": "medium"
+  },
+  {
+    "id": "young",
+    "label": "Young",
+    "type": "status",
+    "difficulty": "easy"
+  },
+  {
+    "id": "strong",
+    "label": "Strong",
+    "type": "power",
+    "difficulty": "easy"
+  },
+  {
+    "id": "fast",
+    "label": "Fast",
+    "type": "power",
+    "difficulty": "easy"
+  },
+  {
+    "id": "muscular",
+    "label": "Muscular",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "super_powers",
+    "label": "Super Powers",
+    "type": "power",
+    "difficulty": "easy"
+  },
+  {
+    "id": "super_saiyan",
+    "label": "Super Saiyan",
+    "type": "power",
+    "difficulty": "hard"
+  },
+  {
+    "id": "fire_user",
+    "label": "Uses Fire",
+    "type": "power",
+    "difficulty": "medium"
+  },
+  {
+    "id": "ice_user",
+    "label": "Uses Ice",
+    "type": "power",
+    "difficulty": "medium"
+  },
+  {
+    "id": "demon",
+    "label": "Demon",
+    "type": "origin",
+    "difficulty": "medium"
+  },
+  {
+    "id": "alien",
+    "label": "Alien",
+    "type": "origin",
+    "difficulty": "medium"
+  },
+  {
+    "id": "martial_artist",
+    "label": "Martial Artist",
+    "type": "role",
+    "difficulty": "medium"
+  },
+  {
+    "id": "strategist",
+    "label": "Strategist",
+    "type": "personality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "stoic",
+    "label": "Stoic",
+    "type": "personality",
+    "difficulty": "medium"
+  },
+  {
+    "id": "magic_user",
+    "label": "Magic User",
+    "type": "power",
+    "difficulty": "medium"
   }
 ]

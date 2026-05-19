@@ -99,6 +99,7 @@ Use a transition screen:
 
 Should show:
 
+- Protected reveal gate for the active player
 - Current player
 - Opponent mystery tower
 - Guess input

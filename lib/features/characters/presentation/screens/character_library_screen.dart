@@ -38,6 +38,20 @@ class CharacterLibraryScreen extends ConsumerWidget {
                       style: AppTextStyles.body,
                     ),
                     const SizedBox(height: AppSpacing.lg),
+                    TextField(
+                      onChanged: controller.setSearchQuery,
+                      decoration: InputDecoration(
+                        hintText: 'Search by name or series',
+                        prefixIcon: const Icon(Icons.search),
+                        filled: true,
+                        fillColor: AppColors.surface.withValues(alpha: 0.65),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
                     const Text('Filter by Tag', style: AppTextStyles.subtitle),
                     const SizedBox(height: AppSpacing.sm),
                     Wrap(

@@ -33,5 +33,6 @@ final filteredCharactersProvider = FutureProvider<List<Character>>((ref) async {
     characters: characters,
     tagId: state.selectedTagId,
     difficulty: state.selectedDifficulty,
+    searchQuery: state.searchQuery,
   );
 });

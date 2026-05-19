@@ -158,6 +158,7 @@ Hard examples:
 - Traits must be fair and not too subjective.
 - Categories should be curated carefully.
 - The character pool should be readable and searchable.
+- Imported external characters must still be curated before they become live gameplay content.
 - The game should be playable without AI.
 - AI should enhance the experience, not replace the core game.
 

@@ -23,12 +23,12 @@ The player feels like an anime strategist who uses character knowledge, deductio
 1. Start match.
 2. Secret trait is selected.
 3. Shared character pool is generated.
-4. Player browses the pool or searches for a name.
-5. Player guesses a character.
-6. Game gives feedback.
-7. Player updates their deduction.
-8. Player attempts to guess the secret trait or chooses to surrender.
-9. Winner is revealed.
+4. The device is safely passed to the active player.
+5. The active player explicitly reveals their turn.
+6. Player browses the pool or searches for a name.
+7. Player guesses a character, requests a hint, guesses the secret trait, or surrenders.
+8. Game gives feedback.
+9. Turn transitions safely to the next player or the winner is revealed.
 
 ---
 
@@ -144,5 +144,7 @@ Incorrect guesses do not remove lives because the game has no life system.
 - Provide hints
 - Keep the pool curated and readable
 - Allow name search in the pool
+- Protect every local turn behind an explicit reveal step
 - Use original placeholder characters
 - Allow custom data expansion later
+- Use external anime datasets only through a curated import pipeline

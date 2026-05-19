@@ -106,6 +106,7 @@ Flame owns:
 - Game-like presentation
 
 Use Flame inside Flutter screens when needed.
+Do not mix prototype import tooling or catalog-promotion logic into Flame code.
 
 ## MVP Flame Scope
 

@@ -37,6 +37,8 @@
 - Add local JSON loader
 - Add repositories
 - Add shared character pool-friendly sample data
+- Add prototype external import preview layer
+- Add curated promotion preview layer
 
 ---
 
@@ -79,6 +81,7 @@
 - Add visual feedback
 - Improve mobile responsiveness
 - Polish pool search UX
+- Polish protected local-turn reveal flow
 
 ---
 

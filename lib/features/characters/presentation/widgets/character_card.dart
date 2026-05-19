@@ -17,7 +17,16 @@ class CharacterCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(character.name, style: AppTextStyles.title),
+          Row(
+            children: [
+              Expanded(child: Text(character.name, style: AppTextStyles.title)),
+              if (character.series != 'Original')
+                const Chip(
+                  label: Text('Imported'),
+                  side: BorderSide.none,
+                ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.xs),
           Text(character.series, style: AppTextStyles.subtitle),
           const SizedBox(height: AppSpacing.md),

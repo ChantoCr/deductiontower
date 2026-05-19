@@ -124,6 +124,8 @@ Return a short hint in one sentence.
 
 When OpenAI is added later:
 
+- If imported character catalogs are used, AI should only reason over already-approved gameplay data, not raw import previews.
+
 - Store API keys in environment variables.
 - Never hardcode secrets.
 - Keep API calls inside data layer.

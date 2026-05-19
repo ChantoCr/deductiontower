@@ -129,3 +129,77 @@ Fields:
 - message
 - guessedValue
 - actionType
+
+## External Import Models
+
+### ExternalCharacterImportModel
+
+Represents raw MAL/Jikan-style imported character identity data.
+
+Fields:
+
+- malId
+- name
+- nameKanji
+- nicknames
+- favorites
+- about
+- mainPicture
+- url
+
+### ExternalCharacterImportEnrichment
+
+Represents manual gameplay enrichment added on top of raw imported identity data.
+
+Fields:
+
+- series
+- animeMalId
+- tags
+- difficulty
+- aliases
+- sourceReference
+- importNotes
+- image
+
+### ExternalAnimeImportModel
+
+Represents optional MAL/Jikan-style anime metadata used to fill series labels more systematically.
+
+Fields:
+
+- malId
+- title
+- titleEnglish
+- titleJapanese
+- url
+
+### CharacterImportApprovalEntry
+
+Represents manual approval metadata used to decide which imported preview characters may appear in promotion preview output.
+
+Fields:
+
+- malId
+- transformedId
+- approvalStatus
+- notes
+
+### Import Review Output
+
+The current prototype import pipeline generates or uses:
+
+- `assets/data/imports/characters_import_preview.json`
+- `assets/data/imports/characters_import_review_queue.json`
+- `assets/data/imports/characters_import_approval.json`
+- `assets/data/imports/characters_curated_promotion_preview.json`
+
+Rules:
+
+- imported preview data must validate tags against `assets/data/tags.json`
+- duplicate source `mal_id` values must be reported
+- transformed internal ids must be unique
+- preview/review generation may include structured validation issues and suggested tags
+- promotion preview must not conflict with curated runtime character ids
+- promotion preview should include only explicitly approved imported characters
+- promotion preview is review output, not automatic runtime replacement
