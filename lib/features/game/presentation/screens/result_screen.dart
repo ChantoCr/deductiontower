@@ -67,7 +67,7 @@ class ResultScreen extends ConsumerWidget {
         _findTraitLabel(categories, match.playerOne.secretTraitId);
     final playerTwoTrait =
         _findTraitLabel(categories, match.playerTwo.secretTraitId);
-    final timelineItems = _buildTimelineItems(
+    final timelineEvents = _buildTimelineEvents(
       turns: match.turns,
       categories: categories,
       characters: characters,
@@ -78,47 +78,85 @@ class ResultScreen extends ConsumerWidget {
 
     return AppScaffold(
       title: 'Match Result',
-      bottomBar: AppCard(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppButton(
-              label: 'Rematch Setup',
-              icon: Icons.restart_alt,
-              onPressed: () {
-                ref.read(matchControllerProvider.notifier).clear();
-                context.go(AppRoutes.setup);
-              },
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            AppButton(
-              label: 'Back Home',
-              icon: Icons.home_outlined,
-              onPressed: () {
-                ref.read(matchControllerProvider.notifier).clear();
-                context.go(AppRoutes.home);
-              },
-              isPrimary: false,
-            ),
-          ],
-        ),
+      bottomBar: LayoutBuilder(
+        builder: (context, constraints) {
+          final useWideButtons = constraints.maxWidth >= 700;
+          return AppCard(
+            padding: const EdgeInsets.all(16),
+            child: useWideButtons
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: AppButton(
+                          label: 'Rematch Setup',
+                          icon: Icons.restart_alt,
+                          onPressed: () {
+                            ref.read(matchControllerProvider.notifier).clear();
+                            context.go(AppRoutes.setup);
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: AppButton(
+                          label: 'Back Home',
+                          icon: Icons.home_outlined,
+                          onPressed: () {
+                            ref.read(matchControllerProvider.notifier).clear();
+                            context.go(AppRoutes.home);
+                          },
+                          isPrimary: false,
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AppButton(
+                        label: 'Rematch Setup',
+                        icon: Icons.restart_alt,
+                        onPressed: () {
+                          ref.read(matchControllerProvider.notifier).clear();
+                          context.go(AppRoutes.setup);
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      AppButton(
+                        label: 'Back Home',
+                        icon: Icons.home_outlined,
+                        onPressed: () {
+                          ref.read(matchControllerProvider.notifier).clear();
+                          context.go(AppRoutes.home);
+                        },
+                        isPrimary: false,
+                      ),
+                    ],
+                  ),
+          );
+        },
       ),
-      child: ListView(
-        children: [
-          AppCard(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final useWideLayout = constraints.maxWidth >= 1000;
+
+          final heroCard = AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child:
-                      const Text('MATCH COMPLETE', style: AppTextStyles.label),
+                  child: const Text(
+                    'MATCH COMPLETE',
+                    style: AppTextStyles.label,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
@@ -135,54 +173,58 @@ class ResultScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
-                  'Review the revealed tags, remaining hint economy, and final public deduction trail before starting the next round.',
+                  'Review the revealed tags, remaining hint economy, and the full public event timeline before starting the next round.',
                   style: AppTextStyles.subtitle.copyWith(height: 1.45),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
+          );
+
+          final statsBlock = Column(
             children: [
-              Expanded(
-                child: _ResultStatCard(
-                  label: 'Turns',
-                  value: '${match.turns.length}',
-                  icon: Icons.timeline_outlined,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: _ResultStatCard(
+                      label: 'Turns',
+                      value: '${match.turns.length}',
+                      icon: Icons.timeline_outlined,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: _ResultStatCard(
+                      label: 'Pool Size',
+                      value: '${match.characterPoolIds.length}',
+                      icon: Icons.style_outlined,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: _ResultStatCard(
-                  label: 'Pool Size',
-                  value: '${match.characterPoolIds.length}',
-                  icon: Icons.style_outlined,
-                ),
+              const SizedBox(height: AppSpacing.md),
+              Row(
+                children: [
+                  Expanded(
+                    child: _ResultStatCard(
+                      label: '${match.playerOne.name} Hints',
+                      value: '${match.playerOne.hintsRemaining}',
+                      icon: Icons.looks_one_rounded,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: _ResultStatCard(
+                      label: '${match.playerTwo.name} Hints',
+                      value: '${match.playerTwo.hintsRemaining}',
+                      icon: Icons.looks_two_rounded,
+                    ),
+                  ),
+                ],
               ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: _ResultStatCard(
-                  label: '${match.playerOne.name} Hints',
-                  value: '${match.playerOne.hintsRemaining}',
-                  icon: Icons.looks_one_rounded,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: _ResultStatCard(
-                  label: '${match.playerTwo.name} Hints',
-                  value: '${match.playerTwo.hintsRemaining}',
-                  icon: Icons.looks_two_rounded,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppCard(
+          );
+
+          final revealedTagsCard = AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -199,50 +241,76 @@ class ResultScreen extends ConsumerWidget {
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppCard(
+          );
+
+          final timelineCard = AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Final Timeline', style: AppTextStyles.title),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'The latest public sequence of character guesses, tag guesses, hints, and surrender events.',
+                  'Every public event is color-coded so the final deduction story is easier to read at a glance.',
                   style: AppTextStyles.subtitle.copyWith(height: 1.45),
                 ),
                 const SizedBox(height: AppSpacing.md),
-                ...timelineItems.map(
-                  (item) => Padding(
+                ...timelineEvents.map(
+                  (event) => Padding(
                     padding: const EdgeInsets.only(bottom: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 10,
-                          height: 10,
-                          margin: const EdgeInsets.only(top: 6),
-                          decoration: const BoxDecoration(
-                            color: AppColors.secondary,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(child: Text(item, style: AppTextStyles.body)),
-                      ],
-                    ),
+                    child: _ResultTimelineEventCard(event: event),
                   ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 180),
-        ],
+          );
+
+          if (useWideLayout) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  heroCard,
+                  const SizedBox(height: AppSpacing.md),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 9,
+                        child: Column(
+                          children: [
+                            statsBlock,
+                            const SizedBox(height: AppSpacing.md),
+                            revealedTagsCard,
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(flex: 11, child: timelineCard),
+                    ],
+                  ),
+                  const SizedBox(height: 180),
+                ],
+              ),
+            );
+          }
+
+          return ListView(
+            children: [
+              heroCard,
+              const SizedBox(height: AppSpacing.md),
+              statsBlock,
+              const SizedBox(height: AppSpacing.md),
+              revealedTagsCard,
+              const SizedBox(height: AppSpacing.md),
+              timelineCard,
+              const SizedBox(height: 180),
+            ],
+          );
+        },
       ),
     );
   }
 
-  List<String> _buildTimelineItems({
+  List<_ResultTimelineEvent> _buildTimelineEvents({
     required List<Turn> turns,
     required List<TraitCategory> categories,
     required List<Character> characters,
@@ -257,19 +325,50 @@ class ResultScreen extends ConsumerWidget {
       switch (turn.actionType) {
         case TurnActionType.guessCharacter:
           final characterName = _findCharacterName(characters, turn.value);
-          final outcome = turn.wasCorrect ? 'correct' : 'wrong';
-          return '$playerName guessed $characterName ($outcome)';
+          return _ResultTimelineEvent(
+            title: '$playerName guessed $characterName',
+            subtitle: turn.wasCorrect
+                ? 'The character matched the hidden tag.'
+                : 'The character did not match the hidden tag.',
+            icon: turn.wasCorrect
+                ? Icons.check_circle_outline
+                : Icons.cancel_outlined,
+            color: turn.wasCorrect ? AppColors.success : AppColors.error,
+          );
         case TurnActionType.guessTrait:
           final traitLabel =
               _findTraitLabel(categories, turn.value) ?? turn.value;
-          final outcome = turn.wasCorrect ? 'correct' : 'wrong';
-          return '$playerName guessed tag $traitLabel ($outcome)';
+          return _ResultTimelineEvent(
+            title: '$playerName guessed tag $traitLabel',
+            subtitle: turn.wasCorrect
+                ? 'The final tag guess was correct.'
+                : 'The final tag guess was incorrect.',
+            icon: turn.wasCorrect
+                ? Icons.emoji_events_outlined
+                : Icons.psychology_alt_outlined,
+            color: turn.wasCorrect ? AppColors.success : AppColors.error,
+          );
         case TurnActionType.requestHint:
-          return '$playerName requested a private hint';
+          return _ResultTimelineEvent(
+            title: '$playerName requested a private hint',
+            subtitle: 'A hidden clue was consumed to continue the deduction.',
+            icon: Icons.lightbulb_outline,
+            color: AppColors.secondary,
+          );
         case TurnActionType.surrender:
-          return '$playerName surrendered';
+          return _ResultTimelineEvent(
+            title: '$playerName surrendered',
+            subtitle: 'The opponent won immediately by surrender.',
+            icon: Icons.flag_outlined,
+            color: AppColors.accent,
+          );
         case TurnActionType.pass:
-          return '$playerName passed the turn';
+          return _ResultTimelineEvent(
+            title: '$playerName passed the turn',
+            subtitle: 'Control moved to the next player.',
+            icon: Icons.swap_horiz_rounded,
+            color: AppColors.muted,
+          );
       }
     }).toList();
   }
@@ -307,6 +406,68 @@ class ResultScreen extends ConsumerWidget {
       case null:
         return 'Match ended';
     }
+  }
+}
+
+class _ResultTimelineEvent {
+  const _ResultTimelineEvent({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+}
+
+class _ResultTimelineEventCard extends StatelessWidget {
+  const _ResultTimelineEventCard({required this.event});
+
+  final _ResultTimelineEvent event;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: event.color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: event.color.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: event.color.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(event.icon, color: event.color),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  event.title,
+                  style:
+                      AppTextStyles.body.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 4),
+                Text(event.subtitle, style: AppTextStyles.subtitle),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
+import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
@@ -32,37 +33,71 @@ class _CategorySelectionScreenState
     final selectionState = ref.watch(categorySelectionControllerProvider);
     final controller = ref.read(categorySelectionControllerProvider.notifier);
 
-    return AppScaffold(
-      title: 'Secret Tag Selection',
-      child: catalogAsync.when(
-        data: (catalog) {
-          final characterTagCounts = charactersAsync.maybeWhen(
-            data: (characters) {
-              final counts = <String, int>{};
-              for (final character in characters) {
-                for (final tag in character.tags) {
-                  counts[tag] = (counts[tag] ?? 0) + 1;
-                }
+    return catalogAsync.when(
+      data: (catalog) {
+        final characterTagCounts = charactersAsync.maybeWhen(
+          data: (characters) {
+            final counts = <String, int>{};
+            for (final character in characters) {
+              for (final tag in character.tags) {
+                counts[tag] = (counts[tag] ?? 0) + 1;
               }
-              return counts;
-            },
-            orElse: () => const <String, int>{},
-          );
-
-          final categories = [...catalog.validCategories]
-            ..sort((a, b) => a.label.compareTo(b.label));
-
-          final filteredCategories = categories.where((category) {
-            final query = _searchQuery.trim().toLowerCase();
-            if (query.isEmpty) {
-              return true;
             }
+            return counts;
+          },
+          orElse: () => const <String, int>{},
+        );
 
-            return category.label.toLowerCase().contains(query) ||
-                category.hintType.toLowerCase().contains(query);
-          }).toList();
+        final categories = [...catalog.validCategories]
+          ..sort((a, b) => a.label.compareTo(b.label));
 
-          return ListView(
+        final filteredCategories = categories.where((category) {
+          final query = _searchQuery.trim().toLowerCase();
+          if (query.isEmpty) {
+            return true;
+          }
+
+          return category.label.toLowerCase().contains(query) ||
+              category.hintType.toLowerCase().contains(query);
+        }).toList();
+        TraitCategory? selectedCategory;
+        final selectedId = selectionState.currentSelectedTraitId;
+        if (selectedId != null) {
+          for (final category in categories) {
+            if (category.id == selectedId) {
+              selectedCategory = category;
+              break;
+            }
+          }
+        }
+
+        return AppScaffold(
+          title: 'Secret Tag Selection',
+          bottomBar: _CategorySelectionActionBar(
+            selectionState: selectionState,
+            selectedCategory: selectedCategory,
+            onConfirm: selectionState.canConfirmCurrentSelection
+                ? () async {
+                    if (selectionState.isSelectingPlayerOne) {
+                      controller.confirmCurrentSelection();
+                      await AppDialog.showInfo(
+                        context,
+                        title: 'Player 1 Tag Saved',
+                        message:
+                            'Pass the device to Player 2 and choose the next hidden tag.',
+                      );
+                      return;
+                    }
+
+                    controller.confirmCurrentSelection();
+                  }
+                : null,
+            onContinue: selectionState.isComplete
+                ? () => context.go(AppRoutes.turnTransition)
+                : null,
+            onReset: controller.reset,
+          ),
+          child: ListView(
             children: [
               AppCard(
                 child: Column(
@@ -227,54 +262,18 @@ class _CategorySelectionScreenState
                     ),
                   );
                 }),
-              const SizedBox(height: AppSpacing.md),
-              if (!selectionState.isComplete)
-                AppButton(
-                  label: selectionState.isSelectingPlayerOne
-                      ? 'Lock Player 1 Tag'
-                      : 'Save Player 2 Tag',
-                  icon: selectionState.isSelectingPlayerOne
-                      ? Icons.lock_outline_rounded
-                      : Icons.check_circle_outline_rounded,
-                  onPressed: selectionState.canConfirmCurrentSelection
-                      ? () async {
-                          if (selectionState.isSelectingPlayerOne) {
-                            controller.confirmCurrentSelection();
-                            await AppDialog.showInfo(
-                              context,
-                              title: 'Player 1 Tag Saved',
-                              message:
-                                  'Pass the device to Player 2 and choose the next hidden tag.',
-                            );
-                            if (!context.mounted) {
-                              return;
-                            }
-                            return;
-                          }
-
-                          controller.confirmCurrentSelection();
-                        }
-                      : null,
-                ),
-              if (selectionState.isComplete) ...[
-                AppButton(
-                  label: 'Continue to Turn Transition',
-                  icon: Icons.swap_horiz_rounded,
-                  onPressed: () => context.go(AppRoutes.turnTransition),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                AppButton(
-                  label: 'Reset Secret Selection',
-                  icon: Icons.restart_alt_rounded,
-                  isPrimary: false,
-                  onPressed: controller.reset,
-                ),
-              ],
+              const SizedBox(height: 200),
             ],
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => AppCard(
+          ),
+        );
+      },
+      loading: () => const AppScaffold(
+        title: 'Secret Tag Selection',
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stackTrace) => AppScaffold(
+        title: 'Secret Tag Selection',
+        child: AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -336,6 +335,97 @@ class _SelectionMeta extends StatelessWidget {
       child: Text(
         '$label: $value',
         style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+class _CategorySelectionActionBar extends StatelessWidget {
+  const _CategorySelectionActionBar({
+    required this.selectionState,
+    required this.onReset,
+    this.selectedCategory,
+    this.onConfirm,
+    this.onContinue,
+  });
+
+  final CategorySelectionState selectionState;
+  final TraitCategory? selectedCategory;
+  final VoidCallback? onConfirm;
+  final VoidCallback? onContinue;
+  final VoidCallback onReset;
+
+  @override
+  Widget build(BuildContext context) {
+    final statusText = selectedCategory == null
+        ? 'No tag selected yet.'
+        : 'Selected: ${selectedCategory!.label}';
+
+    return AppCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  selectionState.isComplete
+                      ? 'Secret tags ready'
+                      : selectionState.isSelectingPlayerOne
+                          ? 'Player 1 selection'
+                          : 'Player 2 selection',
+                  style: AppTextStyles.title,
+                ),
+              ),
+              if (selectedCategory != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    selectedCategory!.hintType,
+                    style: AppTextStyles.body.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(statusText, style: AppTextStyles.subtitle),
+          const SizedBox(height: AppSpacing.md),
+          if (!selectionState.isComplete)
+            AppButton(
+              label: selectionState.isSelectingPlayerOne
+                  ? 'Lock Player 1 Tag'
+                  : 'Save Player 2 Tag',
+              icon: selectionState.isSelectingPlayerOne
+                  ? Icons.lock_outline_rounded
+                  : Icons.check_circle_outline_rounded,
+              onPressed: onConfirm,
+            )
+          else ...[
+            AppButton(
+              label: 'Continue to Turn Transition',
+              icon: Icons.swap_horiz_rounded,
+              onPressed: onContinue,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: 'Reset Secret Selection',
+              icon: Icons.restart_alt_rounded,
+              isPrimary: false,
+              onPressed: onReset,
+            ),
+          ],
+        ],
       ),
     );
   }

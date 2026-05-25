@@ -1,4 +1,4 @@
-# PR5 Handoff — Approved Catalog Fully Live + Gameplay/UI Retake Ready
+# PR5 Handoff — Gameplay/UI Retake Saved State
 
 ## Project
 
@@ -8,28 +8,31 @@ Flutter + Flame deduction game with local multiplayer, a shared character-pool d
 
 ---
 
-## Current Runtime Status
+## Start From In The Next Chat
+
+Read these first:
+- `README.md`
+- `AGENTS.md`
+- `docs/PR5_HANDOFF.md`
+- `NEXT_CHAT_PROMPT.md`
+
+---
+
+## Current Runtime / Data Status
 
 The app loads its live character catalog from:
 - `assets/data/characters.json`
 
-Current runtime catalog size:
-- **1276 characters**
+Current live catalog state:
+- runtime catalog size: **1276 characters**
+- tag catalog size: **40 tags**
+- secret-tag category catalog size: **40 categories**
 
-Current tag catalog size:
-- **40 tags**
-
-Important runtime result from this pass:
-- all currently approved imported characters have now been merged into the live runtime catalog
-- `assets/data/characters.json` now matches the current approved promotion preview output
-- the secret-tag selection flow now exposes **every playable tag** in the catalog through `assets/data/categories.json`
-
-Important runtime note:
-- if the app was already running while JSON assets changed, do a **full restart** so Flutter reloads the asset bundle
-
----
-
-## Current Import / Promotion Status
+Important data state:
+- every currently approved imported character is already merged into runtime
+- `assets/data/characters.json` matches the approved promoted catalog
+- `assets/data/categories.json` now exposes every current playable tag
+- there is **no approved staged backlog** remaining outside runtime
 
 Current import asset counts:
 - `assets/data/imports/mal_jikan_characters_sample.json` contains **1264** source character records
@@ -39,53 +42,86 @@ Current import asset counts:
 - `assets/data/imports/characters_import_approval.json` contains **1263** approval entries
 - `assets/data/imports/characters_curated_promotion_preview.json` contains **1276** promoted preview characters
 
-Current approved staging status:
-- there is **no approved staged backlog remaining outside runtime**
-- the approved promotion preview currently matches the live runtime catalog size
-
 Known non-blocking review issue still present:
 - `vegeta` keeps the existing `series_mismatch` note between enrichment series `Dragon Ball Z` and anime lookup `Dragon Ball`
 
-Review queue issue summary:
-- only **1** review entry currently has issues
-- that single issue is the known non-blocking `series_mismatch` on `vegeta`
+Important runtime note:
+- if the app was already running while JSON assets changed, do a **full restart** so Flutter reloads the asset bundle
 
 ---
 
-## Gameplay/UI Status After This Pass
+## What Was Completed Across This Chat
 
-### 1. Every approved character is now live in the game
-- the full approved catalog is now available through the runtime character asset
-- character-library browsing and gameplay now use the complete currently approved roster
+This chat moved the project from import-expansion mode into a saved gameplay/UI retake state.
 
-### 2. Every current tag is now selectable as a secret tag / guess target
-- `assets/data/categories.json` was expanded to mirror the full tag catalog
-- the game now exposes **40** playable secret-tag categories
-- each generated category currently uses `minCharacters: 1` so every used tag can appear in selection
+### 1. Full approved catalog is now live
+- merged the full approved promoted catalog into `assets/data/characters.json`
+- the gameplay now uses the complete currently approved roster
 
-### 3. Setup/menu UX was upgraded for gameplay retake
-The gameplay-facing UI now includes:
-- a more polished home/menu layout
-- larger, clearer match-entry cards
-- improved single-device setup spacing
-- cleaner player-name entry presentation
-- stronger hint setup and match-preview presentation
+### 2. Every current tag is playable
+- expanded `assets/data/categories.json` to cover the full tag catalog
+- the game now exposes all current tags in secret selection and tag-guess flow
 
-### 4. Secret-tag privacy was improved during live turns
-The match screen now:
-- hides the active player's secret tag by default
-- provides an icon-based reminder toggle so the player can privately re-check their own tag
-- avoids keeping the hidden tag openly visible on the match screen
+### 3. Premium gameplay-facing UI retake pass was started and saved
+This chat delivered multiple focused polish passes.
 
-### 5. Tag selection and guess selection scale better now
-The tag selection flow now includes:
-- searchable secret-tag selection
-- searchable tag guess dialog
-- larger catalog-friendly selection UI for the full tag set
+#### First gameplay/UI retake pass
+- upgraded home/menu presentation
+- improved single-device setup UX
+- improved player-name readability and spacing
+- upgraded secret-tag selection UI
+- hid the active player's secret tag by default
+- added icon-based private reminder reveal
+
+#### Second gameplay/UI retake pass
+- redesigned the match screen structure
+- redesigned the result screen
+- improved character-pool browser for large rosters
+- moved in-match submission controls into a persistent bottom action area
+
+#### Third gameplay/UI retake pass
+- upgraded turn transition into a premium secrecy / handoff screen
+- added animated correct/wrong guess feedback dialogs
+- added wide-layout optimization for match and result screens
+- moved secret-tag selection actions into a persistent bottom action area
+
+#### Fourth gameplay/UI retake pass
+- redesigned result timeline into colored/icon-based event cards
+- added character-pool chip filters for series and difficulty
+- improved in-match staged-guess confirmation in both pool and action console
+- added protected reveal micro-animations
 
 ---
 
-## Key Files Touched For This Phase
+## Current Gameplay/UI Behavior To Remember
+
+### Match privacy
+- protected pass-the-device reveal is implemented
+- the secret tag stays hidden by default during the live match
+- the active player can privately re-check their own secret tag using the reminder icon
+
+### Action accessibility
+- in-match character guess submission is pinned in a persistent bottom action console
+- secret-tag selection uses a persistent bottom action bar
+- players no longer need to scroll to the bottom after choosing a tag or a character guess
+
+### Large roster ergonomics
+- character pool supports search by name and series
+- character pool supports chip filtering by series and difficulty
+- the currently staged guess is clearly confirmed in the browser and action console
+
+### Result readability
+- result timeline events now have per-event colors and icons
+- result screen has a stronger winner summary, stat cards, and revealed-tag section
+
+### Wide layouts
+- match screen has a wide two-column layout
+- result screen has a wide two-column layout
+- bottom action areas adapt better on wider screens
+
+---
+
+## Important Files Touched In This Chat
 
 ### Runtime/catalog assets
 - `assets/data/characters.json`
@@ -100,16 +136,28 @@ The tag selection flow now includes:
 - `assets/data/imports/characters_import_approval.json`
 - `assets/data/imports/characters_curated_promotion_preview.json`
 
-### Gameplay/UI files touched
+### Shared/UI foundation
 - `lib/app/theme.dart`
+- `lib/shared/widgets/app_scaffold.dart`
+- `lib/shared/widgets/app_dialog.dart`
+- `lib/shared/animations/pulse_animation.dart`
+
+### Home / setup / selection flow
 - `lib/features/home/presentation/screens/home_screen.dart`
 - `lib/features/home/presentation/widgets/main_menu_button.dart`
 - `lib/features/game/presentation/screens/game_setup_screen.dart`
 - `lib/features/game/presentation/screens/category_selection_screen.dart`
-- `lib/features/game/presentation/screens/match_screen.dart`
 - `lib/features/game/presentation/screens/turn_transition_screen.dart`
+
+### Match / result flow
+- `lib/features/game/presentation/screens/match_screen.dart`
+- `lib/features/game/presentation/screens/result_screen.dart`
 - `lib/features/game/presentation/widgets/category_guess_dialog.dart`
+- `lib/features/game/presentation/widgets/character_pool_panel.dart`
+- `lib/features/game/presentation/widgets/guess_history.dart`
+- `lib/features/game/presentation/widgets/hint_panel.dart`
 - `lib/features/game/presentation/widgets/secret_trait_card.dart`
+- `lib/features/game/presentation/widgets/tower_view.dart`
 - `lib/features/game/presentation/widgets/turn_panel.dart`
 - `lib/features/game/presentation/controllers/match_controller.dart`
 
@@ -117,28 +165,26 @@ The tag selection flow now includes:
 
 ## Validated Commands
 
-Verified in this session:
+Verified at the end of this chat:
 
 ```bash
-flutter test
 flutter analyze
+flutter test
 ```
 
-Both passed at the end of the session.
+Both passed.
 
 ---
 
 ## Recommended Next Scope
 
-The import expansion work is no longer the immediate priority.
+The next chat should continue from gameplay/UI polish mode, not import-expansion mode.
 
-Recommended next focus:
-1. continue retaking the core gameplay loop with the full live roster
-2. keep polishing the setup, match, and result UX for a portfolio-level feel
-3. evaluate pool balance now that every approved character is live
-4. improve in-match deduction ergonomics for a much larger tag set
-5. consider follow-up privacy polish for hidden information screens if needed
-6. only return to import expansion when more catalog growth is explicitly requested
+Recommended exact next focus:
+1. **full result screen celebration / winner animation**
+2. **match history filters and collapsible timeline**
+3. **series filter search inside the pool chips**
+4. **more premium card animations and hover/tap feedback across the game UI**
 
 ---
 
@@ -148,4 +194,5 @@ Recommended next focus:
 - Keep import logic in the data/import layer.
 - Keep hidden-information UX safe for one-device local multiplayer.
 - Prefer polished, readable UI over placeholder layouts in gameplay-facing screens.
+- Preserve the fixed bottom action areas for match and secret-tag selection.
 - If runtime JSON changes again, remind the user to do a full app restart.

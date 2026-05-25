@@ -463,16 +463,23 @@ Current implemented state includes:
 - trait guess, hint, surrender, and result flow
 - protected turn reveal to avoid stale secret leaks
 - editable setup for names and hints
+- full approved imported catalog merged into `assets/data/characters.json`
+- full tag-based secret selection through `assets/data/categories.json`
 - external MAL/Jikan-style import preview, review queue, approval, and curated promotion preview assets
 - structured import/promotion validation reporting plus optional anime-series lookup support
 - reviewed-only promotion filtering through an explicit approval asset
-- currently approved sample imports merged into `assets/data/characters.json`, so they are part of the live app catalog
 - expanded tag catalog for richer imported-character descriptors like hero, young, student, leader, strong, fast, muscular, super powers, super saiyan, fire user, ice user, lightning user, assassin, mentor, rival, strategist, blond hair, brown hair, red hair, blue hair, green hair, purple hair, gun user, cyborg, psychic, pink hair, water user, and more
 - character library name/series search plus imported-character badge support for easier verification in-app
+- premium gameplay-facing UI passes for home, setup, secret selection, protected handoff, match, and result screens
+- fixed bottom action areas so secret-tag selection and in-match submission no longer require scrolling to the end of the screen
+- hidden secret-tag reminder flow with icon-based reveal for safer local multiplayer privacy
+- animated correct/wrong feedback dialogs plus protected reveal micro-animations
+- wide-layout optimization for match and result screens
+- character pool browser improvements for large rosters, including search, series filters, difficulty filters, and staged guess confirmation
 
 If the app is already running after JSON asset updates, use a full restart so the refreshed character catalog is reloaded.
 
-The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters.
+The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state also includes four focused polish passes covering premium home/setup flow, persistent action bars, improved privacy flow, richer pool browsing, animated feedback, and redesigned result presentation.
 
 For the next handoff, see:
 - `docs/PR5_HANDOFF.md`

@@ -15,6 +15,7 @@ import 'package:anime_deduction_tower/features/game/presentation/widgets/hint_pa
 import 'package:anime_deduction_tower/features/game/presentation/widgets/secret_trait_card.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/tower_view.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/turn_panel.dart';
+import 'package:anime_deduction_tower/shared/animations/pulse_animation.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
@@ -106,12 +107,13 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
         return;
       }
 
-      await AppDialog.showInfo(
+      await AppDialog.showFeedback(
         context,
         title: result.isCorrect
             ? 'Character Guess Correct'
             : 'Character Guess Incorrect',
         message: result.message,
+        isSuccess: result.isCorrect,
       );
 
       if (!mounted) {
@@ -138,11 +140,12 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
         return;
       }
 
-      await AppDialog.showInfo(
+      await AppDialog.showFeedback(
         context,
         title:
             result.isCorrect ? 'Trait Guess Correct' : 'Trait Guess Incorrect',
         message: result.message,
+        isSuccess: result.isCorrect,
       );
 
       if (!mounted) {
@@ -301,6 +304,22 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                PulseAnimation(
+                  child: Container(
+                    width: 78,
+                    height: 78,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.14),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.visibility_off_outlined,
+                      color: AppColors.secondary,
+                      size: 40,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
                 const Text(
                   'Private Turn Protection',
                   style: AppTextStyles.title,
@@ -315,6 +334,23 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
                   'Nothing private is shown until the active player explicitly reveals their turn.',
                   style: AppTextStyles.subtitle,
                   textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface.withValues(alpha: 0.82),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.14),
+                    ),
+                  ),
+                  child: const Text(
+                    'Protected reveal is intentionally separated from the live match tools.',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.subtitle,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 AppButton(
@@ -342,6 +378,13 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
             characterId: _selectedCharacterId!,
           );
 
+    final latestEventCard = latestPublicEvent == null
+        ? null
+        : _LatestEventCard(
+            latestPublicEvent: latestPublicEvent,
+            color: _latestEventColor(match),
+          );
+
     return AppScaffold(
       title: 'Match',
       bottomBar: _MatchActionBar(
@@ -361,61 +404,84 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
           }
         },
       ),
-      child: ListView(
-        children: [
-          TurnPanel(
-            currentPlayer: match.currentPlayer.name,
-            hints: match.currentPlayer.hintsRemaining,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          TowerView(
-            label:
-                'Shared Character Pool • ${match.characterPoolIds.length} available',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          SecretTraitCard(
-            title: 'Your Secret Tag Reminder',
-            value: currentPlayerTraitLabel ?? 'Tag unavailable',
-            isRevealed: _isSecretTraitVisible,
-            onToggleVisibility: _toggleSecretTraitVisibility,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          HintPanel(
-            hint: match.currentPlayer.hintsRemaining > 0
-                ? 'Request a private hint about the opponent\'s secret tag. It consumes one hint, then the device passes to the next player.'
-                : 'No hints remain for this player. Use character and tag guesses to continue deducing the answer.',
-          ),
-          if (latestPublicEvent != null) ...[
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final useWideLayout = constraints.maxWidth >= 1100;
+
+          final leftColumn = <Widget>[
+            TurnPanel(
+              currentPlayer: match.currentPlayer.name,
+              hints: match.currentPlayer.hintsRemaining,
+            ),
             const SizedBox(height: AppSpacing.md),
-            AppCard(
+            SecretTraitCard(
+              title: 'Your Secret Tag Reminder',
+              value: currentPlayerTraitLabel ?? 'Tag unavailable',
+              isRevealed: _isSecretTraitVisible,
+              onToggleVisibility: _toggleSecretTraitVisibility,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            HintPanel(
+              hint: match.currentPlayer.hintsRemaining > 0
+                  ? 'Request a private hint about the opponent\'s secret tag. It consumes one hint, then the device passes to the next player.'
+                  : 'No hints remain for this player. Use character and tag guesses to continue deducing the answer.',
+            ),
+            if (latestEventCard != null) ...[
+              const SizedBox(height: AppSpacing.md),
+              latestEventCard,
+            ],
+            const SizedBox(height: AppSpacing.md),
+            GuessHistory(items: historyItems),
+          ];
+
+          final rightColumn = <Widget>[
+            TowerView(
+              label:
+                  'Shared Character Pool • ${match.characterPoolIds.length} available',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            CharacterPoolPanel(
+              availableCharacterIds: match.characterPoolIds,
+              selectedCharacterId: _selectedCharacterId,
+              onCharacterSelected: (character) {
+                _selectCharacter(character.id, character.name);
+              },
+            ),
+          ];
+
+          if (useWideLayout) {
+            return SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Latest Public Event', style: AppTextStyles.title),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    latestPublicEvent,
-                    style: TextStyle(
-                      color: _latestEventColor(match),
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 9,
+                        child: Column(children: leftColumn),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        flex: 11,
+                        child: Column(children: rightColumn),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 220),
                 ],
               ),
-            ),
-          ],
-          const SizedBox(height: AppSpacing.md),
-          GuessHistory(items: historyItems),
-          const SizedBox(height: AppSpacing.md),
-          CharacterPoolPanel(
-            availableCharacterIds: match.characterPoolIds,
-            selectedCharacterId: _selectedCharacterId,
-            onCharacterSelected: (character) {
-              _selectCharacter(character.id, character.name);
-            },
-          ),
-          const SizedBox(height: 220),
-        ],
+            );
+          }
+
+          return ListView(
+            children: [
+              ...leftColumn,
+              const SizedBox(height: AppSpacing.md),
+              ...rightColumn,
+              const SizedBox(height: 220),
+            ],
+          );
+        },
       ),
     );
   }
@@ -543,6 +609,54 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
   }
 }
 
+class _LatestEventCard extends StatelessWidget {
+  const _LatestEventCard({
+    required this.latestPublicEvent,
+    required this.color,
+  });
+
+  final String latestPublicEvent;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Latest Public Event', style: AppTextStyles.title),
+          const SizedBox(height: AppSpacing.sm),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0.96, end: 1),
+            duration: const Duration(milliseconds: 240),
+            curve: Curves.easeOut,
+            builder: (context, value, child) => Transform.scale(
+              scale: value,
+              child: child,
+            ),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: color.withValues(alpha: 0.25)),
+              ),
+              child: Text(
+                latestPublicEvent,
+                style: AppTextStyles.body.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _MatchActionBar extends StatelessWidget {
   const _MatchActionBar({
     required this.guessController,
@@ -570,80 +684,171 @@ class _MatchActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useWideLayout = constraints.maxWidth >= 900;
+        final utilityButtons = useWideLayout
+            ? Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      label: 'Request Hint',
+                      icon: Icons.lightbulb_outline,
+                      isPrimary: false,
+                      onPressed: canRequestHint ? onRequestHint : null,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: AppButton(
+                      label: 'Guess Tag',
+                      icon: Icons.psychology_alt_outlined,
+                      isPrimary: false,
+                      onPressed: canGuessTag ? onGuessTag : null,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: AppButton(
+                      label: 'Surrender Match',
+                      icon: Icons.flag_outlined,
+                      isPrimary: false,
+                      onPressed: onSurrender,
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppButton(
+                          label: 'Request Hint',
+                          icon: Icons.lightbulb_outline,
+                          isPrimary: false,
+                          onPressed: canRequestHint ? onRequestHint : null,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: AppButton(
+                          label: 'Guess Tag',
+                          icon: Icons.psychology_alt_outlined,
+                          isPrimary: false,
+                          onPressed: canGuessTag ? onGuessTag : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  AppButton(
+                    label: 'Surrender Match',
+                    icon: Icons.flag_outlined,
+                    isPrimary: false,
+                    onPressed: onSurrender,
+                  ),
+                ],
+              );
+
+        return AppCard(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Expanded(
-                child: Text('Action Console', style: AppTextStyles.title),
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text('Action Console', style: AppTextStyles.title),
+                  ),
+                  if (selectedCharacterName != null)
+                    TextButton.icon(
+                      onPressed: onClearSelection,
+                      icon: const Icon(Icons.close, size: 16),
+                      label: const Text('Clear'),
+                    ),
+                ],
               ),
-              if (selectedCharacterName != null)
-                TextButton.icon(
-                  onPressed: onClearSelection,
-                  icon: const Icon(Icons.close, size: 16),
-                  label: const Text('Clear'),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                selectedCharacterName == null
+                    ? 'Pick from the pool or type an exact character name, then submit without scrolling away from the action area.'
+                    : 'Your selected guess is staged below and ready for submission.',
+                style: AppTextStyles.subtitle,
+              ),
+              if (selectedCharacterName != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: AppColors.secondary.withValues(alpha: 0.22),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline,
+                        color: AppColors.secondary,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          selectedCharacterName!,
+                          style: AppTextStyles.body.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+              ],
+              const SizedBox(height: AppSpacing.md),
+              TextField(
+                controller: guessController,
+                decoration: const InputDecoration(
+                  labelText: 'Character guess',
+                  helperText:
+                      'Pool tap autofills this field. Exact name matching still works.',
+                  prefixIcon: Icon(Icons.person_search_outlined),
+                ),
+                onChanged: (_) => onGuessChanged(),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              if (useWideLayout)
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: AppButton(
+                        label: 'Submit Character Guess',
+                        icon: Icons.check_circle_outline,
+                        onPressed: onSubmitCharacterGuess,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(flex: 5, child: utilityButtons),
+                  ],
+                )
+              else ...[
+                AppButton(
+                  label: 'Submit Character Guess',
+                  icon: Icons.check_circle_outline,
+                  onPressed: onSubmitCharacterGuess,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                utilityButtons,
+              ],
             ],
           ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            selectedCharacterName == null
-                ? 'Pick from the pool or type an exact character name, then submit without scrolling away from the action area.'
-                : 'Ready to submit: $selectedCharacterName',
-            style: AppTextStyles.subtitle,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          TextField(
-            controller: guessController,
-            decoration: const InputDecoration(
-              labelText: 'Character guess',
-              helperText:
-                  'Pool tap autofills this field. Exact name matching still works.',
-              prefixIcon: Icon(Icons.person_search_outlined),
-            ),
-            onChanged: (_) => onGuessChanged(),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppButton(
-            label: 'Submit Character Guess',
-            icon: Icons.check_circle_outline,
-            onPressed: onSubmitCharacterGuess,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  label: 'Request Hint',
-                  icon: Icons.lightbulb_outline,
-                  isPrimary: false,
-                  onPressed: canRequestHint ? onRequestHint : null,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: AppButton(
-                  label: 'Guess Tag',
-                  icon: Icons.psychology_alt_outlined,
-                  isPrimary: false,
-                  onPressed: canGuessTag ? onGuessTag : null,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          AppButton(
-            label: 'Surrender Match',
-            icon: Icons.flag_outlined,
-            isPrimary: false,
-            onPressed: onSurrender,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
