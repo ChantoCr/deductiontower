@@ -148,5 +148,95 @@
     "label": "Magic User",
     "type": "power",
     "difficulty": "medium"
+  },
+  {
+    "id": "lightning_user",
+    "label": "Uses Lightning",
+    "type": "power",
+    "difficulty": "medium"
+  },
+  {
+    "id": "assassin",
+    "label": "Assassin",
+    "type": "role",
+    "difficulty": "medium"
+  },
+  {
+    "id": "blond_hair",
+    "label": "Blond Hair",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "gun_user",
+    "label": "Gun User",
+    "type": "weapon",
+    "difficulty": "medium"
+  },
+  {
+    "id": "cyborg",
+    "label": "Cyborg",
+    "type": "origin",
+    "difficulty": "medium"
+  },
+  {
+    "id": "psychic",
+    "label": "Psychic",
+    "type": "power",
+    "difficulty": "medium"
+  },
+  {
+    "id": "pink_hair",
+    "label": "Pink Hair",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "water_user",
+    "label": "Uses Water",
+    "type": "power",
+    "difficulty": "medium"
+  },
+  {
+    "id": "brown_hair",
+    "label": "Brown Hair",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "red_hair",
+    "label": "Red Hair",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "leader",
+    "label": "Leader",
+    "type": "role",
+    "difficulty": "medium"
+  },
+  {
+    "id": "student",
+    "label": "Student",
+    "type": "status",
+    "difficulty": "easy"
+  },
+  {
+    "id": "blue_hair",
+    "label": "Blue Hair",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "green_hair",
+    "label": "Green Hair",
+    "type": "appearance",
+    "difficulty": "easy"
+  },
+  {
+    "id": "purple_hair",
+    "label": "Purple Hair",
+    "type": "appearance",
+    "difficulty": "easy"
   }
 ]

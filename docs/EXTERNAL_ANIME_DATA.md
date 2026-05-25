@@ -232,7 +232,8 @@ This means the project can now:
 10. transform them into our internal character schema
 11. preview transformed output without touching the main curated runtime dataset
 12. promote only approved preview characters into a merged gameplay-ready preview JSON with structured conflict reporting
-13. regenerate preview files with:
+13. merge approved promotion output into the runtime catalog when explicitly requested
+14. regenerate preview files with:
    - `dart run tool/generate_characters_import_preview.dart`
    - `dart run tool/generate_characters_import_review_queue.dart`
    - `dart run tool/generate_characters_curated_promotion_preview.dart`
@@ -241,8 +242,8 @@ This means the project can now:
 
 If you want to expand this source further, the best next code task is:
 
-1. expand the tag suggestion vocabulary beyond the current lightweight keyword rules
-2. export a larger transformed preview set automatically
+1. keep adding larger external record batches until the catalog approaches broad MAL/Jikan coverage
+2. continue expanding the tag catalog whenever imported character identity clearly justifies richer descriptors
 3. add anime/series conflict review when enrichment series and imported anime titles disagree
 4. manually review tags/categories before using them in live match generation
 

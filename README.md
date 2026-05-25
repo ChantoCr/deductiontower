@@ -467,13 +467,13 @@ Current implemented state includes:
 - structured import/promotion validation reporting plus optional anime-series lookup support
 - reviewed-only promotion filtering through an explicit approval asset
 - currently approved sample imports merged into `assets/data/characters.json`, so they are part of the live app catalog
-- expanded tag catalog for richer imported-character descriptors like hero, young, strong, fast, muscular, super powers, super saiyan, fire user, ice user, mentor, rival, strategist, and more
+- expanded tag catalog for richer imported-character descriptors like hero, young, student, leader, strong, fast, muscular, super powers, super saiyan, fire user, ice user, lightning user, assassin, mentor, rival, strategist, blond hair, brown hair, red hair, blue hair, green hair, purple hair, gun user, cyborg, psychic, pink hair, water user, and more
 - character library name/series search plus imported-character badge support for easier verification in-app
 
 If the app is already running after JSON asset updates, use a full restart so the refreshed character catalog is reloaded.
 
-The runtime catalog now includes the original starter roster plus multiple approved external-import batches, and future MAL/Jikan expansion can continue in additional reviewed batches.
+The runtime catalog now includes the original starter roster plus multiple approved external-import batches. The live runtime catalog currently contains 1076 characters. The tag catalog currently contains 40 tags. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, the curated promotion preview currently contains 1276 total characters, and two additional approved 100-character batches remain staged for future runtime merges through the same review/approval/promotion flow.
 
 For the next handoff, see:
-- `docs/PR4_HANDOFF.md`
+- `docs/PR5_HANDOFF.md`
 - `NEXT_CHAT_PROMPT.md`

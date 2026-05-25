@@ -69,6 +69,12 @@ class ExternalCharacterTagSuggestionService {
         RegExp(r'\bheadmaster\b'),
       ],
     ),
+    'assassin': _TagSuggestionRule(
+      positivePatterns: [
+        RegExp(r'\bassassin\b'),
+        RegExp(r'\bkiller\b'),
+      ],
+    ),
     'uses_sword': _TagSuggestionRule(
       positivePatterns: [
         RegExp(r'\bsword(?:-based)?\b'),
@@ -161,6 +167,13 @@ class ExternalCharacterTagSuggestionService {
         RegExp(r'\buses?\s+ice\b'),
         RegExp(r'\bice\b'),
         RegExp(r'\bfrost\b'),
+      ],
+    ),
+    'lightning_user': _TagSuggestionRule(
+      positivePatterns: [
+        RegExp(r'\blightning\b'),
+        RegExp(r'\belectric(?:ity)?\b'),
+        RegExp(r'\bthunder\b'),
       ],
     ),
     'non_human': _TagSuggestionRule(
