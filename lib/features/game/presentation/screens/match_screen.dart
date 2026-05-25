@@ -364,13 +364,15 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
         ),
       );
     }
-    final historyItems = _buildHistoryItems(
+    final historyEntries = _buildHistoryEntries(
       turns: match.turns,
       characters: characters,
       categories: categories,
       match: match,
     );
-    final latestPublicEvent = match.turns.isEmpty ? null : historyItems.first;
+    final latestPublicEvent = match.turns.isEmpty || historyEntries.isEmpty
+        ? null
+        : historyEntries.first;
     final selectedCharacterName = _selectedCharacterId == null
         ? null
         : _findCharacterName(
@@ -380,10 +382,7 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 
     final latestEventCard = latestPublicEvent == null
         ? null
-        : _LatestEventCard(
-            latestPublicEvent: latestPublicEvent,
-            color: _latestEventColor(match),
-          );
+        : _LatestEventCard(latestPublicEvent: latestPublicEvent);
 
     return AppScaffold(
       title: 'Match',
@@ -431,7 +430,11 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
               latestEventCard,
             ],
             const SizedBox(height: AppSpacing.md),
-            GuessHistory(items: historyItems),
+            GuessHistory(
+              entries: historyEntries,
+              collapsedCount: 4,
+              emptyStateMessage: 'No public events recorded yet.',
+            ),
           ];
 
           final rightColumn = <Widget>[
@@ -514,16 +517,12 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
     return null;
   }
 
-  List<String> _buildHistoryItems({
+  List<GuessHistoryEntry> _buildHistoryEntries({
     required List<Turn> turns,
     required List<Character> characters,
     required List<TraitCategory> categories,
     required GameMatch match,
   }) {
-    if (turns.isEmpty) {
-      return const ['No turns recorded yet.'];
-    }
-
     return turns
         .map((turn) {
           final playerName = turn.playerId == match.playerOne.id
@@ -536,46 +535,71 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
                 characters: characters,
                 characterId: turn.value,
               );
-              final outcome = turn.wasCorrect ? 'correct' : 'wrong';
-              return '$playerName guessed $characterName ($outcome)';
+              return GuessHistoryEntry(
+                title: '$playerName guessed $characterName',
+                subtitle: turn.wasCorrect
+                    ? 'The character matched the opponent hidden tag.'
+                    : 'The character did not match the opponent hidden tag.',
+                icon: turn.wasCorrect
+                    ? Icons.check_circle_outline
+                    : Icons.cancel_outlined,
+                color: turn.wasCorrect ? AppColors.success : AppColors.error,
+                actionType: turn.actionType,
+                playerName: playerName,
+                wasCorrect: turn.wasCorrect,
+              );
             case TurnActionType.guessTrait:
               final traitLabel = _findTraitLabel(
                     categories: categories,
                     traitId: turn.value,
                   ) ??
                   turn.value;
-              final outcome = turn.wasCorrect ? 'correct' : 'wrong';
-              return '$playerName guessed trait $traitLabel ($outcome)';
+              return GuessHistoryEntry(
+                title: '$playerName guessed trait $traitLabel',
+                subtitle: turn.wasCorrect
+                    ? 'The final trait guess was correct.'
+                    : 'The final trait guess was incorrect.',
+                icon: turn.wasCorrect
+                    ? Icons.emoji_events_outlined
+                    : Icons.psychology_alt_outlined,
+                color: turn.wasCorrect ? AppColors.success : AppColors.error,
+                actionType: turn.actionType,
+                playerName: playerName,
+                wasCorrect: turn.wasCorrect,
+              );
             case TurnActionType.surrender:
-              return '$playerName surrendered';
+              return GuessHistoryEntry(
+                title: '$playerName surrendered',
+                subtitle: 'The opponent won immediately by surrender.',
+                icon: Icons.flag_outlined,
+                color: AppColors.accent,
+                actionType: turn.actionType,
+                playerName: playerName,
+              );
             case TurnActionType.requestHint:
-              return '$playerName requested a private hint';
+              return GuessHistoryEntry(
+                title: '$playerName requested a private hint',
+                subtitle:
+                    'A hidden clue was consumed, then the device passed to the next player.',
+                icon: Icons.lightbulb_outline,
+                color: AppColors.secondary,
+                actionType: turn.actionType,
+                playerName: playerName,
+              );
             case TurnActionType.pass:
-              return '$playerName passed the turn';
+              return GuessHistoryEntry(
+                title: '$playerName passed the turn',
+                subtitle: 'Control moved to the next player.',
+                icon: Icons.swap_horiz_rounded,
+                color: AppColors.muted,
+                actionType: turn.actionType,
+                playerName: playerName,
+              );
           }
         })
         .toList()
         .reversed
         .toList();
-  }
-
-  Color _latestEventColor(GameMatch match) {
-    if (match.turns.isEmpty) {
-      return AppColors.text;
-    }
-
-    final lastTurn = match.turns.last;
-    switch (lastTurn.actionType) {
-      case TurnActionType.guessCharacter:
-      case TurnActionType.guessTrait:
-        return lastTurn.wasCorrect ? AppColors.success : AppColors.error;
-      case TurnActionType.requestHint:
-        return AppColors.secondary;
-      case TurnActionType.surrender:
-        return AppColors.accent;
-      case TurnActionType.pass:
-        return AppColors.muted;
-    }
   }
 
   String _findCharacterName({
@@ -610,13 +634,9 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 }
 
 class _LatestEventCard extends StatelessWidget {
-  const _LatestEventCard({
-    required this.latestPublicEvent,
-    required this.color,
-  });
+  const _LatestEventCard({required this.latestPublicEvent});
 
-  final String latestPublicEvent;
-  final Color color;
+  final GuessHistoryEntry latestPublicEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -638,16 +658,48 @@ class _LatestEventCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
+                color: latestPublicEvent.color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: color.withValues(alpha: 0.25)),
-              ),
-              child: Text(
-                latestPublicEvent,
-                style: AppTextStyles.body.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w700,
+                border: Border.all(
+                  color: latestPublicEvent.color.withValues(alpha: 0.25),
                 ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: latestPublicEvent.color.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      latestPublicEvent.icon,
+                      color: latestPublicEvent.color,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          latestPublicEvent.title,
+                          style: AppTextStyles.body.copyWith(
+                            color: latestPublicEvent.color,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          latestPublicEvent.subtitle,
+                          style: AppTextStyles.subtitle,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

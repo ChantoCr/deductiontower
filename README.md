@@ -475,12 +475,15 @@ Current implemented state includes:
 - hidden secret-tag reminder flow with icon-based reveal for safer local multiplayer privacy
 - animated correct/wrong feedback dialogs plus protected reveal micro-animations
 - wide-layout optimization for match and result screens
-- character pool browser improvements for large rosters, including search, series filters, difficulty filters, and staged guess confirmation
+- character pool browser improvements for large rosters, including search, searchable series-filter chips, difficulty filters, and staged guess confirmation
+- animated winner celebration banner plus richer result-screen replay flow
+- filterable and collapsible public match timelines in both live match and result views
+- broader hover/tap micro-feedback across cards, pool rows, and primary buttons
 
 If the app is already running after JSON asset updates, use a full restart so the refreshed character catalog is reloaded.
 
-The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state also includes four focused polish passes covering premium home/setup flow, persistent action bars, improved privacy flow, richer pool browsing, animated feedback, and redesigned result presentation.
+The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state now includes the earlier premium gameplay retake passes plus animated result celebration, filterable/collapsible timelines, searchable series chips in the pool, and stronger hover/tap micro-feedback.
 
 For the next handoff, see:
-- `docs/PR5_HANDOFF.md`
+- `docs/PR6_HANDOFF.md`
 - `NEXT_CHAT_PROMPT.md`

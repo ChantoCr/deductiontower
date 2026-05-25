@@ -7,6 +7,8 @@ import 'package:anime_deduction_tower/features/game/domain/entities/trait_catego
 import 'package:anime_deduction_tower/features/game/domain/entities/turn.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/guess_history.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/result_celebration_banner.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
@@ -67,7 +69,7 @@ class ResultScreen extends ConsumerWidget {
         _findTraitLabel(categories, match.playerOne.secretTraitId);
     final playerTwoTrait =
         _findTraitLabel(categories, match.playerTwo.secretTraitId);
-    final timelineEvents = _buildTimelineEvents(
+    final timelineEntries = _buildTimelineEntries(
       turns: match.turns,
       categories: categories,
       characters: characters,
@@ -140,44 +142,11 @@ class ResultScreen extends ConsumerWidget {
         builder: (context, constraints) {
           final useWideLayout = constraints.maxWidth >= 1000;
 
-          final heroCard = AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.success.withValues(alpha: 0.14),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: const Text(
-                    'MATCH COMPLETE',
-                    style: AppTextStyles.label,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Winner: $winnerName',
-                  style: AppTextStyles.hero.copyWith(fontSize: 30),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  _endReasonLabel(match.endReason),
-                  style: AppTextStyles.subtitle.copyWith(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Review the revealed tags, remaining hint economy, and the full public event timeline before starting the next round.',
-                  style: AppTextStyles.subtitle.copyWith(height: 1.45),
-                ),
-              ],
-            ),
+          final heroCard = ResultCelebrationBanner(
+            winnerName: winnerName,
+            reasonLabel: _endReasonLabel(match.endReason),
+            summary:
+                'Review the revealed tags, remaining hint economy, and the full public event timeline before starting the next round.',
           );
 
           final statsBlock = Column(
@@ -225,6 +194,7 @@ class ResultScreen extends ConsumerWidget {
           );
 
           final revealedTagsCard = AppCard(
+            glowColor: AppColors.secondary,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -243,25 +213,13 @@ class ResultScreen extends ConsumerWidget {
             ),
           );
 
-          final timelineCard = AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Final Timeline', style: AppTextStyles.title),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Every public event is color-coded so the final deduction story is easier to read at a glance.',
-                  style: AppTextStyles.subtitle.copyWith(height: 1.45),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                ...timelineEvents.map(
-                  (event) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _ResultTimelineEventCard(event: event),
-                  ),
-                ),
-              ],
-            ),
+          final timelineCard = GuessHistory(
+            title: 'Final Timeline',
+            description:
+                'Filter the full public match story by guess type, outcome, or support actions, then expand the timeline when you want the complete deduction replay.',
+            entries: timelineEntries,
+            collapsedCount: 6,
+            emptyStateMessage: 'No final timeline events were recorded.',
           );
 
           if (useWideLayout) {
@@ -310,7 +268,7 @@ class ResultScreen extends ConsumerWidget {
     );
   }
 
-  List<_ResultTimelineEvent> _buildTimelineEvents({
+  List<GuessHistoryEntry> _buildTimelineEntries({
     required List<Turn> turns,
     required List<TraitCategory> categories,
     required List<Character> characters,
@@ -325,7 +283,7 @@ class ResultScreen extends ConsumerWidget {
       switch (turn.actionType) {
         case TurnActionType.guessCharacter:
           final characterName = _findCharacterName(characters, turn.value);
-          return _ResultTimelineEvent(
+          return GuessHistoryEntry(
             title: '$playerName guessed $characterName',
             subtitle: turn.wasCorrect
                 ? 'The character matched the hidden tag.'
@@ -334,11 +292,14 @@ class ResultScreen extends ConsumerWidget {
                 ? Icons.check_circle_outline
                 : Icons.cancel_outlined,
             color: turn.wasCorrect ? AppColors.success : AppColors.error,
+            actionType: turn.actionType,
+            playerName: playerName,
+            wasCorrect: turn.wasCorrect,
           );
         case TurnActionType.guessTrait:
           final traitLabel =
               _findTraitLabel(categories, turn.value) ?? turn.value;
-          return _ResultTimelineEvent(
+          return GuessHistoryEntry(
             title: '$playerName guessed tag $traitLabel',
             subtitle: turn.wasCorrect
                 ? 'The final tag guess was correct.'
@@ -347,27 +308,36 @@ class ResultScreen extends ConsumerWidget {
                 ? Icons.emoji_events_outlined
                 : Icons.psychology_alt_outlined,
             color: turn.wasCorrect ? AppColors.success : AppColors.error,
+            actionType: turn.actionType,
+            playerName: playerName,
+            wasCorrect: turn.wasCorrect,
           );
         case TurnActionType.requestHint:
-          return _ResultTimelineEvent(
+          return GuessHistoryEntry(
             title: '$playerName requested a private hint',
             subtitle: 'A hidden clue was consumed to continue the deduction.',
             icon: Icons.lightbulb_outline,
             color: AppColors.secondary,
+            actionType: turn.actionType,
+            playerName: playerName,
           );
         case TurnActionType.surrender:
-          return _ResultTimelineEvent(
+          return GuessHistoryEntry(
             title: '$playerName surrendered',
             subtitle: 'The opponent won immediately by surrender.',
             icon: Icons.flag_outlined,
             color: AppColors.accent,
+            actionType: turn.actionType,
+            playerName: playerName,
           );
         case TurnActionType.pass:
-          return _ResultTimelineEvent(
+          return GuessHistoryEntry(
             title: '$playerName passed the turn',
             subtitle: 'Control moved to the next player.',
             icon: Icons.swap_horiz_rounded,
             color: AppColors.muted,
+            actionType: turn.actionType,
+            playerName: playerName,
           );
       }
     }).toList();
@@ -406,68 +376,6 @@ class ResultScreen extends ConsumerWidget {
       case null:
         return 'Match ended';
     }
-  }
-}
-
-class _ResultTimelineEvent {
-  const _ResultTimelineEvent({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.color,
-  });
-
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final Color color;
-}
-
-class _ResultTimelineEventCard extends StatelessWidget {
-  const _ResultTimelineEventCard({required this.event});
-
-  final _ResultTimelineEvent event;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: event.color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: event.color.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: event.color.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(event.icon, color: event.color),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  event.title,
-                  style:
-                      AppTextStyles.body.copyWith(fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: 4),
-                Text(event.subtitle, style: AppTextStyles.subtitle),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

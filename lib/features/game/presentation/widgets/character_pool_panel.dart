@@ -25,9 +25,28 @@ class CharacterPoolPanel extends ConsumerStatefulWidget {
 }
 
 class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
+  late final TextEditingController _searchController;
+  late final TextEditingController _seriesSearchController;
+
   String _searchQuery = '';
+  String _seriesSearchQuery = '';
   String? _selectedSeries;
   DifficultyLevel? _selectedDifficulty;
+  String? _hoveredCharacterId;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _seriesSearchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _seriesSearchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +58,9 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
         final filteredPool = _applyFilters(allPool);
         final selectedCharacter = _findSelectedCharacter(allPool);
         final seriesOptions = _buildSeriesOptions(allPool);
+        final visibleSeriesOptions = _buildVisibleSeriesOptions(seriesOptions);
+        final isShowingLimitedSeries =
+            _seriesSearchQuery.trim().isEmpty && seriesOptions.length > 12;
 
         return AppCard(
           child: Column(
@@ -62,6 +84,7 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
               ),
               const SizedBox(height: AppSpacing.md),
               TextField(
+                controller: _searchController,
                 onChanged: (value) => setState(() => _searchQuery = value),
                 decoration: InputDecoration(
                   labelText: 'Search pool',
@@ -70,45 +93,100 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
                   suffixIcon: _searchQuery.trim().isEmpty
                       ? null
                       : IconButton(
-                          onPressed: () => setState(() => _searchQuery = ''),
+                          onPressed: _clearSearchQuery,
                           icon: const Icon(Icons.close),
                         ),
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
-              Text(
-                'Series filters',
-                style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
+              Row(
+                children: [
+                  Text(
+                    'Series filters',
+                    style: AppTextStyles.body.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  if (seriesOptions.isNotEmpty)
+                    _PoolInfoPill(label: '${seriesOptions.length} series'),
+                ],
               ),
               const SizedBox(height: AppSpacing.sm),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ChoiceChip(
-                        label: const Text('All series'),
-                        selected: _selectedSeries == null,
-                        onSelected: (_) =>
-                            setState(() => _selectedSeries = null),
-                      ),
-                    ),
-                    ...seriesOptions.map(
-                      (series) => Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: ChoiceChip(
-                          label: Text(series),
-                          selected: _selectedSeries == series,
-                          onSelected: (_) => setState(
-                            () => _selectedSeries =
-                                _selectedSeries == series ? null : series,
+              TextField(
+                controller: _seriesSearchController,
+                onChanged: (value) =>
+                    setState(() => _seriesSearchQuery = value),
+                decoration: InputDecoration(
+                  labelText: 'Find a series chip',
+                  hintText: 'Search the pool series list',
+                  prefixIcon: const Icon(Icons.filter_alt_outlined),
+                  suffixIcon: _seriesSearchQuery.trim().isEmpty
+                      ? null
+                      : IconButton(
+                          onPressed: _clearSeriesSearchQuery,
+                          icon: const Icon(Icons.close),
+                        ),
+                ),
+              ),
+              if (isShowingLimitedSeries) ...[
+                const SizedBox(height: AppSpacing.sm),
+                const Text(
+                  'Showing the top 12 series by pool count. Search above to reveal more series chips.',
+                  style: AppTextStyles.subtitle,
+                ),
+              ],
+              const SizedBox(height: AppSpacing.sm),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeOutCubic,
+                child: visibleSeriesOptions.isEmpty
+                    ? Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.12),
+                          ),
+                        ),
+                        child: const Text(
+                          'No series chips match the current series search.',
+                          style: AppTextStyles.subtitle,
+                        ),
+                      )
+                    : ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 168),
+                        child: SingleChildScrollView(
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              ChoiceChip(
+                                label: Text('All series • ${allPool.length}'),
+                                selected: _selectedSeries == null,
+                                onSelected: (_) =>
+                                    setState(() => _selectedSeries = null),
+                              ),
+                              ...visibleSeriesOptions.map(
+                                (series) => ChoiceChip(
+                                  label: Text(
+                                    '${series.label} • ${series.count}',
+                                  ),
+                                  selected: _selectedSeries == series.label,
+                                  onSelected: (_) => setState(
+                                    () => _selectedSeries =
+                                        _selectedSeries == series.label
+                                            ? null
+                                            : series.label,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
@@ -144,6 +222,7 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
                 const SizedBox(height: AppSpacing.md),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
+                  curve: Curves.easeOutCubic,
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: AppColors.secondary.withValues(alpha: 0.1),
@@ -208,99 +287,160 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
                           final character = filteredPool[index];
                           final isSelected =
                               widget.selectedCharacterId == character.id;
+                          final isHovered = _hoveredCharacterId == character.id;
 
-                          return Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(18),
-                              onTap: () =>
-                                  widget.onCharacterSelected?.call(character),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 180),
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? AppColors.primary
-                                          .withValues(alpha: 0.16)
-                                      : AppColors.surface
-                                          .withValues(alpha: 0.72),
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? AppColors.secondary
-                                            .withValues(alpha: 0.45)
-                                        : AppColors.primary
-                                            .withValues(alpha: 0.12),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 42,
-                                      height: 42,
-                                      decoration: BoxDecoration(
+                          return MouseRegion(
+                            onEnter: (_) => setState(
+                              () => _hoveredCharacterId = character.id,
+                            ),
+                            onExit: (_) {
+                              if (_hoveredCharacterId == character.id) {
+                                setState(() => _hoveredCharacterId = null);
+                              }
+                            },
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(18),
+                                onTap: () =>
+                                    widget.onCharacterSelected?.call(character),
+                                child: AnimatedScale(
+                                  duration: const Duration(milliseconds: 160),
+                                  curve: Curves.easeOutCubic,
+                                  scale: isHovered ? 1.01 : 1,
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 180),
+                                    curve: Curves.easeOutCubic,
+                                    padding: const EdgeInsets.all(14),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? AppColors.primary
+                                              .withValues(alpha: 0.16)
+                                          : isHovered
+                                              ? AppColors.primary
+                                                  .withValues(alpha: 0.08)
+                                              : AppColors.surface
+                                                  .withValues(alpha: 0.72),
+                                      borderRadius: BorderRadius.circular(18),
+                                      border: Border.all(
                                         color: isSelected
                                             ? AppColors.secondary
-                                                .withValues(alpha: 0.18)
-                                            : AppColors.primary
-                                                .withValues(alpha: 0.12),
-                                        borderRadius: BorderRadius.circular(14),
+                                                .withValues(alpha: 0.45)
+                                            : isHovered
+                                                ? AppColors.secondary
+                                                    .withValues(alpha: 0.26)
+                                                : AppColors.primary
+                                                    .withValues(alpha: 0.12),
                                       ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        '${index + 1}',
-                                        style: AppTextStyles.body.copyWith(
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
+                                      boxShadow: isHovered
+                                          ? [
+                                              BoxShadow(
+                                                color: AppColors.secondary
+                                                    .withValues(alpha: 0.12),
+                                                blurRadius: 16,
+                                                offset: const Offset(0, 8),
+                                              ),
+                                            ]
+                                          : const [],
                                     ),
-                                    const SizedBox(width: AppSpacing.md),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            character.name,
+                                    child: Row(
+                                      children: [
+                                        AnimatedContainer(
+                                          duration:
+                                              const Duration(milliseconds: 180),
+                                          curve: Curves.easeOutCubic,
+                                          width: 42,
+                                          height: 42,
+                                          decoration: BoxDecoration(
+                                            color: isSelected
+                                                ? AppColors.secondary
+                                                    .withValues(alpha: 0.18)
+                                                : isHovered
+                                                    ? AppColors.secondary
+                                                        .withValues(alpha: 0.12)
+                                                    : AppColors.primary
+                                                        .withValues(
+                                                        alpha: 0.12,
+                                                      ),
+                                            borderRadius:
+                                                BorderRadius.circular(14),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${index + 1}',
                                             style: AppTextStyles.body.copyWith(
-                                              fontWeight: FontWeight.w700,
+                                              fontWeight: FontWeight.w800,
                                             ),
                                           ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            character.series,
-                                            style: AppTextStyles.subtitle,
-                                          ),
-                                          const SizedBox(height: 6),
-                                          Wrap(
-                                            spacing: 8,
-                                            runSpacing: 6,
+                                        ),
+                                        const SizedBox(width: AppSpacing.md),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              _InlineMetaChip(
-                                                label: _formatDifficulty(
-                                                  character.difficulty,
+                                              Text(
+                                                character.name,
+                                                style:
+                                                    AppTextStyles.body.copyWith(
+                                                  fontWeight: FontWeight.w700,
                                                 ),
                                               ),
-                                              _InlineMetaChip(
-                                                label:
-                                                    '★ ${character.popularity}',
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                character.series,
+                                                style: AppTextStyles.subtitle,
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Wrap(
+                                                spacing: 8,
+                                                runSpacing: 6,
+                                                children: [
+                                                  _InlineMetaChip(
+                                                    label: _formatDifficulty(
+                                                      character.difficulty,
+                                                    ),
+                                                  ),
+                                                  _InlineMetaChip(
+                                                    label:
+                                                        '★ ${character.popularity}',
+                                                  ),
+                                                  if (!isSelected)
+                                                    _InlineMetaChip(
+                                                      label: isHovered
+                                                          ? 'Tap to stage'
+                                                          : 'Pool pick',
+                                                    ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        const SizedBox(width: AppSpacing.sm),
+                                        AnimatedSwitcher(
+                                          duration:
+                                              const Duration(milliseconds: 160),
+                                          child: Icon(
+                                            isSelected
+                                                ? Icons.check_circle
+                                                : isHovered
+                                                    ? Icons.touch_app_rounded
+                                                    : Icons
+                                                        .arrow_forward_ios_rounded,
+                                            key: ValueKey(
+                                              '${character.id}-$isSelected-$isHovered',
+                                            ),
+                                            size: isSelected ? 20 : 18,
+                                            color: isSelected
+                                                ? AppColors.secondary
+                                                : isHovered
+                                                    ? AppColors.secondary
+                                                    : AppColors.muted,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(width: AppSpacing.sm),
-                                    Icon(
-                                      isSelected
-                                          ? Icons.check_circle
-                                          : Icons.arrow_forward_ios_rounded,
-                                      size: isSelected ? 20 : 16,
-                                      color: isSelected
-                                          ? AppColors.secondary
-                                          : AppColors.muted,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -334,6 +474,16 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
         ),
       ),
     );
+  }
+
+  void _clearSearchQuery() {
+    _searchController.clear();
+    setState(() => _searchQuery = '');
+  }
+
+  void _clearSeriesSearchQuery() {
+    _seriesSearchController.clear();
+    setState(() => _seriesSearchQuery = '');
   }
 
   List<Character> _buildAllowedPool(List<Character> characters) {
@@ -380,22 +530,55 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
     return null;
   }
 
-  List<String> _buildSeriesOptions(List<Character> pool) {
+  List<_SeriesOption> _buildSeriesOptions(List<Character> pool) {
     final counts = <String, int>{};
     for (final character in pool) {
       counts[character.series] = (counts[character.series] ?? 0) + 1;
     }
 
-    final entries = counts.entries.toList()
+    final entries = counts.entries.map((entry) {
+      return _SeriesOption(label: entry.key, count: entry.value);
+    }).toList()
       ..sort((a, b) {
-        final countComparison = b.value.compareTo(a.value);
+        final countComparison = b.count.compareTo(a.count);
         if (countComparison != 0) {
           return countComparison;
         }
-        return a.key.compareTo(b.key);
+        return a.label.compareTo(b.label);
       });
 
-    return entries.take(12).map((entry) => entry.key).toList();
+    return entries;
+  }
+
+  List<_SeriesOption> _buildVisibleSeriesOptions(List<_SeriesOption> options) {
+    final normalizedQuery = _seriesSearchQuery.trim().toLowerCase();
+    final filtered = normalizedQuery.isEmpty
+        ? options.take(12).toList()
+        : options
+            .where(
+              (option) => option.label.toLowerCase().contains(normalizedQuery),
+            )
+            .take(24)
+            .toList();
+
+    final selectedSeries = _selectedSeries;
+    if (selectedSeries == null) {
+      return filtered;
+    }
+
+    final containsSelected =
+        filtered.any((option) => option.label == selectedSeries);
+    if (containsSelected) {
+      return filtered;
+    }
+
+    for (final option in options) {
+      if (option.label == selectedSeries) {
+        return [option, ...filtered];
+      }
+    }
+
+    return filtered;
   }
 
   String _formatDifficulty(DifficultyLevel difficulty) {
@@ -450,4 +633,11 @@ class _InlineMetaChip extends StatelessWidget {
       ),
     );
   }
+}
+
+class _SeriesOption {
+  const _SeriesOption({required this.label, required this.count});
+
+  final String label;
+  final int count;
 }
