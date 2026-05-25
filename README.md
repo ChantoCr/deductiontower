@@ -472,7 +472,7 @@ Current implemented state includes:
 
 If the app is already running after JSON asset updates, use a full restart so the refreshed character catalog is reloaded.
 
-The runtime catalog now includes the original starter roster plus multiple approved external-import batches. The live runtime catalog currently contains 1076 characters. The tag catalog currently contains 40 tags. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, the curated promotion preview currently contains 1276 total characters, and two additional approved 100-character batches remain staged for future runtime merges through the same review/approval/promotion flow.
+The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters.
 
 For the next handoff, see:
 - `docs/PR5_HANDOFF.md`

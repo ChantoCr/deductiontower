@@ -15569,5 +15569,2818 @@
     ],
     "difficulty": "hard",
     "popularity": 9
+  },
+  {
+    "id": "rigurd",
+    "name": "Rigurd",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "hero",
+      "non_human",
+      "leader",
+      "strategist",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "kaijin",
+    "name": "Kaijin",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "hero",
+      "strong",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "kurobee",
+    "name": "Kurobee",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "hero",
+      "black_hair",
+      "strong",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "souka",
+    "name": "Souka",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "hero",
+      "blue_hair",
+      "assassin",
+      "fast",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "treyni",
+    "name": "Treyni",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "hero",
+      "non_human",
+      "green_hair",
+      "super_powers",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "myourmiles",
+    "name": "Myourmiles",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "adalman",
+    "name": "Adalman",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "magic_user",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "hard",
+    "popularity": 8
+  },
+  {
+    "id": "albis",
+    "name": "Albis",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "strong",
+      "fast",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "suphia",
+    "name": "Suphia",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "strong",
+      "fast",
+      "muscular"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "phobio",
+    "name": "Phobio",
+    "series": "That Time I Got Reincarnated as a Slime",
+    "image": null,
+    "tags": [
+      "villain",
+      "strong",
+      "has_transformation"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "vt",
+    "name": "VT",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "mentor"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "annie",
+    "name": "Annie",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "blond_hair",
+      "strategist",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "mao_yenrai",
+    "name": "Mao Yenrai",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "villain",
+      "leader",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "punch",
+    "name": "Punch",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "hero",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "judy",
+    "name": "Judy",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "hero",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "wen",
+    "name": "Wen",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "villain",
+      "young",
+      "has_transformation",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "stella_bonnaro",
+    "name": "Stella Bonnaro",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "has_tragic_past",
+      "young"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "roco_bonnaro",
+    "name": "Roco Bonnaro",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "has_tragic_past",
+      "young"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "doohan",
+    "name": "Doohan",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "carlos",
+    "name": "Carlos",
+    "series": "Cowboy Bebop",
+    "image": null,
+    "tags": [
+      "hero",
+      "gun_user",
+      "strategist",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "knives_millions",
+    "name": "Knives Millions",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "leader",
+      "super_powers",
+      "strategist"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "kuroneko_sama",
+    "name": "Kuroneko-sama",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "hero",
+      "non_human",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "monique",
+    "name": "Monique",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "gun_user",
+      "strategist",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "hoppered_the_gauntlet",
+    "name": "Hoppered the Gauntlet",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "gun_user",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "e_g_mine",
+    "name": "E.G. Mine",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "strategist",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "rai_dei_the_blade",
+    "name": "Rai-Dei the Blade",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "uses_sword",
+      "strong",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "monev_the_gale",
+    "name": "Monev the Gale",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "muscular",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "leonof_the_puppetmaster",
+    "name": "Leonof the Puppetmaster",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "strategist",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "elendira_the_crimsonnail",
+    "name": "Elendira the Crimsonnail",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "assassin",
+      "strong",
+      "fast"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "razlo_the_tri_punisher",
+    "name": "Razlo the Tri-Punisher",
+    "series": "Trigun",
+    "image": null,
+    "tags": [
+      "villain",
+      "has_transformation",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "ryoma_terasaka",
+    "name": "Ryoma Terasaka",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "strong",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "hinano_kurahashi",
+    "name": "Hinano Kurahashi",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "kotaro_takebayashi",
+    "name": "Kotaro Takebayashi",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "taisei_yoshida",
+    "name": "Taisei Yoshida",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "kirara_hazama",
+    "name": "Kirara Hazama",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "villain",
+      "young",
+      "student",
+      "strategist",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "yuzuki_fuwa",
+    "name": "Yuzuki Fuwa",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "tomohito_sugino",
+    "name": "Tomohito Sugino",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "fast",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "ryunosuke_chiba",
+    "name": "Ryunosuke Chiba",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "gun_user",
+      "strategist",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "toka_yada",
+    "name": "Toka Yada",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "fast",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "yuma_isogai",
+    "name": "Yuma Isogai",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "leader",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "henry_henderson",
+    "name": "Henry Henderson",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "emile_elman",
+    "name": "Emile Elman",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "blond_hair",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "ewen_egeburg",
+    "name": "Ewen Egeburg",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "martha_marriott",
+    "name": "Martha Marriott",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "strong",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "dominic",
+    "name": "Dominic",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "camilla",
+    "name": "Camilla",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "millie",
+    "name": "Millie",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "sharon",
+    "name": "Sharon",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "chloe",
+    "name": "Chloe",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "gun_user",
+      "strategist",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "daybreak",
+    "name": "Daybreak",
+    "series": "Spy x Family",
+    "image": null,
+    "tags": [
+      "rival",
+      "strategist",
+      "fast",
+      "villain"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "renzou_shima",
+    "name": "Renzou Shima",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "arthur_a_angel",
+    "name": "Arthur A. Angel",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "uses_sword",
+      "leader",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "lewin_light",
+    "name": "Lewin Light",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "blond_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "saburouta_toudou",
+    "name": "Saburouta Toudou",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "villain",
+      "white_hair",
+      "uses_sword",
+      "strategist",
+      "strong"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "juzo_shima",
+    "name": "Juzo Shima",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "mamushi_hojo",
+    "name": "Mamushi Hojo",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "hero",
+      "black_hair",
+      "strategist",
+      "super_powers",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "nemu_takara",
+    "name": "Nemu Takara",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "strategist",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "noriko_paku",
+    "name": "Noriko Paku",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "rick_lincoln",
+    "name": "Rick Lincoln",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "hero",
+      "strong",
+      "gun_user",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "igor_neuhaus",
+    "name": "Igor Neuhaus",
+    "series": "Blue Exorcist",
+    "image": null,
+    "tags": [
+      "villain",
+      "strategist",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "sid_barrett",
+    "name": "Sid Barrett",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "black_hair",
+      "super_powers",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "marie_mjolnir",
+    "name": "Marie Mjolnir",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "blond_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "eruka_frog",
+    "name": "Eruka Frog",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "magic_user",
+      "strategist",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "justin_law",
+    "name": "Justin Law",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "gun_user",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "azusa_yumi",
+    "name": "Azusa Yumi",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "hero",
+      "black_hair",
+      "uses_sword",
+      "strategist",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "ox_ford",
+    "name": "Ox Ford",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "black_hair",
+      "strong",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "kim_diehl",
+    "name": "Kim Diehl",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "blond_hair",
+      "magic_user",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "giriko",
+    "name": "Giriko",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "villain",
+      "uses_sword",
+      "strong",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "mosquito",
+    "name": "Mosquito",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "has_transformation",
+      "super_powers",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "free",
+    "name": "Free",
+    "series": "Soul Eater",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "magic_user",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "iris",
+    "name": "Iris",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "hero",
+      "white_hair",
+      "strategist",
+      "has_tragic_past"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "viktor_licht",
+    "name": "Viktor Licht",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "vulcan_joseph",
+    "name": "Vulcan Joseph",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "lisa_isaribi",
+    "name": "Lisa Isaribi",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "arrow",
+    "name": "Arrow",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "black_hair",
+      "gun_user",
+      "strong",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "karim_fulham",
+    "name": "Karim Fulham",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "hero",
+      "blue_hair",
+      "ice_user",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "ogun_montgomery",
+    "name": "Ogun Montgomery",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "hero",
+      "black_hair",
+      "strong",
+      "fire_user",
+      "super_powers",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "charon",
+    "name": "Charon",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "muscular",
+      "strong",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "haumea",
+    "name": "Haumea",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "psychic",
+      "super_powers",
+      "strategist"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "juggernaut",
+    "name": "Juggernaut",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "strong",
+      "fire_user",
+      "super_powers",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "sachiko_yagami",
+    "name": "Sachiko Yagami",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "has_tragic_past"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "sayu_yagami",
+    "name": "Sayu Yagami",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "has_tragic_past",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "shuichi_aizawa",
+    "name": "Shuichi Aizawa",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "gun_user",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "kanzo_mogi",
+    "name": "Kanzo Mogi",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "strong",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "hideki_ide",
+    "name": "Hideki Ide",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "stephen_gevanni",
+    "name": "Stephen Gevanni",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "wedy",
+    "name": "Wedy",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "villain",
+      "strategist",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "aiber",
+    "name": "Aiber",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "villain",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "kyosuke_higuchi",
+    "name": "Kyosuke Higuchi",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "villain",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "reiji_namikawa",
+    "name": "Reiji Namikawa",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "villain",
+      "brown_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "rivalz_cardemonde",
+    "name": "Rivalz Cardemonde",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "young",
+      "strategist",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "nina_einstein",
+    "name": "Nina Einstein",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "student",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "ougi_kaname",
+    "name": "Ougi Kaname",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "leader",
+      "strategist",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "kanon_maldini",
+    "name": "Kanon Maldini",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "xingke",
+    "name": "Xingke",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "black_hair",
+      "leader",
+      "strong",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "marianne_vi_britannia",
+    "name": "Marianne vi Britannia",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "blond_hair",
+      "has_tragic_past",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "bismarck_waldstein",
+    "name": "Bismarck Waldstein",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "uses_sword",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "luciano_bradley",
+    "name": "Luciano Bradley",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "strong",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "cecile_croomy",
+    "name": "Cecile Croomy",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "strategist",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "v_v",
+    "name": "V.V.",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "strategist",
+      "super_powers",
+      "leader"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "takuya_muramatsu",
+    "name": "Takuya Muramatsu",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "brown_hair",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "taiga_okajima",
+    "name": "Taiga Okajima",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "hiroto_maehara",
+    "name": "Hiroto Maehara",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "brown_hair",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "sumire_hara",
+    "name": "Sumire Hara",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "sosuke_sugaya",
+    "name": "Sosuke Sugaya",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "brown_hair",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "yukiko_kanzaki",
+    "name": "Yukiko Kanzaki",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "black_hair",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "megu_kataoka",
+    "name": "Megu Kataoka",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "hinata_okano",
+    "name": "Hinata Okano",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "rinka_hayami",
+    "name": "Rinka Hayami",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "student",
+      "gun_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "aguri_yukimura",
+    "name": "Aguri Yukimura",
+    "series": "Assassination Classroom",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "black_hair",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "diethard_ried",
+    "name": "Diethard Ried",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "villain",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "kaguya_sumeragi",
+    "name": "Kaguya Sumeragi",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "black_hair",
+      "leader",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "rakshata_chawla",
+    "name": "Rakshata Chawla",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 8
+  },
+  {
+    "id": "milly_ashford",
+    "name": "Milly Ashford",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "blond_hair",
+      "leader"
+    ],
+    "difficulty": "easy",
+    "popularity": 8
+  },
+  {
+    "id": "mao",
+    "name": "Mao",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "villain",
+      "psychic",
+      "has_tragic_past",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 8
+  },
+  {
+    "id": "tamaki",
+    "name": "Tamaki",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "kyoshiro_tohdoh",
+    "name": "Kyoshiro Tohdoh",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "uses_sword",
+      "leader"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "nagisa_chiba",
+    "name": "Nagisa Chiba",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "uses_sword",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "monica_kruszewski",
+    "name": "Monica Kruszewski",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "gilbert_g_p_guilford",
+    "name": "Gilbert G.P. Guilford",
+    "series": "Code Geass: Lelouch of the Rebellion",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "leader",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "hitoshi_demegawa",
+    "name": "Hitoshi Demegawa",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "villain",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "kal_snyder",
+    "name": "Kal Snyder",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "villain",
+      "gun_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "jack_neylon",
+    "name": "Jack Neylon",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "villain",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "kiichiro_osoreda",
+    "name": "Kiichiro Osoreda",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "villain",
+      "gun_user",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "masahiko_kida",
+    "name": "Masahiko Kida",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "hirokazu_ukita",
+    "name": "Hirokazu Ukita",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "gun_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "sidoh",
+    "name": "Sidoh",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "non_human",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "gelus",
+    "name": "Gelus",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "non_human",
+      "has_tragic_past",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "lind_l_tailor",
+    "name": "Lind L. Tailor",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "has_tragic_past"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "anthony_rester",
+    "name": "Anthony Rester",
+    "series": "Death Note",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "gun_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "iaian",
+    "name": "Iaian",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "uses_sword",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "okamaitachi",
+    "name": "Okamaitachi",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "uses_sword",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "bushidrill",
+    "name": "Bushidrill",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "strong",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "amai_mask",
+    "name": "Amai Mask",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "has_transformation",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "stinger",
+    "name": "Stinger",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "uses_sword",
+      "fast"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "lightning_max",
+    "name": "Lightning Max",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "snek",
+    "name": "Snek",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "golden_ball",
+    "name": "Golden Ball",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "strategist",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "spring_mustachio",
+    "name": "Spring Mustachio",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "uses_sword",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "charanko",
+    "name": "Charanko",
+    "series": "One Punch Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "martial_artist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "rinku",
+    "name": "Rinku",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "villain",
+      "young",
+      "fast",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "suzuki",
+    "name": "Suzuki",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "villain",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "seaman",
+    "name": "Seaman",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "villain",
+      "psychic",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "itsuki",
+    "name": "Itsuki",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "villain",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "gamemaster",
+    "name": "Gamemaster",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "villain",
+      "young",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "sniper",
+    "name": "Sniper",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "villain",
+      "gun_user",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "koto",
+    "name": "Koto",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "hero",
+      "pink_hair",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "juri",
+    "name": "Juri",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "hero",
+      "blue_hair",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "zeru",
+    "name": "Zeru",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "villain",
+      "fire_user",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "doctor_kamiya",
+    "name": "Doctor Kamiya",
+    "series": "Yu Yu Hakusho",
+    "image": null,
+    "tags": [
+      "villain",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "robert_e_o_speedwagon",
+    "name": "Robert E.O. Speedwagon",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "erina_pendleton",
+    "name": "Erina Pendleton",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "lisa_lisa",
+    "name": "Lisa Lisa",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "blond_hair",
+      "martial_artist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "kars",
+    "name": "Kars",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "has_transformation",
+      "strong"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "esidisi",
+    "name": "Esidisi",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "fire_user",
+      "strong"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "wamuu",
+    "name": "Wamuu",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "fast",
+      "strong"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "koichi_hirose",
+    "name": "Koichi Hirose",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "black_hair",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "yukako_yamagishi",
+    "name": "Yukako Yamagishi",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "villain",
+      "black_hair",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "trish_una",
+    "name": "Trish Una",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "hero",
+      "pink_hair",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "pannacotta_fugo",
+    "name": "Pannacotta Fugo",
+    "series": "JoJo's Bizarre Adventure",
+    "image": null,
+    "tags": [
+      "rival",
+      "young",
+      "has_tragic_past",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "totosai",
+    "name": "Totosai",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "non_human",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "kaede",
+    "name": "Kaede",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "white_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "myoga",
+    "name": "Myoga",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "hero",
+      "non_human",
+      "fast"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "muso",
+    "name": "Muso",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "villain",
+      "has_transformation",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "hakudoshi",
+    "name": "Hakudoshi",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "villain",
+      "white_hair",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "kageromaru",
+    "name": "Kageromaru",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "villain",
+      "has_transformation",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "juromaru",
+    "name": "Juromaru",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "villain",
+      "has_transformation",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "tsubaki",
+    "name": "Tsubaki",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "villain",
+      "black_hair",
+      "magic_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "kaijinbo",
+    "name": "Kaijinbo",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "villain",
+      "uses_sword",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "mistress_centipede",
+    "name": "Mistress Centipede",
+    "series": "Inuyasha",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "lisanna_strauss",
+    "name": "Lisanna Strauss",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "hero",
+      "white_hair",
+      "has_transformation"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "aquarius",
+    "name": "Aquarius",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "hero",
+      "blue_hair",
+      "non_human",
+      "water_user",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "freed_justine",
+    "name": "Freed Justine",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "hero",
+      "green_hair",
+      "magic_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "bickslow",
+    "name": "Bickslow",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "hero",
+      "white_hair",
+      "magic_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "evergreen",
+    "name": "Evergreen",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "villain",
+      "green_hair",
+      "magic_user"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "lyon_vastia",
+    "name": "Lyon Vastia",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "hero",
+      "white_hair",
+      "ice_user",
+      "magic_user"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "bacchus_groh",
+    "name": "Bacchus Groh",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "hero",
+      "blond_hair",
+      "martial_artist",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "cobra",
+    "name": "Cobra",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "villain",
+      "green_hair",
+      "assassin",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "minerva_orland",
+    "name": "Minerva Orland",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "villain",
+      "purple_hair",
+      "magic_user",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "brandish",
+    "name": "Brandish",
+    "series": "Fairy Tail",
+    "image": null,
+    "tags": [
+      "villain",
+      "green_hair",
+      "magic_user",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "pochita",
+    "name": "Pochita",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "non_human",
+      "has_transformation",
+      "super_powers"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "hirofumi_yoshida",
+    "name": "Hirofumi Yoshida",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "black_hair",
+      "assassin",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "hirokazu_arai",
+    "name": "Hirokazu Arai",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "black_hair",
+      "gun_user",
+      "has_tragic_past"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "haruka_iseumi",
+    "name": "Haruka Iseumi",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "rival",
+      "young",
+      "black_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "nobana_higashiyama",
+    "name": "Nobana Higashiyama",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "young",
+      "brown_hair",
+      "has_tragic_past"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "seigi_akoku",
+    "name": "Seigi Akoku",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "rival",
+      "young",
+      "strong"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "miri_sugo",
+    "name": "Miri Sugo",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "villain",
+      "has_transformation",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "barem_bridge",
+    "name": "Barem Bridge",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "villain",
+      "blond_hair",
+      "fire_user",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "fumiko_mifune",
+    "name": "Fumiko Mifune",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "gun_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "cosmo",
+    "name": "Cosmo",
+    "series": "Chainsaw Man",
+    "image": null,
+    "tags": [
+      "villain",
+      "pink_hair",
+      "psychic",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "akitaru_obi",
+    "name": "Akitaru Obi",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "leader",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "konro_sagamiya",
+    "name": "Konro Sagamiya",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "fire_user",
+      "has_tragic_past",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "yona",
+    "name": "Yona",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "has_transformation",
+      "strategist",
+      "super_powers"
+    ],
+    "difficulty": "hard",
+    "popularity": 9
+  },
+  {
+    "id": "scop",
+    "name": "Scop",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "non_human",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "orochi",
+    "name": "Orochi",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "black_hair",
+      "assassin",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "pan_ko_paat",
+    "name": "Pan Ko Paat",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "mentor",
+      "hero",
+      "blond_hair",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "asako_hague",
+    "name": "Asako Hague",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strategist"
+    ],
+    "difficulty": "easy",
+    "popularity": 9
+  },
+  {
+    "id": "tooru_kishiri",
+    "name": "Tooru Kishiri",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "gun_user",
+      "strategist"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "li_flail",
+    "name": "Li Flail",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "villain",
+      "muscular",
+      "strong"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
+  },
+  {
+    "id": "takigi_oze",
+    "name": "Takigi Oze",
+    "series": "Fire Force",
+    "image": null,
+    "tags": [
+      "hero",
+      "brown_hair",
+      "strong",
+      "fire_user",
+      "super_powers"
+    ],
+    "difficulty": "medium",
+    "popularity": 9
   }
 ]

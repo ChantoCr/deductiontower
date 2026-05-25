@@ -37,6 +37,7 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
   late final TextEditingController _guessController;
   String? _selectedCharacterId;
   String? _revealedPlayerId;
+  bool _isSecretTraitVisible = false;
 
   @override
   void initState() {
@@ -70,13 +71,21 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
   void _revealCurrentTurn(String playerId) {
     setState(() {
       _revealedPlayerId = playerId;
+      _isSecretTraitVisible = false;
+    });
+  }
+
+  void _toggleSecretTraitVisibility() {
+    setState(() {
+      _isSecretTraitVisible = !_isSecretTraitVisible;
     });
   }
 
   Future<void> _submitCharacterGuess(GameMatch match) async {
     try {
       final characters = await ref.read(charactersProvider.future);
-      final categories = (await ref.read(validatedTraitCatalogProvider.future)).validCategories;
+      final categories = (await ref.read(validatedTraitCatalogProvider.future))
+          .validCategories;
       final guessedCharacter = _resolveGuessedCharacter(match, characters);
 
       if (guessedCharacter == null) {
@@ -84,11 +93,12 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
         return;
       }
 
-      final result = ref.read(matchControllerProvider.notifier).submitCharacterGuess(
-        characterId: guessedCharacter.id,
-        characters: characters,
-        categories: categories,
-      );
+      final result =
+          ref.read(matchControllerProvider.notifier).submitCharacterGuess(
+                characterId: guessedCharacter.id,
+                characters: characters,
+                categories: categories,
+              );
 
       _clearCharacterSelection();
 
@@ -98,7 +108,9 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 
       await AppDialog.showInfo(
         context,
-        title: result.isCorrect ? 'Character Guess Correct' : 'Character Guess Incorrect',
+        title: result.isCorrect
+            ? 'Character Guess Correct'
+            : 'Character Guess Incorrect',
         message: result.message,
       );
 
@@ -114,11 +126,13 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 
   Future<void> _submitTraitGuess(TraitCategory guessedTrait) async {
     try {
-      final categories = (await ref.read(validatedTraitCatalogProvider.future)).validCategories;
-      final result = ref.read(matchControllerProvider.notifier).submitTraitGuess(
-        guessedTraitId: guessedTrait.id,
-        categories: categories,
-      );
+      final categories = (await ref.read(validatedTraitCatalogProvider.future))
+          .validCategories;
+      final result =
+          ref.read(matchControllerProvider.notifier).submitTraitGuess(
+                guessedTraitId: guessedTrait.id,
+                categories: categories,
+              );
 
       if (!mounted) {
         return;
@@ -126,7 +140,8 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 
       await AppDialog.showInfo(
         context,
-        title: result.isCorrect ? 'Trait Guess Correct' : 'Trait Guess Incorrect',
+        title:
+            result.isCorrect ? 'Trait Guess Correct' : 'Trait Guess Incorrect',
         message: result.message,
       );
 
@@ -142,10 +157,11 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 
   Future<void> _requestHint() async {
     try {
-      final categories = (await ref.read(validatedTraitCatalogProvider.future)).validCategories;
+      final categories = (await ref.read(validatedTraitCatalogProvider.future))
+          .validCategories;
       final hint = ref.read(matchControllerProvider.notifier).requestHint(
-        categories: categories,
-      );
+            categories: categories,
+          );
 
       if (!mounted) {
         return;
@@ -165,6 +181,16 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
     } catch (error) {
       _showMessage('$error');
     }
+  }
+
+  Future<void> _openTraitGuessDialog(List<TraitCategory> categories) {
+    return showDialog<void>(
+      context: context,
+      builder: (_) => CategoryGuessDialog(
+        categories: categories,
+        onTraitSelected: _submitTraitGuess,
+      ),
+    );
   }
 
   Future<void> _confirmSurrender() async {
@@ -275,7 +301,10 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Private Turn Protection', style: AppTextStyles.title),
+                const Text(
+                  'Private Turn Protection',
+                  style: AppTextStyles.title,
+                ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Only ${match.currentPlayer.name} should be looking at the screen right now.',
@@ -306,9 +335,32 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
       match: match,
     );
     final latestPublicEvent = match.turns.isEmpty ? null : historyItems.first;
+    final selectedCharacterName = _selectedCharacterId == null
+        ? null
+        : _findCharacterName(
+            characters: characters,
+            characterId: _selectedCharacterId!,
+          );
 
     return AppScaffold(
       title: 'Match',
+      bottomBar: _MatchActionBar(
+        guessController: _guessController,
+        selectedCharacterName: selectedCharacterName,
+        canRequestHint:
+            categories.isNotEmpty && match.currentPlayer.hintsRemaining > 0,
+        canGuessTag: categories.isNotEmpty,
+        onClearSelection: _clearCharacterSelection,
+        onSubmitCharacterGuess: () => _submitCharacterGuess(match),
+        onRequestHint: _requestHint,
+        onGuessTag: () => _openTraitGuessDialog(categories),
+        onSurrender: _confirmSurrender,
+        onGuessChanged: () {
+          if (_selectedCharacterId != null) {
+            setState(() => _selectedCharacterId = null);
+          }
+        },
+      ),
       child: ListView(
         children: [
           TurnPanel(
@@ -316,17 +368,22 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
             hints: match.currentPlayer.hintsRemaining,
           ),
           const SizedBox(height: AppSpacing.md),
-          TowerView(label: 'Shared Character Pool • ${match.characterPoolIds.length} available'),
+          TowerView(
+            label:
+                'Shared Character Pool • ${match.characterPoolIds.length} available',
+          ),
           const SizedBox(height: AppSpacing.md),
           SecretTraitCard(
-            title: 'Your Secret Trait',
-            value: currentPlayerTraitLabel ?? 'Trait unavailable',
+            title: 'Your Secret Tag Reminder',
+            value: currentPlayerTraitLabel ?? 'Tag unavailable',
+            isRevealed: _isSecretTraitVisible,
+            onToggleVisibility: _toggleSecretTraitVisibility,
           ),
           const SizedBox(height: AppSpacing.md),
           HintPanel(
             hint: match.currentPlayer.hintsRemaining > 0
-                ? 'Request a private hint about the opponent\'s trait. It consumes one hint, then the device passes to the next player.'
-                : 'No hints remain for this player. Use character and trait guesses to continue deducing the answer.',
+                ? 'Request a private hint about the opponent\'s secret tag. It consumes one hint, then the device passes to the next player.'
+                : 'No hints remain for this player. Use character and tag guesses to continue deducing the answer.',
           ),
           if (latestPublicEvent != null) ...[
             const SizedBox(height: AppSpacing.md),
@@ -357,65 +414,21 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
               _selectCharacter(character.id, character.name);
             },
           ),
-          const SizedBox(height: AppSpacing.lg),
-          TextField(
-            controller: _guessController,
-            decoration: const InputDecoration(
-              labelText: 'Enter a character guess',
-              helperText: 'Tap a character in the pool to autofill this field.',
-            ),
-            onChanged: (_) {
-              if (_selectedCharacterId != null) {
-                setState(() => _selectedCharacterId = null);
-              }
-            },
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppButton(
-            label: 'Submit Character Guess',
-            icon: Icons.check_circle_outline,
-            onPressed: () => _submitCharacterGuess(match),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppButton(
-            label: 'Request Hint',
-            icon: Icons.lightbulb_outline,
-            isPrimary: false,
-            onPressed: categories.isEmpty || match.currentPlayer.hintsRemaining <= 0
-                ? null
-                : _requestHint,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppButton(
-            label: 'Guess Secret Trait',
-            icon: Icons.psychology_alt_outlined,
-            onPressed: categories.isEmpty
-                ? null
-                : () => showDialog<void>(
-                    context: context,
-                    builder: (_) => CategoryGuessDialog(
-                      categories: categories,
-                      onTraitSelected: _submitTraitGuess,
-                    ),
-                  ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          AppButton(
-            label: 'Surrender Match',
-            icon: Icons.flag_outlined,
-            isPrimary: false,
-            onPressed: _confirmSurrender,
-          ),
+          const SizedBox(height: 220),
         ],
       ),
     );
   }
 
-  Character? _resolveGuessedCharacter(GameMatch match, List<Character> characters) {
+  Character? _resolveGuessedCharacter(
+    GameMatch match,
+    List<Character> characters,
+  ) {
     if (_selectedCharacterId != null) {
       return characters.firstWhere(
         (character) => character.id == _selectedCharacterId,
-        orElse: () => throw StateError('Selected character could not be found.'),
+        orElse: () =>
+            throw StateError('Selected character could not be found.'),
       );
     }
 
@@ -460,8 +473,11 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
               final outcome = turn.wasCorrect ? 'correct' : 'wrong';
               return '$playerName guessed $characterName ($outcome)';
             case TurnActionType.guessTrait:
-              final traitLabel =
-                  _findTraitLabel(categories: categories, traitId: turn.value) ?? turn.value;
+              final traitLabel = _findTraitLabel(
+                    categories: categories,
+                    traitId: turn.value,
+                  ) ??
+                  turn.value;
               final outcome = turn.wasCorrect ? 'correct' : 'wrong';
               return '$playerName guessed trait $traitLabel ($outcome)';
             case TurnActionType.surrender:
@@ -524,5 +540,110 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
     }
 
     return null;
+  }
+}
+
+class _MatchActionBar extends StatelessWidget {
+  const _MatchActionBar({
+    required this.guessController,
+    required this.onGuessChanged,
+    required this.onSubmitCharacterGuess,
+    required this.onRequestHint,
+    required this.onGuessTag,
+    required this.onSurrender,
+    required this.onClearSelection,
+    required this.canRequestHint,
+    required this.canGuessTag,
+    this.selectedCharacterName,
+  });
+
+  final TextEditingController guessController;
+  final VoidCallback onGuessChanged;
+  final VoidCallback onSubmitCharacterGuess;
+  final VoidCallback onRequestHint;
+  final VoidCallback onGuessTag;
+  final VoidCallback onSurrender;
+  final VoidCallback onClearSelection;
+  final bool canRequestHint;
+  final bool canGuessTag;
+  final String? selectedCharacterName;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text('Action Console', style: AppTextStyles.title),
+              ),
+              if (selectedCharacterName != null)
+                TextButton.icon(
+                  onPressed: onClearSelection,
+                  icon: const Icon(Icons.close, size: 16),
+                  label: const Text('Clear'),
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            selectedCharacterName == null
+                ? 'Pick from the pool or type an exact character name, then submit without scrolling away from the action area.'
+                : 'Ready to submit: $selectedCharacterName',
+            style: AppTextStyles.subtitle,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextField(
+            controller: guessController,
+            decoration: const InputDecoration(
+              labelText: 'Character guess',
+              helperText:
+                  'Pool tap autofills this field. Exact name matching still works.',
+              prefixIcon: Icon(Icons.person_search_outlined),
+            ),
+            onChanged: (_) => onGuessChanged(),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: 'Submit Character Guess',
+            icon: Icons.check_circle_outline,
+            onPressed: onSubmitCharacterGuess,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              Expanded(
+                child: AppButton(
+                  label: 'Request Hint',
+                  icon: Icons.lightbulb_outline,
+                  isPrimary: false,
+                  onPressed: canRequestHint ? onRequestHint : null,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: AppButton(
+                  label: 'Guess Tag',
+                  icon: Icons.psychology_alt_outlined,
+                  isPrimary: false,
+                  onPressed: canGuessTag ? onGuessTag : null,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: 'Surrender Match',
+            icon: Icons.flag_outlined,
+            isPrimary: false,
+            onPressed: onSurrender,
+          ),
+        ],
+      ),
+    );
   }
 }

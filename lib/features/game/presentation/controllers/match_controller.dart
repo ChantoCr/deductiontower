@@ -19,10 +19,10 @@ class MatchController extends StateNotifier<GameMatch?> {
     required GameEngine gameEngine,
     required HintEngine hintEngine,
     required TraitFilterEngine traitFilterEngine,
-  }) : _gameEngine = gameEngine,
-       _hintEngine = hintEngine,
-       _traitFilterEngine = traitFilterEngine,
-       super(null);
+  })  : _gameEngine = gameEngine,
+        _hintEngine = hintEngine,
+        _traitFilterEngine = traitFilterEngine,
+        super(null);
 
   final GameEngine _gameEngine;
   final HintEngine _hintEngine;
@@ -61,14 +61,16 @@ class MatchController extends StateNotifier<GameMatch?> {
         id: 'player_one',
         name: playerOneName,
         secretTraitId: playerOneTrait.id,
-        validCharacterIds: playerOneValidCharacters.map((character) => character.id).toList(),
+        validCharacterIds:
+            playerOneValidCharacters.map((character) => character.id).toList(),
         hintsRemaining: hintsPerPlayer,
       ),
       playerTwo: Player(
         id: 'player_two',
         name: playerTwoName,
         secretTraitId: playerTwoTrait.id,
-        validCharacterIds: playerTwoValidCharacters.map((character) => character.id).toList(),
+        validCharacterIds:
+            playerTwoValidCharacters.map((character) => character.id).toList(),
         hintsRemaining: hintsPerPlayer,
       ),
       characterPoolIds: characterPoolIds,
@@ -101,8 +103,8 @@ class MatchController extends StateNotifier<GameMatch?> {
     return GuessResult(
       isCorrect: wasCorrect,
       message: wasCorrect
-          ? '${guessedCharacter.name} matches the opponent\'s hidden trait.'
-          : '${guessedCharacter.name} does not match the opponent\'s hidden trait.',
+          ? '${guessedCharacter.name} matches the opponent\'s hidden tag.'
+          : '${guessedCharacter.name} does not match the opponent\'s hidden tag.',
       guessedValue: guessedCharacter.name,
       actionType: updatedMatch.turns.last.actionType,
     );
@@ -130,7 +132,7 @@ class MatchController extends StateNotifier<GameMatch?> {
       isCorrect: wasCorrect,
       message: wasCorrect
           ? '${guessedTrait.label} is correct. The match is over.'
-          : '${guessedTrait.label} is not the opponent\'s hidden trait.',
+          : '${guessedTrait.label} is not the opponent\'s hidden tag.',
       guessedValue: guessedTrait.label,
       actionType: updatedMatch.turns.last.actionType,
     );
@@ -187,12 +189,15 @@ class MatchController extends StateNotifier<GameMatch?> {
     required String characterId,
   }) {
     if (!match.characterPoolIds.contains(characterId)) {
-      throw StateError('Character $characterId is not part of the current pool.');
+      throw StateError(
+        'Character $characterId is not part of the current pool.',
+      );
     }
 
     return characters.firstWhere(
       (character) => character.id == characterId,
-      orElse: () => throw StateError('Character with id $characterId was not found.'),
+      orElse: () =>
+          throw StateError('Character with id $characterId was not found.'),
     );
   }
 
@@ -206,7 +211,8 @@ class MatchController extends StateNotifier<GameMatch?> {
   }
 }
 
-final matchControllerProvider = StateNotifierProvider<MatchController, GameMatch?>(
+final matchControllerProvider =
+    StateNotifierProvider<MatchController, GameMatch?>(
   (ref) => MatchController(
     gameEngine: ref.watch(gameEngineProvider),
     hintEngine: ref.watch(hintEngineProvider),

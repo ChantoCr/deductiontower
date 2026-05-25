@@ -1,10 +1,10 @@
-# PR5 Handoff — Runtime Merge + Batch 16 Staging
+# PR5 Handoff — Approved Catalog Fully Live + Gameplay/UI Retake Ready
 
 ## Project
 
 **Anime Deduction Tower**
 
-Flutter + Flame deduction game with local multiplayer, shared character-pool gameplay, and an incremental MAL/Jikan-style import pipeline that feeds reviewed character batches into the live runtime catalog.
+Flutter + Flame deduction game with local multiplayer, a shared character-pool deduction loop, and a curated MAL/Jikan-style import pipeline.
 
 ---
 
@@ -14,145 +14,34 @@ The app loads its live character catalog from:
 - `assets/data/characters.json`
 
 Current runtime catalog size:
-- **1076 characters**
+- **1276 characters**
 
-That runtime file now includes:
-- original starter characters
-- previously merged approved MAL/Jikan-style import batches
-- the newly merged former staged 100-character batch led by ids like `shizune`, `charlotte_perospero`, `chojiro_sasakibe`, `king_vegeta`, `thirteen`, `remi`, `sekke_bronzazza`, `amane`, `dimo_reeves`, and `kanao_tsuyuri`
+Current tag catalog size:
+- **40 tags**
+
+Important runtime result from this pass:
+- all currently approved imported characters have now been merged into the live runtime catalog
+- `assets/data/characters.json` now matches the current approved promotion preview output
+- the secret-tag selection flow now exposes **every playable tag** in the catalog through `assets/data/categories.json`
 
 Important runtime note:
 - if the app was already running while JSON assets changed, do a **full restart** so Flutter reloads the asset bundle
 
 ---
 
-## Current Staged Promotion Status
+## Current Import / Promotion Status
 
-There are **200 approved promoted characters staged but not yet merged into runtime**.
-
-### Older staged 100-character batch
-This is now the next batch waiting to be merged into runtime.
-
-Representative ids from that staged batch:
-- `rigurd`
-- `vt`
-- `knives_millions`
-- `ryoma_terasaka`
-- `henry_henderson`
-- `renzou_shima`
-- `sid_barrett`
-- `iris`
-- `sachiko_yagami`
-- `rivalz_cardemonde`
-
-Series coverage in that staged batch:
-- That Time I Got Reincarnated as a Slime
-- Cowboy Bebop
-- Trigun
-- Assassination Classroom
-- Spy x Family
-- Blue Exorcist
-- Soul Eater
-- Fire Force
-- Death Note
-- Code Geass: Lelouch of the Rebellion
-
-### Newer staged 100-character batch
-This newer staged batch was added in this chat.
-
-Representative ids from that staged batch:
-- `takuya_muramatsu`
-- `diethard_ried`
-- `hitoshi_demegawa`
-- `iaian`
-- `rinku`
-- `robert_e_o_speedwagon`
-- `totosai`
-- `lisanna_strauss`
-- `pochita`
-- `akitaru_obi`
-
-Series coverage in that staged batch:
-- Assassination Classroom
-- Code Geass: Lelouch of the Rebellion
-- Death Note
-- One Punch Man
-- Yu Yu Hakusho
-- JoJo's Bizarre Adventure
-- Inuyasha
-- Fairy Tail
-- Chainsaw Man
-- Fire Force
-
----
-
-## What Was Completed In This Chat
-
-### 1. Merged the approved older staged 100-character batch into runtime
-This chat explicitly merged the older staged approved batch into:
-- `assets/data/characters.json`
-
-Runtime now contains **1076 characters**.
-
-### 2. Performed another richer tag-review pass on the remaining staged backlog
-This chat reviewed the current staged batch led by `rigurd` and added broader descriptor overlap where clearly justified.
-
-Additional reviewed tags were added to **95 staged characters**.
-
-### 3. Kept expanding character-level tag coverage
-No additional global tag definition was required in this chat.
-
-The project tag catalog remains at **40 tags**.
-
-### 4. Staged another approved 100-character high-throughput batch
-This chat staged another high-throughput approved batch through the normal raw import → enrichment → approval → preview → promotion flow.
-
-No approval bypass was used.
-
-### 5. Expanded staged series coverage again
-The newly staged batch added or deepened cross-series support through:
-- Assassination Classroom
-- Code Geass: Lelouch of the Rebellion
-- Death Note
-- One Punch Man
-- Yu Yu Hakusho
-- JoJo's Bizarre Adventure
-- Inuyasha
-- Fairy Tail
-- Chainsaw Man
-- Fire Force
-
-### 6. Kept the approval + promotion flow intact
-After the asset updates, this chat regenerated:
-- `characters_import_preview.json`
-- `characters_import_review_queue.json`
-- `characters_curated_promotion_preview.json`
-
-### 7. Added new tooling for this cycle
-New scripts added in this chat:
-- `tool/review_batch15_staged_tag_expansion.py`
-- `tool/update_large_import_and_tags_batch_16.py`
-
-Previously added staged-tag review tooling remains available:
-- `tool/review_recent_import_tag_expansion.py`
-- `tool/review_current_staged_tag_expansion.py`
-- `tool/review_remaining_staged_tag_expansion.py`
-- `tool/review_batch12_staged_tag_expansion.py`
-- `tool/review_batch13_staged_tag_expansion.py`
-- `tool/review_batch14_staged_tag_expansion.py`
-
----
-
-## Current Import Asset Counts
-
-After regeneration:
-- `assets/data/tags.json` contains **40** tags
+Current import asset counts:
 - `assets/data/imports/mal_jikan_characters_sample.json` contains **1264** source character records
 - `assets/data/imports/mal_jikan_character_enrichment_preview.json` contains **1264** enrichment entries
 - `assets/data/imports/characters_import_preview.json` contains **1264** imported preview characters
 - `assets/data/imports/characters_import_review_queue.json` contains **1264** review entries
 - `assets/data/imports/characters_import_approval.json` contains **1263** approval entries
-- `assets/data/imports/characters_curated_promotion_preview.json` contains **1276** total promoted characters in preview output
+- `assets/data/imports/characters_curated_promotion_preview.json` contains **1276** promoted preview characters
+
+Current approved staging status:
+- there is **no approved staged backlog remaining outside runtime**
+- the approved promotion preview currently matches the live runtime catalog size
 
 Known non-blocking review issue still present:
 - `vegeta` keeps the existing `series_mismatch` note between enrichment series `Dragon Ball Z` and anime lookup `Dragon Ball`
@@ -163,62 +52,66 @@ Review queue issue summary:
 
 ---
 
-## Key Files
+## Gameplay/UI Status After This Pass
 
-### Runtime catalog
+### 1. Every approved character is now live in the game
+- the full approved catalog is now available through the runtime character asset
+- character-library browsing and gameplay now use the complete currently approved roster
+
+### 2. Every current tag is now selectable as a secret tag / guess target
+- `assets/data/categories.json` was expanded to mirror the full tag catalog
+- the game now exposes **40** playable secret-tag categories
+- each generated category currently uses `minCharacters: 1` so every used tag can appear in selection
+
+### 3. Setup/menu UX was upgraded for gameplay retake
+The gameplay-facing UI now includes:
+- a more polished home/menu layout
+- larger, clearer match-entry cards
+- improved single-device setup spacing
+- cleaner player-name entry presentation
+- stronger hint setup and match-preview presentation
+
+### 4. Secret-tag privacy was improved during live turns
+The match screen now:
+- hides the active player's secret tag by default
+- provides an icon-based reminder toggle so the player can privately re-check their own tag
+- avoids keeping the hidden tag openly visible on the match screen
+
+### 5. Tag selection and guess selection scale better now
+The tag selection flow now includes:
+- searchable secret-tag selection
+- searchable tag guess dialog
+- larger catalog-friendly selection UI for the full tag set
+
+---
+
+## Key Files Touched For This Phase
+
+### Runtime/catalog assets
 - `assets/data/characters.json`
-- `assets/data/tags.json`
 - `assets/data/categories.json`
+- `assets/data/tags.json`
 
-### Import assets
+### Import assets still in use
 - `assets/data/imports/mal_jikan_characters_sample.json`
-- `assets/data/imports/mal_jikan_anime_sample.json`
 - `assets/data/imports/mal_jikan_character_enrichment_preview.json`
-- `assets/data/imports/characters_import_approval.json`
 - `assets/data/imports/characters_import_preview.json`
 - `assets/data/imports/characters_import_review_queue.json`
+- `assets/data/imports/characters_import_approval.json`
 - `assets/data/imports/characters_curated_promotion_preview.json`
 
-### Import services / models
-- `lib/features/characters/data/imports/services/external_character_import_preview_service.dart`
-- `lib/features/characters/data/imports/services/external_character_tag_suggestion_service.dart`
-- `lib/features/characters/data/imports/services/character_import_promotion_service.dart`
-- `lib/features/characters/data/imports/services/character_import_promotion_importer.dart`
-- `lib/features/characters/data/imports/models/character_import_approval_entry.dart`
-- `lib/features/characters/data/imports/models/external_character_import_review_entry.dart`
-
-### Character library UI
-- `lib/features/characters/presentation/screens/character_library_screen.dart`
-- `lib/features/characters/presentation/widgets/character_card.dart`
-- `lib/features/characters/presentation/controllers/character_library_controller.dart`
-- `lib/features/characters/domain/services/character_library_filter.dart`
-
-### Tooling scripts
-- `tool/generate_characters_import_preview.dart`
-- `tool/generate_characters_import_review_queue.dart`
-- `tool/generate_characters_curated_promotion_preview.dart`
-- `tool/review_recent_import_tag_expansion.py`
-- `tool/review_current_staged_tag_expansion.py`
-- `tool/review_remaining_staged_tag_expansion.py`
-- `tool/review_batch12_staged_tag_expansion.py`
-- `tool/review_batch13_staged_tag_expansion.py`
-- `tool/review_batch14_staged_tag_expansion.py`
-- `tool/review_batch15_staged_tag_expansion.py`
-- `tool/update_large_import_and_tags_batch.py`
-- `tool/update_large_import_and_tags_batch_3.py`
-- `tool/update_large_import_and_tags_batch_4.py`
-- `tool/update_large_import_and_tags_batch_5.py`
-- `tool/update_large_import_and_tags_batch_6.py`
-- `tool/update_large_import_and_tags_batch_7.py`
-- `tool/update_large_import_and_tags_batch_8.py`
-- `tool/update_large_import_and_tags_batch_9.py`
-- `tool/update_large_import_and_tags_batch_10.py`
-- `tool/update_large_import_and_tags_batch_11.py`
-- `tool/update_large_import_and_tags_batch_12.py`
-- `tool/update_large_import_and_tags_batch_13.py`
-- `tool/update_large_import_and_tags_batch_14.py`
-- `tool/update_large_import_and_tags_batch_15.py`
-- `tool/update_large_import_and_tags_batch_16.py`
+### Gameplay/UI files touched
+- `lib/app/theme.dart`
+- `lib/features/home/presentation/screens/home_screen.dart`
+- `lib/features/home/presentation/widgets/main_menu_button.dart`
+- `lib/features/game/presentation/screens/game_setup_screen.dart`
+- `lib/features/game/presentation/screens/category_selection_screen.dart`
+- `lib/features/game/presentation/screens/match_screen.dart`
+- `lib/features/game/presentation/screens/turn_transition_screen.dart`
+- `lib/features/game/presentation/widgets/category_guess_dialog.dart`
+- `lib/features/game/presentation/widgets/secret_trait_card.dart`
+- `lib/features/game/presentation/widgets/turn_panel.dart`
+- `lib/features/game/presentation/controllers/match_controller.dart`
 
 ---
 
@@ -229,29 +122,23 @@ Verified in this session:
 ```bash
 flutter test
 flutter analyze
-dart run tool/generate_characters_import_preview.dart
-dart run tool/generate_characters_import_review_queue.dart
-dart run tool/generate_characters_curated_promotion_preview.dart
 ```
 
-All passed at the end of the session.
+Both passed at the end of the session.
 
 ---
 
-## Recommended Next PR Scope
+## Recommended Next Scope
 
-### PR5 — Continue MAL/Jikan Catalog Expansion In Approved Batches
+The import expansion work is no longer the immediate priority.
 
-Recommended next scope:
-
-1. **Merge the current older staged 100-character approved preview batch into `assets/data/characters.json`**
-2. **Then add another 100-character high-throughput staged batch**
-3. **Continue the staged tag-review pass so the remaining backlog keeps richer overlap**
-4. **Add new tags only when character identity clearly justifies them**
-5. **Regenerate preview, review queue, and promotion preview**
-6. **Keep tests and analysis green**
-7. **Update docs and handoff counts again**
-8. **If runtime JSON changes, remind the user to fully restart the app**
+Recommended next focus:
+1. continue retaking the core gameplay loop with the full live roster
+2. keep polishing the setup, match, and result UX for a portfolio-level feel
+3. evaluate pool balance now that every approved character is live
+4. improve in-match deduction ergonomics for a much larger tag set
+5. consider follow-up privacy polish for hidden information screens if needed
+6. only return to import expansion when more catalog growth is explicitly requested
 
 ---
 
@@ -259,63 +146,6 @@ Recommended next scope:
 
 - Keep game logic pure Dart.
 - Keep import logic in the data/import layer.
-- Continue using the approval gate instead of bypassing validation.
-- Keep broad tag expansion curated and justified.
-- It is acceptable if some tags are only used by a small subset of characters.
-- Do not auto-merge runtime data unless explicitly requested in the chat.
-- After runtime JSON changes, remind the user to do a full app restart.
-
----
-
-## Suggested Next Chat Prompt
-
-```txt
-Continue Anime Deduction Tower with PR5 in high-throughput mode.
-
-Before coding, read:
-- README.md
-- AGENTS.md
-- docs/ARCHITECTURE.md
-- docs/DATA_MODEL.md
-- docs/EXTERNAL_ANIME_DATA.md
-- docs/PR5_HANDOFF.md
-- NEXT_CHAT_PROMPT.md
-- skills/flutter-architecture/SKILL.md
-- skills/character-data-modeling/SKILL.md
-- skills/testing/SKILL.md
-
-Current status:
-- the game has no lives
-- shared character pool gameplay is already wired
-- protected local turn reveal is implemented
-- import preview, review queue, approval, and curated promotion preview pipelines already exist
-- duplicate source mal_id detection is implemented
-- duplicate transformed ids and tag validation are implemented
-- structured import/promotion validation reports are implemented
-- promotion tooling skips identical already-promoted imports as non-blocking
-- Vegeta still has the known non-blocking `series_mismatch` review note
-- the runtime catalog currently contains 1076 characters
-- the tag catalog currently contains 40 tags
-- there are two approved 100-character staged backlogs not yet merged into runtime
-- the older staged backlog is led by ids like `rigurd`, `vt`, `knives_millions`, `ryoma_terasaka`, `henry_henderson`, `renzou_shima`, `sid_barrett`, `iris`, `sachiko_yagami`, and `rivalz_cardemonde`
-- the newer staged backlog is led by ids like `takuya_muramatsu`, `diethard_ried`, `hitoshi_demegawa`, `iaian`, `rinku`, `robert_e_o_speedwagon`, `totosai`, `lisanna_strauss`, `pochita`, and `akitaru_obi`
-- `characters_import_preview.json` currently contains 1264 imported preview records
-- `characters_curated_promotion_preview.json` currently contains 1276 total promoted preview records
-
-Do this exact scope:
-1. merge the older staged 100-character approved preview batch into `assets/data/characters.json`
-2. then add another 100-character high-throughput staged batch
-3. keep doing a richer tag review pass for the staged backlog
-4. add new tags only when clearly justified
-5. regenerate preview, review queue, and promotion preview
-6. keep tests and analyze green
-7. update `README.md`, `docs/PR5_HANDOFF.md`, and `NEXT_CHAT_PROMPT.md` with the new counts/state
-8. remind the user to fully restart the app after the runtime JSON change
-
-Rules:
-- Keep game logic pure Dart
-- Keep import logic in the data/import layer
-- Use the approval + promotion flow, do not bypass it
-- Runtime merge is allowed in that chat only if explicitly requested
-- Prefer speed, but keep the data valid and consistent
-```
+- Keep hidden-information UX safe for one-device local multiplayer.
+- Prefer polished, readable UI over placeholder layouts in gameplay-facing screens.
+- If runtime JSON changes again, remind the user to do a full app restart.

@@ -4,7 +4,15 @@
     "label": "Black Hair",
     "tagId": "black_hair",
     "difficulty": "easy",
-    "minCharacters": 5,
+    "minCharacters": 1,
+    "hintType": "appearance"
+  },
+  {
+    "id": "white_hair",
+    "label": "White Hair",
+    "tagId": "white_hair",
+    "difficulty": "easy",
+    "minCharacters": 1,
     "hintType": "appearance"
   },
   {
@@ -12,7 +20,7 @@
     "label": "Protagonist",
     "tagId": "protagonist",
     "difficulty": "easy",
-    "minCharacters": 5,
+    "minCharacters": 1,
     "hintType": "role"
   },
   {
@@ -20,7 +28,7 @@
     "label": "Villain",
     "tagId": "villain",
     "difficulty": "easy",
-    "minCharacters": 5,
+    "minCharacters": 1,
     "hintType": "role"
   },
   {
@@ -28,7 +36,7 @@
     "label": "Uses Sword",
     "tagId": "uses_sword",
     "difficulty": "easy",
-    "minCharacters": 5,
+    "minCharacters": 1,
     "hintType": "weapon"
   },
   {
@@ -36,7 +44,279 @@
     "label": "Has Transformation",
     "tagId": "has_transformation",
     "difficulty": "medium",
-    "minCharacters": 5,
+    "minCharacters": 1,
     "hintType": "power"
+  },
+  {
+    "id": "non_human",
+    "label": "Non-Human",
+    "tagId": "non_human",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "origin"
+  },
+  {
+    "id": "has_tragic_past",
+    "label": "Has Tragic Past",
+    "tagId": "has_tragic_past",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "story"
+  },
+  {
+    "id": "hero",
+    "label": "Hero",
+    "tagId": "hero",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "role"
+  },
+  {
+    "id": "rival",
+    "label": "Rival",
+    "tagId": "rival",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "role"
+  },
+  {
+    "id": "mentor",
+    "label": "Mentor",
+    "tagId": "mentor",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "role"
+  },
+  {
+    "id": "young",
+    "label": "Young",
+    "tagId": "young",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "status"
+  },
+  {
+    "id": "strong",
+    "label": "Strong",
+    "tagId": "strong",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "fast",
+    "label": "Fast",
+    "tagId": "fast",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "muscular",
+    "label": "Muscular",
+    "tagId": "muscular",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "appearance"
+  },
+  {
+    "id": "super_powers",
+    "label": "Super Powers",
+    "tagId": "super_powers",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "super_saiyan",
+    "label": "Super Saiyan",
+    "tagId": "super_saiyan",
+    "difficulty": "hard",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "fire_user",
+    "label": "Uses Fire",
+    "tagId": "fire_user",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "ice_user",
+    "label": "Uses Ice",
+    "tagId": "ice_user",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "demon",
+    "label": "Demon",
+    "tagId": "demon",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "origin"
+  },
+  {
+    "id": "alien",
+    "label": "Alien",
+    "tagId": "alien",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "origin"
+  },
+  {
+    "id": "martial_artist",
+    "label": "Martial Artist",
+    "tagId": "martial_artist",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "role"
+  },
+  {
+    "id": "strategist",
+    "label": "Strategist",
+    "tagId": "strategist",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "personality"
+  },
+  {
+    "id": "stoic",
+    "label": "Stoic",
+    "tagId": "stoic",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "personality"
+  },
+  {
+    "id": "magic_user",
+    "label": "Magic User",
+    "tagId": "magic_user",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "lightning_user",
+    "label": "Uses Lightning",
+    "tagId": "lightning_user",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "assassin",
+    "label": "Assassin",
+    "tagId": "assassin",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "role"
+  },
+  {
+    "id": "blond_hair",
+    "label": "Blond Hair",
+    "tagId": "blond_hair",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "appearance"
+  },
+  {
+    "id": "gun_user",
+    "label": "Gun User",
+    "tagId": "gun_user",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "weapon"
+  },
+  {
+    "id": "cyborg",
+    "label": "Cyborg",
+    "tagId": "cyborg",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "origin"
+  },
+  {
+    "id": "psychic",
+    "label": "Psychic",
+    "tagId": "psychic",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "pink_hair",
+    "label": "Pink Hair",
+    "tagId": "pink_hair",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "appearance"
+  },
+  {
+    "id": "water_user",
+    "label": "Uses Water",
+    "tagId": "water_user",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "power"
+  },
+  {
+    "id": "brown_hair",
+    "label": "Brown Hair",
+    "tagId": "brown_hair",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "appearance"
+  },
+  {
+    "id": "red_hair",
+    "label": "Red Hair",
+    "tagId": "red_hair",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "appearance"
+  },
+  {
+    "id": "leader",
+    "label": "Leader",
+    "tagId": "leader",
+    "difficulty": "medium",
+    "minCharacters": 1,
+    "hintType": "role"
+  },
+  {
+    "id": "student",
+    "label": "Student",
+    "tagId": "student",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "status"
+  },
+  {
+    "id": "blue_hair",
+    "label": "Blue Hair",
+    "tagId": "blue_hair",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "appearance"
+  },
+  {
+    "id": "green_hair",
+    "label": "Green Hair",
+    "tagId": "green_hair",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "appearance"
+  },
+  {
+    "id": "purple_hair",
+    "label": "Purple Hair",
+    "tagId": "purple_hair",
+    "difficulty": "easy",
+    "minCharacters": 1,
+    "hintType": "appearance"
   }
 ]

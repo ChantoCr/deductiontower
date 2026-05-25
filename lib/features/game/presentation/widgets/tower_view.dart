@@ -16,6 +16,11 @@ class TowerView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: AppTextStyles.title),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'The shared pool is the public battlefield for both players. Use it to test patterns before committing to a final tag guess.',
+            style: AppTextStyles.subtitle.copyWith(height: 1.45),
+          ),
           const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -25,14 +30,27 @@ class TowerView extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(right: index == 4 ? 0 : 8),
                   child: Container(
-                    height: 84,
+                    height: 90,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.12),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColors.primary.withValues(alpha: 0.16),
+                          AppColors.secondary.withValues(alpha: 0.08),
+                        ],
+                      ),
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: AppColors.secondary.withValues(alpha: 0.2)),
+                      border: Border.all(
+                        color: AppColors.secondary.withValues(alpha: 0.2),
+                      ),
                     ),
                     alignment: Alignment.center,
-                    child: Text('#${index + 1}'),
+                    child: Text(
+                      '#${index + 1}',
+                      style: AppTextStyles.body
+                          .copyWith(fontWeight: FontWeight.w800),
+                    ),
                   ),
                 ),
               ),

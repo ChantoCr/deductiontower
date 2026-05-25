@@ -27,20 +27,20 @@ class TurnTransitionScreen extends ConsumerWidget {
     final title = isCompletedMatch
         ? 'Match Complete'
         : isExistingMatch
-        ? 'Pass the Device'
-        : 'Prepare the First Player';
+            ? 'Pass the Device'
+            : 'Prepare the First Player';
 
     final description = isCompletedMatch
         ? 'The match has ended. Open the result screen to review the winner, end reason, and turn summary.'
         : isExistingMatch
-        ? 'Hand the device to ${match.currentPlayer.name}. Their secret trait card and guessing tools will appear on the next screen.'
-        : 'Use this protected screen before revealing the first secret trait and starting the live match.';
+            ? 'Hand the device to ${match.currentPlayer.name}. Their private tag reminder and guessing tools will appear on the next screen.'
+            : 'Use this protected screen before revealing the first hidden tag and starting the live match.';
 
     final buttonLabel = isCompletedMatch
         ? 'View Result'
         : isExistingMatch
-        ? 'Continue Match'
-        : 'Start Match';
+            ? 'Continue Match'
+            : 'Start Match';
 
     return AppScaffold(
       title: 'Pass the Phone',
@@ -69,8 +69,8 @@ class TurnTransitionScreen extends ConsumerWidget {
                 icon: isCompletedMatch
                     ? Icons.emoji_events_outlined
                     : isExistingMatch
-                    ? Icons.visibility_outlined
-                    : Icons.play_circle_outline,
+                        ? Icons.visibility_outlined
+                        : Icons.play_circle_outline,
                 onPressed: () => _handleContinue(context, ref, match: match),
               ),
             ],
@@ -103,7 +103,8 @@ class TurnTransitionScreen extends ConsumerWidget {
         selectionState.playerTwoTraitId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Complete secret trait selection before starting the match.'),
+          content:
+              Text('Complete secret tag selection before starting the match.'),
         ),
       );
       return;
@@ -112,9 +113,7 @@ class TurnTransitionScreen extends ConsumerWidget {
     final catalog = await ref.read(validatedTraitCatalogProvider.future);
     final characters = await ref.read(charactersProvider.future);
 
-    ref
-        .read(matchControllerProvider.notifier)
-        .initializeMatch(
+    ref.read(matchControllerProvider.notifier).initializeMatch(
           playerOneName: setupState.playerOneName,
           playerTwoName: setupState.playerTwoName,
           hintsPerPlayer: setupState.hints,
