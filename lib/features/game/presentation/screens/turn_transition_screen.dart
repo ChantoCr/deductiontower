@@ -5,6 +5,7 @@ import 'package:anime_deduction_tower/features/game/domain/entities/game_match.d
 import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
+import 'package:anime_deduction_tower/features/game/presentation/helpers/game_flow_copy_helper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
 import 'package:anime_deduction_tower/shared/animations/pulse_animation.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
@@ -22,27 +23,22 @@ class TurnTransitionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const copy = GameFlowCopyHelper();
     final match = ref.watch(matchControllerProvider);
     final isExistingMatch = match != null;
     final isCompletedMatch = match?.status == MatchStatus.completed;
 
-    final title = isCompletedMatch
-        ? 'Match Complete'
-        : isExistingMatch
-            ? 'Protected Handoff'
-            : 'Prepare the First Player';
+    final title = copy.turnTransitionTitle(
+      isExistingMatch: isExistingMatch,
+      isCompletedMatch: isCompletedMatch,
+    );
 
-    final description = isCompletedMatch
-        ? 'The match is over. Open the result screen to review the winner, end reason, and full deduction trail.'
-        : isExistingMatch
-            ? 'Hand the device to ${match.currentPlayer.name}. Only the active player should reveal the next private gameplay screen.'
-            : 'Use this protection screen before revealing the first hidden tag and starting the live match.';
+    final description = copy.turnTransitionDescription(match: match);
 
-    final buttonLabel = isCompletedMatch
-        ? 'View Result'
-        : isExistingMatch
-            ? 'Reveal Protected Turn'
-            : 'Start Match';
+    final buttonLabel = copy.turnTransitionButtonLabel(
+      isExistingMatch: isExistingMatch,
+      isCompletedMatch: isCompletedMatch,
+    );
 
     final glowColor = isCompletedMatch
         ? AppColors.success
@@ -99,11 +95,10 @@ class TurnTransitionScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: Text(
-                              isCompletedMatch
-                                  ? 'RESULT READY'
-                                  : isExistingMatch
-                                      ? 'PROTECTED HANDOFF'
-                                      : 'MATCH PREP',
+                              copy.turnTransitionBadgeLabel(
+                                isExistingMatch: isExistingMatch,
+                                isCompletedMatch: isCompletedMatch,
+                              ),
                               style: AppTextStyles.label.copyWith(
                                 color: glowColor,
                               ),

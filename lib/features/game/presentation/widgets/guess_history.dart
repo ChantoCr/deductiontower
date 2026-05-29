@@ -14,6 +14,7 @@ class GuessHistory extends StatefulWidget {
         'Recent shared information stays visible here so both players can track the deduction trail.',
     this.collapsedCount = 4,
     this.emptyStateMessage = 'No public events recorded yet.',
+    this.resetKey,
     super.key,
   });
 
@@ -22,6 +23,7 @@ class GuessHistory extends StatefulWidget {
   final String description;
   final int collapsedCount;
   final String emptyStateMessage;
+  final String? resetKey;
 
   @override
   State<GuessHistory> createState() => _GuessHistoryState();
@@ -30,6 +32,16 @@ class GuessHistory extends StatefulWidget {
 class _GuessHistoryState extends State<GuessHistory> {
   _GuessHistoryFilter _selectedFilter = _GuessHistoryFilter.all;
   bool _isExpanded = false;
+
+  @override
+  void didUpdateWidget(covariant GuessHistory oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.resetKey != widget.resetKey) {
+      _selectedFilter = _GuessHistoryFilter.all;
+      _isExpanded = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

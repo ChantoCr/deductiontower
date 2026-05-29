@@ -158,6 +158,7 @@ class ResultScreen extends ConsumerWidget {
                       label: 'Turns',
                       value: '${match.turns.length}',
                       icon: Icons.timeline_outlined,
+                      accent: AppColors.secondary,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -166,6 +167,7 @@ class ResultScreen extends ConsumerWidget {
                       label: 'Pool Size',
                       value: '${match.characterPoolIds.length}',
                       icon: Icons.style_outlined,
+                      accent: AppColors.primary,
                     ),
                   ),
                 ],
@@ -178,6 +180,7 @@ class ResultScreen extends ConsumerWidget {
                       label: '${match.playerOne.name} Hints Left',
                       value: '${match.playerOne.hintsRemaining}',
                       icon: Icons.looks_one_rounded,
+                      accent: AppColors.secondary,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -186,6 +189,7 @@ class ResultScreen extends ConsumerWidget {
                       label: '${match.playerTwo.name} Hints Left',
                       value: '${match.playerTwo.hintsRemaining}',
                       icon: Icons.looks_two_rounded,
+                      accent: AppColors.accent,
                     ),
                   ),
                 ],
@@ -280,20 +284,50 @@ class _ResultStatCard extends StatelessWidget {
     required this.label,
     required this.value,
     required this.icon,
+    required this.accent,
   });
 
   final String label;
   final String value;
   final IconData icon;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
+      glowColor: accent,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.secondary),
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(icon, color: accent),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  'MATCH STAT',
+                  style: AppTextStyles.label.copyWith(color: accent),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.sm),
           Text(value, style: AppTextStyles.title),
           const SizedBox(height: AppSpacing.xs),

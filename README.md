@@ -482,8 +482,10 @@ Current implemented state includes:
 - visual consistency pass for protected handoff and secret-tag selection with richer stage tracking and micro-animations
 - shared match/result timeline mapping helper plus winner-vs-loser comparative result stats
 - shared match lookup helpers for winner/loser, trait labels, character labels, and end-reason wording
+- shared setup/transition/match microcopy helpers for more consistent status wording
 - upgraded secret reminder and category-guess dialog motion with staged confirmation and richer reveal/hide feedback
-- polished shared dialogs and utility panels, plus an optional Flame-backed result celebration backdrop behind the existing UI flow
+- polished shared dialogs and utility panels, plus an optional Flame-backed result celebration backdrop and a safe Flame-backed tower preview behind the existing UI flow
+- privacy-safe pool browser reset between turns so search/filter text does not leak to the next player on the same device
 
 If the app is already running after JSON asset updates, use a full restart so the refreshed character catalog is reloaded.
 

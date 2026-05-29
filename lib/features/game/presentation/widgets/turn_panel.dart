@@ -1,3 +1,4 @@
+import 'package:anime_deduction_tower/features/game/presentation/helpers/game_flow_copy_helper.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
@@ -16,11 +17,16 @@ class TurnPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const copy = GameFlowCopyHelper();
+    final accent = hints > 0 ? AppColors.secondary : AppColors.accent;
+
     return AppCard(
+      glowColor: accent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Column(
@@ -35,28 +41,50 @@ class TurnPanel extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: accent.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        copy.turnPanelStatusLabel(hints),
+                        style: AppTextStyles.label.copyWith(color: accent),
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(width: AppSpacing.md),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withValues(alpha: 0.12),
+                  color: accent.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: accent.withValues(alpha: 0.18)),
                 ),
                 child: Column(
                   children: [
-                    const Icon(
-                      Icons.lightbulb_outline,
-                      color: AppColors.secondary,
+                    Icon(
+                      hints > 0
+                          ? Icons.lightbulb_outline
+                          : Icons.hourglass_bottom_rounded,
+                      color: accent,
                       size: 18,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       '$hints',
-                      style: AppTextStyles.body
-                          .copyWith(fontWeight: FontWeight.w800),
+                      style: AppTextStyles.body.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ],
                 ),
@@ -65,7 +93,7 @@ class TurnPanel extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'The shared pool is public, but hidden-tag information stays private. The match ends when a player correctly guesses the opponent tag or surrenders.',
+            copy.turnPanelDescription(),
             style: AppTextStyles.subtitle.copyWith(height: 1.45),
           ),
         ],

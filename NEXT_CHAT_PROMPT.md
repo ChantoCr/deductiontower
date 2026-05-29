@@ -39,9 +39,11 @@ Current status:
 - turn-transition and secret-tag selection now have a visual consistency pass with richer stage tracking, clearer privacy messaging, search clear UX, and stronger selection micro-animations
 - shared match/result timeline mapping now lives in a dedicated presentation helper with a reusable timeline entry model
 - shared match lookup helpers now cover winner/loser, trait labels, character labels, player-name lookup, and end-reason wording
+- shared setup/transition/match microcopy helpers now cover more status wording across setup, handoff, turn, and tower panels
 - the result screen now includes richer winner-vs-loser comparative stats
 - the secret reminder card and category-guess dialog now have more premium reveal/staging animation behavior
-- shared dialogs and the hint utility panel have a richer polish pass, and the result banner now supports an optional non-blocking Flame-backed celebration backdrop
+- shared dialogs and the hint utility panel have a richer polish pass, the result banner supports an optional non-blocking Flame-backed celebration backdrop, and the tower view now has safe Flame-backed public-board polish
+- the character pool browser now privacy-resets between turns so search/filter context does not leak to the next player on the same device
 - import preview, review queue, approval, and curated promotion preview pipelines still exist and remain valid
 - `characters_import_preview.json` currently contains 1264 imported preview records
 - `characters_import_review_queue.json` currently contains 1264 review entries
@@ -54,9 +56,9 @@ Important runtime note:
 - if the app was already running when JSON assets changed, do a full restart to reload the updated catalog
 
 Suggested next scope:
-1. extract more shared presentation copy/summary helpers where screens still repeat microcopy or action-state wording
+1. extract more shared presentation summary builders where screens still repeat composed stat rows or panel structures
 2. expand Flame-backed visual polish carefully to other safe presentation-only surfaces if performance stays strong
-3. polish remaining dialogs and small utility panels so they match the new result/match/handoff motion quality
+3. do a final pass on remaining small panels/widgets so their badge, glow, and spacing systems are fully aligned
 4. evaluate whether result analytics should later include persistent match history/stat tracking once local persistence is introduced
 
 Rules:

@@ -2,6 +2,7 @@ import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/core/constants/game_constants.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
+import 'package:anime_deduction_tower/features/game/presentation/helpers/game_flow_copy_helper.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
@@ -42,6 +43,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const copy = GameFlowCopyHelper();
     final setupState = ref.watch(gameSetupControllerProvider);
     final controller = ref.read(gameSetupControllerProvider.notifier);
 
@@ -61,7 +63,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Give each side a clear name. The fields are separated for better readability during quick setup and pass-the-device play.',
+                copy.setupPlayersSectionDescription(),
                 style: AppTextStyles.subtitle.copyWith(height: 1.45),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -72,8 +74,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                     Expanded(
                       child: _PlayerSetupCard(
                         title: 'Player One',
-                        helper:
-                            'Appears in turn flow, match status, and the result timeline.',
+                        helper: copy.playerNameHelper(1),
                         icon: Icons.looks_one_rounded,
                         accent: AppColors.primary,
                         controller: _playerOneController,
@@ -85,8 +86,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                     Expanded(
                       child: _PlayerSetupCard(
                         title: 'Player Two',
-                        helper:
-                            'Names are trimmed automatically and never saved as blank.',
+                        helper: copy.playerNameHelper(2),
                         icon: Icons.looks_two_rounded,
                         accent: AppColors.secondary,
                         controller: _playerTwoController,
@@ -99,8 +99,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
               else ...[
                 _PlayerSetupCard(
                   title: 'Player One',
-                  helper:
-                      'Appears in turn flow, match status, and the result timeline.',
+                  helper: copy.playerNameHelper(1),
                   icon: Icons.looks_one_rounded,
                   accent: AppColors.primary,
                   controller: _playerOneController,
@@ -110,8 +109,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                 const SizedBox(height: AppSpacing.md),
                 _PlayerSetupCard(
                   title: 'Player Two',
-                  helper:
-                      'Names are trimmed automatically and never saved as blank.',
+                  helper: copy.playerNameHelper(2),
                   icon: Icons.looks_two_rounded,
                   accent: AppColors.secondary,
                   controller: _playerTwoController,
@@ -160,6 +158,8 @@ class _SetupHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const copy = GameFlowCopyHelper();
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +179,7 @@ class _SetupHeroCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'This setup is designed for one-device multiplayer. Names, hints, and protected secret-tag selection stay clear before the live deduction phase begins.',
+            copy.setupHeroDescription(),
             style: AppTextStyles.subtitle.copyWith(height: 1.5),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -274,6 +274,8 @@ class _HintsSetupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const copy = GameFlowCopyHelper();
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,7 +283,7 @@ class _HintsSetupCard extends StatelessWidget {
           const Text('Hint budget', style: AppTextStyles.title),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Each player starts with $hints private hint${hints == 1 ? '' : 's'}. Hints reveal direction, not the exact answer.',
+            copy.hintBudgetDescription(hints),
             style: AppTextStyles.subtitle.copyWith(height: 1.45),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -327,6 +329,8 @@ class _MatchPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const copy = GameFlowCopyHelper();
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,7 +350,7 @@ class _MatchPreviewCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
             ),
             child: Text(
-              'Secret tags stay protected after this screen. The device is passed between players before private information is revealed again.',
+              copy.matchPreviewPrivacyNote(),
               style: AppTextStyles.subtitle.copyWith(height: 1.45),
             ),
           ),

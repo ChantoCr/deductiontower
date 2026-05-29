@@ -82,6 +82,16 @@ This chat focused on the exact UI-polish handoff scope from PR5.
 - upgraded the hint utility panel with clearer ready/empty status treatment
 - added a lightweight optional Flame celebration backdrop behind the existing result banner so the effect stays visual-only and non-blocking
 
+### 9. More shared copy helpers + final small-panel consistency pass
+- extracted shared setup/transition/match microcopy into a dedicated helper for more consistent wording across setup, handoff, and live-play panels
+- upgraded smaller gameplay panels like turn status, tower view, and result stat cards so they better match the newer premium visual language
+- extended safe Flame-backed presentation polish to the public tower view without moving any business logic into Flame
+
+### 10. Privacy-safe pool browser reset between turns
+- added a turn-scoped privacy reset key to the character pool browser
+- the pool browser now clears name search, series search, series chips, and difficulty filters when control passes to the next player
+- this prevents one player's pool browsing/search context from leaking into the next player's turn on the same device
+
 ---
 
 ## Current Gameplay/UI Behavior To Remember
@@ -145,9 +155,9 @@ Both passed.
 ## Recommended Next Scope
 
 Suggested next focus after this saved state:
-1. **extract more shared presentation copy/summary helpers where screens still repeat microcopy or action-state wording**
+1. **extract more shared presentation summary builders where screens still repeat composed stat rows or panel structures**
 2. **expand Flame-backed visual polish carefully to other safe presentation-only surfaces if performance stays strong**
-3. **polish remaining dialogs and small utility panels so they match the newer result/match/handoff motion quality**
+3. **do a final pass on remaining small panels/widgets so their badge, glow, and spacing systems are fully aligned**
 4. **evaluate whether result analytics should later include persistent match history/stat tracking once local persistence is introduced**
 
 ---

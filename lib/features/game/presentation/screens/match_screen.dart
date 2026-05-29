@@ -7,17 +7,17 @@ import 'package:anime_deduction_tower/features/game/domain/entities/trait_catego
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/helpers/match_lookup_helper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/helpers/match_presentation_mapper.dart';
-import 'package:anime_deduction_tower/features/game/presentation/models/guess_history_entry.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/category_guess_dialog.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/character_pool_panel.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/guess_history.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/hint_panel.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/latest_public_event_card.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/match_action_bar.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/match_privacy_gate.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/secret_trait_card.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/tower_view.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/turn_panel.dart';
-import 'package:anime_deduction_tower/shared/animations/pulse_animation.dart';
-import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_button.dart';
@@ -40,6 +40,9 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
   String? _selectedCharacterId;
   String? _revealedPlayerId;
   bool _isSecretTraitVisible = false;
+  bool _showPrivacyClearedCue = false;
+  bool _showPoolLockOverlay = false;
+  int _privacyCueSequenceId = 0;
 
   @override
   void initState() {
@@ -71,10 +74,33 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
   }
 
   void _revealCurrentTurn(String playerId) {
+    final sequenceId = ++_privacyCueSequenceId;
+
     setState(() {
       _revealedPlayerId = playerId;
       _isSecretTraitVisible = false;
+      _showPrivacyClearedCue = false;
+      _showPoolLockOverlay = true;
     });
+
+    Future<void>.delayed(const Duration(milliseconds: 650), () {
+      if (!mounted || sequenceId != _privacyCueSequenceId) {
+        return;
+      }
+
+      setState(() {
+        _showPoolLockOverlay = false;
+        _showPrivacyClearedCue = true;
+      });
+    });
+  }
+
+  void _dismissPrivacyClearedCue() {
+    if (!_showPrivacyClearedCue) {
+      return;
+    }
+
+    setState(() => _showPrivacyClearedCue = false);
   }
 
   void _toggleSecretTraitVisibility() {
@@ -243,6 +269,30 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
   Widget build(BuildContext context) {
     const lookup = MatchLookupHelper();
     const mapper = MatchPresentationMapper();
+
+    ref.listen<GameMatch?>(matchControllerProvider, (previous, next) {
+      if (next == null) {
+        return;
+      }
+
+      final previousKey = previous == null
+          ? null
+          : '${previous.currentPlayerId}-${previous.turns.length}';
+      final nextKey = '${next.currentPlayerId}-${next.turns.length}';
+
+      if (previousKey != null && previousKey != nextKey && mounted) {
+        _privacyCueSequenceId++;
+        setState(() {
+          _selectedCharacterId = null;
+          _guessController.clear();
+          _revealedPlayerId = null;
+          _isSecretTraitVisible = false;
+          _showPrivacyClearedCue = false;
+          _showPoolLockOverlay = false;
+        });
+      }
+    });
+
     final match = ref.watch(matchControllerProvider);
     final catalogAsync = ref.watch(validatedTraitCatalogProvider);
     final charactersAsync = ref.watch(charactersProvider);
@@ -291,68 +341,9 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
     if (!isTurnRevealed) {
       return AppScaffold(
         title: 'Protected Turn',
-        child: Center(
-          child: AppCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                PulseAnimation(
-                  child: Container(
-                    width: 78,
-                    height: 78,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.14),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.visibility_off_outlined,
-                      color: AppColors.secondary,
-                      size: 40,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                const Text(
-                  'Private Turn Protection',
-                  style: AppTextStyles.title,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Only ${match.currentPlayer.name} should be looking at the screen right now.',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                const Text(
-                  'Nothing private is shown until the active player explicitly reveals their turn.',
-                  style: AppTextStyles.subtitle,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface.withValues(alpha: 0.82),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.14),
-                    ),
-                  ),
-                  child: const Text(
-                    'Protected reveal is intentionally separated from the live match tools.',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.subtitle,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-                AppButton(
-                  label: 'Reveal ${match.currentPlayer.name}\'s Turn',
-                  icon: Icons.visibility_outlined,
-                  onPressed: () => _revealCurrentTurn(match.currentPlayerId),
-                ),
-              ],
-            ),
-          ),
+        child: MatchPrivacyGate(
+          currentPlayerName: match.currentPlayer.name,
+          onReveal: () => _revealCurrentTurn(match.currentPlayerId),
         ),
       );
     }
@@ -370,11 +361,11 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 
     final latestEventCard = latestPublicEvent == null
         ? null
-        : _LatestEventCard(latestPublicEvent: latestPublicEvent);
+        : LatestPublicEventCard(latestPublicEvent: latestPublicEvent);
 
     return AppScaffold(
       title: 'Match',
-      bottomBar: _MatchActionBar(
+      bottomBar: MatchActionBar(
         guessController: _guessController,
         selectedCharacterName: selectedCharacterName,
         canRequestHint:
@@ -386,6 +377,7 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
         onGuessTag: () => _openTraitGuessDialog(categories),
         onSurrender: _confirmSurrender,
         onGuessChanged: () {
+          _dismissPrivacyClearedCue();
           if (_selectedCharacterId != null) {
             setState(() => _selectedCharacterId = null);
           }
@@ -423,6 +415,7 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
               entries: historyEntries,
               collapsedCount: 4,
               emptyStateMessage: 'No public events recorded yet.',
+              resetKey: '${match.currentPlayerId}-${match.turns.length}',
             ),
           ];
 
@@ -435,7 +428,13 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
             CharacterPoolPanel(
               availableCharacterIds: match.characterPoolIds,
               selectedCharacterId: _selectedCharacterId,
+              privacyResetKey: '${match.currentPlayerId}-${match.turns.length}',
+              showPrivacyClearedNotice: _showPrivacyClearedCue,
+              showPrivacyLockOverlay: _showPoolLockOverlay,
+              privacyPlayerName: match.currentPlayer.name,
+              onDismissPrivacyNotice: _dismissPrivacyClearedCue,
               onCharacterSelected: (character) {
+                _dismissPrivacyClearedCue();
                 _selectCharacter(character.id, character.name);
               },
             ),
@@ -504,277 +503,5 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
     }
 
     return null;
-  }
-}
-
-class _LatestEventCard extends StatelessWidget {
-  const _LatestEventCard({required this.latestPublicEvent});
-
-  final GuessHistoryEntry latestPublicEvent;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Latest Public Event', style: AppTextStyles.title),
-          const SizedBox(height: AppSpacing.sm),
-          TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0.96, end: 1),
-            duration: const Duration(milliseconds: 240),
-            curve: Curves.easeOut,
-            builder: (context, value, child) => Transform.scale(
-              scale: value,
-              child: child,
-            ),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: latestPublicEvent.color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: latestPublicEvent.color.withValues(alpha: 0.25),
-                ),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: latestPublicEvent.color.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Icon(
-                      latestPublicEvent.icon,
-                      color: latestPublicEvent.color,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          latestPublicEvent.title,
-                          style: AppTextStyles.body.copyWith(
-                            color: latestPublicEvent.color,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          latestPublicEvent.subtitle,
-                          style: AppTextStyles.subtitle,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MatchActionBar extends StatelessWidget {
-  const _MatchActionBar({
-    required this.guessController,
-    required this.onGuessChanged,
-    required this.onSubmitCharacterGuess,
-    required this.onRequestHint,
-    required this.onGuessTag,
-    required this.onSurrender,
-    required this.onClearSelection,
-    required this.canRequestHint,
-    required this.canGuessTag,
-    this.selectedCharacterName,
-  });
-
-  final TextEditingController guessController;
-  final VoidCallback onGuessChanged;
-  final VoidCallback onSubmitCharacterGuess;
-  final VoidCallback onRequestHint;
-  final VoidCallback onGuessTag;
-  final VoidCallback onSurrender;
-  final VoidCallback onClearSelection;
-  final bool canRequestHint;
-  final bool canGuessTag;
-  final String? selectedCharacterName;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final useWideLayout = constraints.maxWidth >= 900;
-        final utilityButtons = useWideLayout
-            ? Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      label: 'Request Hint',
-                      icon: Icons.lightbulb_outline,
-                      isPrimary: false,
-                      onPressed: canRequestHint ? onRequestHint : null,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: AppButton(
-                      label: 'Guess Tag',
-                      icon: Icons.psychology_alt_outlined,
-                      isPrimary: false,
-                      onPressed: canGuessTag ? onGuessTag : null,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: AppButton(
-                      label: 'Surrender Match',
-                      icon: Icons.flag_outlined,
-                      isPrimary: false,
-                      onPressed: onSurrender,
-                    ),
-                  ),
-                ],
-              )
-            : Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppButton(
-                          label: 'Request Hint',
-                          icon: Icons.lightbulb_outline,
-                          isPrimary: false,
-                          onPressed: canRequestHint ? onRequestHint : null,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: AppButton(
-                          label: 'Guess Tag',
-                          icon: Icons.psychology_alt_outlined,
-                          isPrimary: false,
-                          onPressed: canGuessTag ? onGuessTag : null,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  AppButton(
-                    label: 'Surrender Match',
-                    icon: Icons.flag_outlined,
-                    isPrimary: false,
-                    onPressed: onSurrender,
-                  ),
-                ],
-              );
-
-        return AppCard(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text('Action Console', style: AppTextStyles.title),
-                  ),
-                  if (selectedCharacterName != null)
-                    TextButton.icon(
-                      onPressed: onClearSelection,
-                      icon: const Icon(Icons.close, size: 16),
-                      label: const Text('Clear'),
-                    ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                selectedCharacterName == null
-                    ? 'Pick from the pool or type an exact character name, then submit without scrolling away from the action area.'
-                    : 'Your selected guess is staged below and ready for submission.',
-                style: AppTextStyles.subtitle,
-              ),
-              if (selectedCharacterName != null) ...[
-                const SizedBox(height: AppSpacing.md),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: AppColors.secondary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: AppColors.secondary.withValues(alpha: 0.22),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle_outline,
-                        color: AppColors.secondary,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          selectedCharacterName!,
-                          style: AppTextStyles.body.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              const SizedBox(height: AppSpacing.md),
-              TextField(
-                controller: guessController,
-                decoration: const InputDecoration(
-                  labelText: 'Character guess',
-                  helperText:
-                      'Pool tap autofills this field. Exact name matching still works.',
-                  prefixIcon: Icon(Icons.person_search_outlined),
-                ),
-                onChanged: (_) => onGuessChanged(),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              if (useWideLayout)
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: AppButton(
-                        label: 'Submit Character Guess',
-                        icon: Icons.check_circle_outline,
-                        onPressed: onSubmitCharacterGuess,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(flex: 5, child: utilityButtons),
-                  ],
-                )
-              else ...[
-                AppButton(
-                  label: 'Submit Character Guess',
-                  icon: Icons.check_circle_outline,
-                  onPressed: onSubmitCharacterGuess,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                utilityButtons,
-              ],
-            ],
-          ),
-        );
-      },
-    );
   }
 }
