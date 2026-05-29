@@ -1,5 +1,6 @@
 import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
+import 'package:anime_deduction_tower/features/ai_opponent/presentation/providers/ai_opponent_providers.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/game_match.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
@@ -14,6 +15,7 @@ import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_badge.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_button.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_dialog.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,27 +30,24 @@ class TurnTransitionScreen extends ConsumerWidget {
     final match = ref.watch(matchControllerProvider);
     final isExistingMatch = match != null;
     final isCompletedMatch = match?.status == MatchStatus.completed;
+    final isAiTurn = match?.currentPlayer.isAi == true && !isCompletedMatch;
 
-    final title = copy.turnTransitionTitle(
-      isExistingMatch: isExistingMatch,
-      isCompletedMatch: isCompletedMatch,
-    );
+    final title = copy.turnTransitionTitle(match: match);
 
     final description = copy.turnTransitionDescription(match: match);
 
-    final buttonLabel = copy.turnTransitionButtonLabel(
-      isExistingMatch: isExistingMatch,
-      isCompletedMatch: isCompletedMatch,
-    );
+    final buttonLabel = copy.turnTransitionButtonLabel(match: match);
 
     final glowColor = isCompletedMatch
         ? AppColors.success
-        : isExistingMatch
-            ? AppColors.secondary
-            : AppColors.primary;
+        : isAiTurn
+            ? AppColors.accent
+            : isExistingMatch
+                ? AppColors.secondary
+                : AppColors.primary;
 
     return AppScaffold(
-      title: 'Pass the Device',
+      title: isAiTurn ? 'AI Turn' : 'Pass the Device',
       bottomBar: AppCard(
         glowColor: glowColor,
         padding: const EdgeInsets.all(16),
@@ -56,9 +55,11 @@ class TurnTransitionScreen extends ConsumerWidget {
           label: buttonLabel,
           icon: isCompletedMatch
               ? Icons.emoji_events_outlined
-              : isExistingMatch
-                  ? Icons.visibility_outlined
-                  : Icons.play_circle_outline,
+              : isAiTurn
+                  ? Icons.smart_toy_outlined
+                  : isExistingMatch
+                      ? Icons.visibility_outlined
+                      : Icons.play_circle_outline,
           onPressed: () => _handleContinue(context, ref, match: match),
         ),
       ),
@@ -77,9 +78,11 @@ class TurnTransitionScreen extends ConsumerWidget {
                       color: glowColor,
                       icon: isCompletedMatch
                           ? Icons.emoji_events_outlined
-                          : isExistingMatch
-                              ? Icons.shield_moon_outlined
-                              : Icons.play_circle_outline,
+                          : isAiTurn
+                              ? Icons.smart_toy_outlined
+                              : isExistingMatch
+                                  ? Icons.shield_moon_outlined
+                                  : Icons.play_circle_outline,
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
@@ -87,10 +90,7 @@ class TurnTransitionScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppBadge(
-                            label: copy.turnTransitionBadgeLabel(
-                              isExistingMatch: isExistingMatch,
-                              isCompletedMatch: isCompletedMatch,
-                            ),
+                            label: copy.turnTransitionBadgeLabel(match: match),
                             accent: glowColor,
                             backgroundColor: glowColor.withValues(alpha: 0.14),
                             textStyle: AppTextStyles.label.copyWith(
@@ -161,9 +161,14 @@ class TurnTransitionScreen extends ConsumerWidget {
                     ),
                     if (isExistingMatch && !isCompletedMatch)
                       AppBadge(
-                        icon: Icons.person_outline,
-                        label: 'Next: ${match.currentPlayer.name}',
-                        accent: AppColors.secondary,
+                        icon: isAiTurn
+                            ? Icons.smart_toy_outlined
+                            : Icons.person_outline,
+                        label: isAiTurn
+                            ? '${match.currentPlayer.name} acts automatically'
+                            : 'Next: ${match.currentPlayer.name}',
+                        accent:
+                            isAiTurn ? AppColors.accent : AppColors.secondary,
                         backgroundColor:
                             AppColors.surface.withValues(alpha: 0.8),
                         borderColor: AppColors.primary.withValues(alpha: 0.16),
@@ -196,25 +201,48 @@ class TurnTransitionScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Secrecy checklist', style: AppTextStyles.title),
-                const SizedBox(height: AppSpacing.md),
-                const _ChecklistItem(
-                  title: 'Only the active player should look now',
-                  subtitle:
-                      'Keep the previous player from seeing the next private turn state.',
+                Text(
+                  isAiTurn ? 'AI turn briefing' : 'Secrecy checklist',
+                  style: AppTextStyles.title,
                 ),
                 const SizedBox(height: AppSpacing.md),
-                const _ChecklistItem(
-                  title: 'Reveal only when ready',
-                  subtitle:
-                      'The next screen contains private information again once the protected reveal is used.',
-                ),
-                const SizedBox(height: AppSpacing.md),
-                const _ChecklistItem(
-                  title: 'Use the result replay after the match ends',
-                  subtitle:
-                      'Winner celebration, timeline filters, and the full public deduction story are kept on the result screen.',
-                ),
+                if (isAiTurn) ...[
+                  const _ChecklistItem(
+                    title: 'No handoff is required for this step',
+                    subtitle:
+                        'The AI only performs public actions, so you can stay on the same device screen while its move resolves.',
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  const _ChecklistItem(
+                    title: 'The live match returns after the AI move',
+                    subtitle:
+                        'Once the automated turn is processed, the app returns to the human player flow or opens the result screen if the match ends.',
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  const _ChecklistItem(
+                    title: 'Public history still stays visible',
+                    subtitle:
+                        'AI guesses are written into the same shared timeline and follow the same no-lives match rules.',
+                  ),
+                ] else ...[
+                  const _ChecklistItem(
+                    title: 'Only the active player should look now',
+                    subtitle:
+                        'Keep the previous player from seeing the next private turn state.',
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  const _ChecklistItem(
+                    title: 'Reveal only when ready',
+                    subtitle:
+                        'The next screen contains private information again once the protected reveal is used.',
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  const _ChecklistItem(
+                    title: 'Use the result replay after the match ends',
+                    subtitle:
+                        'Winner celebration, timeline filters, and the full public deduction story are kept on the result screen.',
+                  ),
+                ],
                 if (isExistingMatch && !isCompletedMatch) ...[
                   const SizedBox(height: AppSpacing.md),
                   _MatchSnapshotCard(match: match),
@@ -265,6 +293,40 @@ class TurnTransitionScreen extends ConsumerWidget {
         return;
       }
 
+      if (match.currentPlayer.isAi) {
+        final categories =
+            (await ref.read(validatedTraitCatalogProvider.future))
+                .validCategories;
+        final characters = await ref.read(charactersProvider.future);
+        final result = ref.read(matchControllerProvider.notifier).runAiTurn(
+              categories: categories,
+              characters: characters,
+            );
+
+        if (!context.mounted) {
+          return;
+        }
+
+        await AppDialog.showInfo(
+          context,
+          title: '${match.currentPlayer.name} Turn Complete',
+          message: result.message,
+        );
+
+        final updatedMatch = ref.read(matchControllerProvider);
+        if (!context.mounted || updatedMatch == null) {
+          return;
+        }
+
+        if (updatedMatch.status == MatchStatus.completed) {
+          context.go(AppRoutes.result);
+          return;
+        }
+
+        context.go(AppRoutes.match);
+        return;
+      }
+
       context.go(AppRoutes.match);
       return;
     }
@@ -272,9 +334,7 @@ class TurnTransitionScreen extends ConsumerWidget {
     final selectionState = ref.read(categorySelectionControllerProvider);
     final setupState = ref.read(gameSetupControllerProvider);
 
-    if (!selectionState.isComplete ||
-        selectionState.playerOneTraitId == null ||
-        selectionState.playerTwoTraitId == null) {
+    if (!selectionState.isComplete || selectionState.playerOneTraitId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
@@ -287,14 +347,21 @@ class TurnTransitionScreen extends ConsumerWidget {
     final catalog = await ref.read(validatedTraitCatalogProvider.future);
     final characters = await ref.read(charactersProvider.future);
 
+    final playerTwoTraitId = selectionState.playerTwoTraitId ??
+        ref.read(aiOpponentServiceProvider).chooseSecretTraitId(
+              categories: catalog.validCategories,
+              excludedTraitId: selectionState.playerOneTraitId,
+            );
+
     ref.read(matchControllerProvider.notifier).initializeMatch(
           playerOneName: setupState.playerOneName,
           playerTwoName: setupState.playerTwoName,
           hintsPerPlayer: setupState.hints,
           playerOneTraitId: selectionState.playerOneTraitId!,
-          playerTwoTraitId: selectionState.playerTwoTraitId!,
+          playerTwoTraitId: playerTwoTraitId,
           categories: catalog.validCategories,
           characters: characters,
+          playerTwoIsAi: setupState.isPlayerVsAi,
         );
 
     if (!context.mounted) {

@@ -92,10 +92,12 @@ Fields:
 - secretTraitId
 - validCharacterIds
 - hintsRemaining
+- controlType
 
 ### Notes
 
 - `validCharacterIds` represents characters that match the player's secret trait.
+- `controlType` distinguishes human-controlled and AI-controlled participants without moving match rules into the UI.
 - There is no `lives` field because the game has no life system.
 
 ## Turn

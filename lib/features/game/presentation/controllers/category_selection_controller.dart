@@ -5,11 +5,13 @@ class CategorySelectionState {
     this.currentPlayerNumber = 1,
     this.playerOneTraitId,
     this.playerTwoTraitId,
+    this.isPlayerVsAi = false,
   });
 
   final int currentPlayerNumber;
   final String? playerOneTraitId;
   final String? playerTwoTraitId;
+  final bool isPlayerVsAi;
 
   bool get isSelectingPlayerOne => currentPlayerNumber == 1;
 
@@ -18,22 +20,26 @@ class CategorySelectionState {
 
   bool get canConfirmCurrentSelection => currentSelectedTraitId != null;
 
-  bool get isComplete => playerOneTraitId != null && playerTwoTraitId != null;
+  bool get isComplete =>
+      playerOneTraitId != null && (isPlayerVsAi || playerTwoTraitId != null);
 
   CategorySelectionState copyWith({
     int? currentPlayerNumber,
     String? playerOneTraitId,
     String? playerTwoTraitId,
+    bool? isPlayerVsAi,
   }) {
     return CategorySelectionState(
       currentPlayerNumber: currentPlayerNumber ?? this.currentPlayerNumber,
       playerOneTraitId: playerOneTraitId ?? this.playerOneTraitId,
       playerTwoTraitId: playerTwoTraitId ?? this.playerTwoTraitId,
+      isPlayerVsAi: isPlayerVsAi ?? this.isPlayerVsAi,
     );
   }
 }
 
-class CategorySelectionController extends StateNotifier<CategorySelectionState> {
+class CategorySelectionController
+    extends StateNotifier<CategorySelectionState> {
   CategorySelectionController() : super(const CategorySelectionState());
 
   void selectTrait(String traitId) {
@@ -51,12 +57,14 @@ class CategorySelectionController extends StateNotifier<CategorySelectionState> 
     }
 
     if (state.isSelectingPlayerOne) {
-      state = state.copyWith(currentPlayerNumber: 2);
+      state = state.copyWith(
+        currentPlayerNumber: state.isPlayerVsAi ? 2 : 2,
+      );
     }
   }
 
-  void reset() {
-    state = const CategorySelectionState();
+  void reset({bool isPlayerVsAi = false}) {
+    state = CategorySelectionState(isPlayerVsAi: isPlayerVsAi);
   }
 }
 

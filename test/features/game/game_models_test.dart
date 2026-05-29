@@ -1,5 +1,6 @@
 import 'package:anime_deduction_tower/core/enums/difficulty_level.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
+import 'package:anime_deduction_tower/core/enums/player_control_type.dart';
 import 'package:anime_deduction_tower/core/enums/turn_action_type.dart';
 import 'package:anime_deduction_tower/features/game/data/models/game_match_model.dart';
 import 'package:anime_deduction_tower/features/game/data/models/guess_model.dart';
@@ -37,6 +38,7 @@ void main() {
         'secretTraitId': 'black_hair',
         'validCharacterIds': ['shadow_ninja'],
         'hintsRemaining': 2,
+        'controlType': 'ai',
       });
 
       final entity = model.toEntity();
@@ -44,6 +46,7 @@ void main() {
       expect(model.secretTraitId, 'black_hair');
       expect(entity.validCharacterIds, ['shadow_ninja']);
       expect(entity.hintsRemaining, 2);
+      expect(entity.controlType, PlayerControlType.ai);
     });
 
     test('uses default values when optional fields are missing', () {
@@ -54,6 +57,7 @@ void main() {
 
       expect(model.validCharacterIds, isEmpty);
       expect(model.hintsRemaining, 2);
+      expect(model.controlType, PlayerControlType.human);
     });
   });
 

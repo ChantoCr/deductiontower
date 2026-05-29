@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:anime_deduction_tower/core/enums/difficulty_level.dart';
 import 'package:anime_deduction_tower/core/enums/match_end_reason.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
+import 'package:anime_deduction_tower/features/ai_opponent/domain/services/mock_ai_opponent_service.dart';
 import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
 import 'package:anime_deduction_tower/features/game/domain/services/game_engine.dart';
@@ -15,6 +18,7 @@ void main() {
       gameEngine: const GameEngine(),
       hintEngine: const HintEngine(),
       traitFilterEngine: const TraitFilterEngine(),
+      aiOpponentService: MockAiOpponentService(random: Random(0)),
     );
 
     const categories = [
@@ -67,28 +71,42 @@ void main() {
       controller.clear();
     });
 
-    void initializeStandardMatch({int hintsPerPlayer = 2}) {
+    void initializeStandardMatch({
+      int hintsPerPlayer = 2,
+      bool playerTwoIsAi = false,
+    }) {
       controller.initializeMatch(
         playerOneName: 'Player 1',
-        playerTwoName: 'Player 2',
+        playerTwoName: playerTwoIsAi ? 'Tower AI' : 'Player 2',
         hintsPerPlayer: hintsPerPlayer,
         playerOneTraitId: 'black_hair',
         playerTwoTraitId: 'villain',
         categories: categories,
         characters: characters,
+        playerTwoIsAi: playerTwoIsAi,
       );
     }
 
-    test('initializes a match with a shared character pool from both traits', () {
+    test('initializes a match with a shared character pool from both traits',
+        () {
       initializeStandardMatch();
 
       final match = controller.state;
 
       expect(match, isNotNull);
       expect(match!.status, MatchStatus.inProgress);
-      expect(match.playerOne.validCharacterIds, ['shadow_ninja', 'abyss_duelist']);
-      expect(match.playerTwo.validCharacterIds, ['crimson_emperor', 'abyss_duelist']);
-      expect(match.characterPoolIds, ['shadow_ninja', 'abyss_duelist', 'crimson_emperor']);
+      expect(
+        match.playerOne.validCharacterIds,
+        ['shadow_ninja', 'abyss_duelist'],
+      );
+      expect(
+        match.playerTwo.validCharacterIds,
+        ['crimson_emperor', 'abyss_duelist'],
+      );
+      expect(
+        match.characterPoolIds,
+        ['shadow_ninja', 'abyss_duelist', 'crimson_emperor'],
+      );
     });
 
     test('submits a character guess and advances the turn', () {
@@ -162,6 +180,14 @@ void main() {
       expect(controller.state!.winnerId, 'player_two');
       expect(controller.state!.endReason, MatchEndReason.surrender);
       expect(controller.state!.turns.single.actionType.name, 'surrender');
+    });
+
+    test('initializes an ai-controlled opponent when player-vs-ai is requested',
+        () {
+      initializeStandardMatch(playerTwoIsAi: true);
+
+      expect(controller.state!.playerTwo.isAi, isTrue);
+      expect(controller.state!.playerTwo.name, 'Tower AI');
     });
   });
 }

@@ -1,4 +1,5 @@
 import 'package:anime_deduction_tower/core/constants/game_constants.dart';
+import 'package:anime_deduction_tower/core/enums/game_mode.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class GameSetupState {
@@ -6,21 +7,28 @@ class GameSetupState {
     this.playerOneName = 'Player 1',
     this.playerTwoName = 'Player 2',
     this.hints = GameConstants.defaultHints,
+    this.matchMode = GameMode.localMultiplayer,
   });
 
   final String playerOneName;
   final String playerTwoName;
   final int hints;
+  final GameMode matchMode;
+
+  bool get isPlayerVsAi => matchMode == GameMode.playerVsAi;
+  bool get isLocalMultiplayer => matchMode == GameMode.localMultiplayer;
 
   GameSetupState copyWith({
     String? playerOneName,
     String? playerTwoName,
     int? hints,
+    GameMode? matchMode,
   }) {
     return GameSetupState(
       playerOneName: playerOneName ?? this.playerOneName,
       playerTwoName: playerTwoName ?? this.playerTwoName,
       hints: hints ?? this.hints,
+      matchMode: matchMode ?? this.matchMode,
     );
   }
 }
@@ -28,27 +36,64 @@ class GameSetupState {
 class GameSetupController extends StateNotifier<GameSetupState> {
   GameSetupController() : super(const GameSetupState());
 
+  static const _defaultPlayerOneName = 'Player 1';
+  static const _defaultPlayerTwoName = 'Player 2';
+  static const _defaultAiName = 'Tower AI';
+
   void updatePlayerOneName(String value) {
     state = state.copyWith(
-      playerOneName: _normalizeName(value, fallback: 'Player 1'),
+      playerOneName: _normalizeName(value, fallback: _defaultPlayerOneName),
     );
   }
 
   void updatePlayerTwoName(String value) {
     state = state.copyWith(
-      playerTwoName: _normalizeName(value, fallback: 'Player 2'),
+      playerTwoName: _normalizeName(
+        value,
+        fallback: state.isPlayerVsAi ? _defaultAiName : _defaultPlayerTwoName,
+      ),
     );
   }
 
-  void updatePlayerNames({required String playerOneName, required String playerTwoName}) {
+  void updatePlayerNames({
+    required String playerOneName,
+    required String playerTwoName,
+  }) {
     state = state.copyWith(
-      playerOneName: _normalizeName(playerOneName, fallback: 'Player 1'),
-      playerTwoName: _normalizeName(playerTwoName, fallback: 'Player 2'),
+      playerOneName: _normalizeName(
+        playerOneName,
+        fallback: _defaultPlayerOneName,
+      ),
+      playerTwoName: _normalizeName(
+        playerTwoName,
+        fallback: state.isPlayerVsAi ? _defaultAiName : _defaultPlayerTwoName,
+      ),
+    );
+  }
+
+  void updateMatchMode(GameMode mode) {
+    if (mode == state.matchMode) {
+      return;
+    }
+
+    var playerTwoName = state.playerTwoName;
+    if (mode == GameMode.playerVsAi && playerTwoName == _defaultPlayerTwoName) {
+      playerTwoName = _defaultAiName;
+    }
+
+    if (mode == GameMode.localMultiplayer && playerTwoName == _defaultAiName) {
+      playerTwoName = _defaultPlayerTwoName;
+    }
+
+    state = state.copyWith(
+      matchMode: mode,
+      playerTwoName: playerTwoName,
     );
   }
 
   void updateHints(int value) {
-    final sanitizedHints = value.clamp(GameConstants.minHints, GameConstants.maxHints);
+    final sanitizedHints =
+        value.clamp(GameConstants.minHints, GameConstants.maxHints);
     state = state.copyWith(hints: sanitizedHints);
   }
 

@@ -26,6 +26,19 @@ void main() {
       expect(controller.state.isComplete, isTrue);
     });
 
+    test('supports single human secret selection in player-vs-ai mode', () {
+      final controller = CategorySelectionController();
+
+      controller.reset(isPlayerVsAi: true);
+      controller.selectTrait('black_hair');
+      controller.confirmCurrentSelection();
+
+      expect(controller.state.isPlayerVsAi, isTrue);
+      expect(controller.state.playerOneTraitId, 'black_hair');
+      expect(controller.state.playerTwoTraitId, isNull);
+      expect(controller.state.isComplete, isTrue);
+    });
+
     test('resets back to the initial selection state', () {
       final controller = CategorySelectionController();
 

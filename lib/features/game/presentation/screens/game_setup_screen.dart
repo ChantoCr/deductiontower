@@ -1,5 +1,6 @@
 import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/core/constants/game_constants.dart';
+import 'package:anime_deduction_tower/core/enums/game_mode.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/helpers/game_flow_copy_helper.dart';
@@ -49,6 +50,24 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
     final setupState = ref.watch(gameSetupControllerProvider);
     final controller = ref.read(gameSetupControllerProvider.notifier);
 
+    if (_playerOneController.text != setupState.playerOneName) {
+      _playerOneController.value = _playerOneController.value.copyWith(
+        text: setupState.playerOneName,
+        selection: TextSelection.collapsed(
+          offset: setupState.playerOneName.length,
+        ),
+      );
+    }
+
+    if (_playerTwoController.text != setupState.playerTwoName) {
+      _playerTwoController.value = _playerTwoController.value.copyWith(
+        text: setupState.playerTwoName,
+        selection: TextSelection.collapsed(
+          offset: setupState.playerTwoName.length,
+        ),
+      );
+    }
+
     return AppScaffold(
       title: 'Single Device Match',
       child: LayoutBuilder(
@@ -58,6 +77,11 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
           return ListView(
             children: [
               _SetupHeroCard(hints: setupState.hints),
+              const SizedBox(height: AppSpacing.lg),
+              _ModeSelectionCard(
+                selectedMode: setupState.matchMode,
+                onModeSelected: controller.updateMatchMode,
+              ),
               const SizedBox(height: AppSpacing.lg),
               Text(
                 'Player identities',
@@ -87,12 +111,20 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: _PlayerSetupCard(
-                        title: 'Player Two',
-                        helper: copy.playerNameHelper(2),
-                        icon: Icons.looks_two_rounded,
+                        title: setupState.isPlayerVsAi
+                            ? 'AI Opponent'
+                            : 'Player Two',
+                        helper: setupState.isPlayerVsAi
+                            ? 'This name appears in AI-turn messaging, the timeline, and the result screen.'
+                            : copy.playerNameHelper(2),
+                        icon: setupState.isPlayerVsAi
+                            ? Icons.smart_toy_outlined
+                            : Icons.looks_two_rounded,
                         accent: AppColors.secondary,
                         controller: _playerTwoController,
-                        label: 'Player two name',
+                        label: setupState.isPlayerVsAi
+                            ? 'AI opponent name'
+                            : 'Player two name',
                         onChanged: controller.updatePlayerTwoName,
                       ),
                     ),
@@ -110,12 +142,18 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 _PlayerSetupCard(
-                  title: 'Player Two',
-                  helper: copy.playerNameHelper(2),
-                  icon: Icons.looks_two_rounded,
+                  title: setupState.isPlayerVsAi ? 'AI Opponent' : 'Player Two',
+                  helper: setupState.isPlayerVsAi
+                      ? 'This name appears in AI-turn messaging, the timeline, and the result screen.'
+                      : copy.playerNameHelper(2),
+                  icon: setupState.isPlayerVsAi
+                      ? Icons.smart_toy_outlined
+                      : Icons.looks_two_rounded,
                   accent: AppColors.secondary,
                   controller: _playerTwoController,
-                  label: 'Player two name',
+                  label: setupState.isPlayerVsAi
+                      ? 'AI opponent name'
+                      : 'Player two name',
                   onChanged: controller.updatePlayerTwoName,
                 ),
               ],
@@ -141,7 +179,7 @@ class _GameSetupScreenState extends ConsumerState<GameSetupScreen> {
                   );
                   ref
                       .read(categorySelectionControllerProvider.notifier)
-                      .reset();
+                      .reset(isPlayerVsAi: setupState.isPlayerVsAi);
                   context.go(AppRoutes.categorySelection);
                 },
               ),
@@ -216,6 +254,52 @@ class _SetupHeroCard extends StatelessWidget {
                 accent: AppColors.secondary,
                 backgroundColor: AppColors.surface.withValues(alpha: 0.85),
                 borderColor: AppColors.primary.withValues(alpha: 0.14),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ModeSelectionCard extends StatelessWidget {
+  const _ModeSelectionCard({
+    required this.selectedMode,
+    required this.onModeSelected,
+  });
+
+  final GameMode selectedMode;
+  final ValueChanged<GameMode> onModeSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Mode configuration', style: AppTextStyles.title),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            selectedMode == GameMode.playerVsAi
+                ? 'Choose a human-vs-AI match. You lock your own hidden tag, then Tower AI receives an auto-assigned opponent tag and takes automated public turns.'
+                : 'Choose classic one-device multiplayer. Both players still use protected secret selection and pass-the-device reveals.',
+            style: AppTextStyles.subtitle.copyWith(height: 1.45),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              ChoiceChip(
+                label: const Text('Single Device Match'),
+                selected: selectedMode == GameMode.localMultiplayer,
+                onSelected: (_) => onModeSelected(GameMode.localMultiplayer),
+              ),
+              ChoiceChip(
+                label: const Text('Play vs AI'),
+                selected: selectedMode == GameMode.playerVsAi,
+                onSelected: (_) => onModeSelected(GameMode.playerVsAi),
               ),
             ],
           ),

@@ -1,4 +1,7 @@
 import 'package:anime_deduction_tower/app/router.dart';
+import 'package:anime_deduction_tower/core/enums/game_mode.dart';
+import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
+import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:anime_deduction_tower/features/home/presentation/widgets/animated_logo.dart';
 import 'package:anime_deduction_tower/features/home/presentation/widgets/main_menu_button.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
@@ -7,13 +10,14 @@ import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AppScaffold(
       child: SingleChildScrollView(
         child: Column(
@@ -53,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'The local flow is ready for gameplay iteration. AI and online modes stay visible as roadmap pillars while the core experience is polished.',
+                    'Local multiplayer is ready for gameplay iteration, and a first mock player-vs-AI flow is now available while deeper AI and online systems continue to evolve.',
                     style: AppTextStyles.subtitle.copyWith(height: 1.45),
                   ),
                 ],
@@ -65,13 +69,29 @@ class HomeScreen extends StatelessWidget {
               subtitle:
                   'Professional local setup with protected trait selection and pass-the-device turns.',
               icon: Icons.sports_esports_rounded,
-              onPressed: () => context.go(AppRoutes.setup),
+              onPressed: () {
+                ref
+                    .read(gameSetupControllerProvider.notifier)
+                    .updateMatchMode(GameMode.localMultiplayer);
+                ref.read(categorySelectionControllerProvider.notifier).reset();
+                context.go(AppRoutes.setup);
+              },
             ),
             const SizedBox(height: AppSpacing.md),
-            const MainMenuButton(
+            MainMenuButton(
               label: 'Play vs AI',
-              subtitle: 'Reserved for the AI-ready gameplay phase.',
+              subtitle:
+                  'Start a mock AI match where the opponent receives an auto-assigned hidden tag and takes automated public turns.',
               icon: Icons.smart_toy_outlined,
+              onPressed: () {
+                ref
+                    .read(gameSetupControllerProvider.notifier)
+                    .updateMatchMode(GameMode.playerVsAi);
+                ref
+                    .read(categorySelectionControllerProvider.notifier)
+                    .reset(isPlayerVsAi: true);
+                context.go(AppRoutes.setup);
+              },
             ),
             const SizedBox(height: AppSpacing.md),
             const MainMenuButton(

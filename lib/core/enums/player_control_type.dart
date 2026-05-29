@@ -1,0 +1,4 @@
+enum PlayerControlType {
+  human,
+  ai,
+}

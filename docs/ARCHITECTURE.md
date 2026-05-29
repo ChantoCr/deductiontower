@@ -11,6 +11,7 @@ The main goal is to separate:
 - UI
 - Flame visuals
 - AI integration
+- Optional AI opponent automation
 
 The architecture must also keep two match concepts explicit:
 
@@ -145,7 +146,7 @@ Important rules:
 
 ## AI Flow
 
-Future:
+Future / current foundation:
 
 ```txt
 Game State Summary
@@ -161,7 +162,19 @@ AI Hint / Explanation
 UI Panel
 ```
 
-AI prompts may later receive the visible character pool, but AI must not determine official win/loss state.
+```txt
+Match State + Public History
+  ↓
+AI Opponent Service
+  ↓
+Mock AI Turn Decision
+  ↓
+Game Engine Resolution
+  ↓
+Updated Match State
+```
+
+AI prompts may later receive the visible character pool, but AI must not determine official win/loss state. Even in player-vs-AI mode, final rule resolution still belongs to the game engine.
 
 ## Dependency Rule
 

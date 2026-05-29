@@ -1,3 +1,5 @@
+import 'package:anime_deduction_tower/core/enums/player_control_type.dart';
+
 class Player {
   const Player({
     required this.id,
@@ -5,6 +7,7 @@ class Player {
     required this.validCharacterIds,
     required this.hintsRemaining,
     this.secretTraitId,
+    this.controlType = PlayerControlType.human,
   });
 
   final String id;
@@ -12,11 +15,15 @@ class Player {
   final String? secretTraitId;
   final List<String> validCharacterIds;
   final int hintsRemaining;
+  final PlayerControlType controlType;
+
+  bool get isAi => controlType == PlayerControlType.ai;
 
   Player copyWith({
     String? secretTraitId,
     List<String>? validCharacterIds,
     int? hintsRemaining,
+    PlayerControlType? controlType,
   }) {
     return Player(
       id: id,
@@ -24,6 +31,7 @@ class Player {
       secretTraitId: secretTraitId ?? this.secretTraitId,
       validCharacterIds: validCharacterIds ?? this.validCharacterIds,
       hintsRemaining: hintsRemaining ?? this.hintsRemaining,
+      controlType: controlType ?? this.controlType,
     );
   }
 }

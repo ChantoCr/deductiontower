@@ -1,4 +1,5 @@
 import 'package:anime_deduction_tower/core/constants/game_constants.dart';
+import 'package:anime_deduction_tower/core/enums/game_mode.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -34,6 +35,16 @@ void main() {
 
       controller.updateHints(GameConstants.minHints - 10);
       expect(controller.state.hints, GameConstants.minHints);
+    });
+
+    test('switches into player-vs-ai mode with an ai default name', () {
+      final controller = GameSetupController();
+
+      controller.updateMatchMode(GameMode.playerVsAi);
+
+      expect(controller.state.matchMode, GameMode.playerVsAi);
+      expect(controller.state.playerTwoName, 'Tower AI');
+      expect(controller.state.isPlayerVsAi, isTrue);
     });
   });
 }

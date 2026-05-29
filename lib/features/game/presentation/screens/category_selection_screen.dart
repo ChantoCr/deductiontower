@@ -2,6 +2,7 @@ import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/category_selection_controller.dart';
+import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
 import 'package:anime_deduction_tower/shared/animations/pulse_animation.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
@@ -45,6 +46,7 @@ class _CategorySelectionScreenState
     final catalogAsync = ref.watch(validatedTraitCatalogProvider);
     final charactersAsync = ref.watch(charactersProvider);
     final selectionState = ref.watch(categorySelectionControllerProvider);
+    final setupState = ref.watch(gameSetupControllerProvider);
     final controller = ref.read(categorySelectionControllerProvider.notifier);
 
     return catalogAsync.when(
@@ -85,25 +87,45 @@ class _CategorySelectionScreenState
           }
         }
 
-        final lockedSelections = [
-          selectionState.playerOneTraitId,
-          selectionState.playerTwoTraitId,
-        ].whereType<String>().length;
+        final lockedSelections = selectionState.isPlayerVsAi
+            ? selectionState.isComplete
+                ? 2
+                : selectionState.playerOneTraitId == null
+                    ? 0
+                    : 1
+            : [
+                selectionState.playerOneTraitId,
+                selectionState.playerTwoTraitId,
+              ].whereType<String>().length;
 
         return AppScaffold(
           title: 'Secret Tag Selection',
           bottomBar: _CategorySelectionActionBar(
             selectionState: selectionState,
             selectedCategory: selectedCategory,
+            setupState: setupState,
             onConfirm: selectionState.canConfirmCurrentSelection
                 ? () async {
-                    if (selectionState.isSelectingPlayerOne) {
+                    if (selectionState.isSelectingPlayerOne &&
+                        !selectionState.isPlayerVsAi) {
                       controller.confirmCurrentSelection();
                       await AppDialog.showInfo(
                         context,
                         title: 'Player 1 Tag Saved',
                         message:
                             'Pass the device to Player 2 and choose the next hidden tag.',
+                      );
+                      return;
+                    }
+
+                    if (selectionState.isSelectingPlayerOne &&
+                        selectionState.isPlayerVsAi) {
+                      controller.confirmCurrentSelection();
+                      await AppDialog.showInfo(
+                        context,
+                        title: 'Your Tag Is Locked',
+                        message:
+                            '${setupState.playerTwoName} will receive an auto-assigned hidden tag when the match starts.',
                       );
                       return;
                     }
@@ -123,6 +145,7 @@ class _CategorySelectionScreenState
                 totalCategories: categories.length,
                 filteredCategories: filteredCategories.length,
                 lockedSelections: lockedSelections,
+                setupState: setupState,
               ),
               if (catalog.hasIssues) ...[
                 const SizedBox(height: AppSpacing.md),
@@ -199,6 +222,7 @@ class _CategorySelectionScreenState
                       index: index,
                       isSelected: isSelected,
                       playerNumber: selectionState.currentPlayerNumber,
+                      isPlayerVsAi: selectionState.isPlayerVsAi,
                       onTap: () => controller.selectTrait(category.id),
                     ),
                   );
@@ -240,12 +264,14 @@ class _SelectionHeroCard extends StatelessWidget {
     required this.totalCategories,
     required this.filteredCategories,
     required this.lockedSelections,
+    required this.setupState,
   });
 
   final CategorySelectionState selectionState;
   final int totalCategories;
   final int filteredCategories;
   final int lockedSelections;
+  final GameSetupState setupState;
 
   @override
   Widget build(BuildContext context) {
@@ -307,17 +333,25 @@ class _SelectionHeroCard extends StatelessWidget {
                         children: [
                           Text(
                             isComplete
-                                ? 'Both hidden tags are locked in.'
-                                : 'Choose the hidden tag for Player ${selectionState.currentPlayerNumber}.',
+                                ? selectionState.isPlayerVsAi
+                                    ? 'Your hidden tag is locked. ${setupState.playerTwoName} is ready.'
+                                    : 'Both hidden tags are locked in.'
+                                : selectionState.isPlayerVsAi
+                                    ? 'Choose your hidden tag.'
+                                    : 'Choose the hidden tag for Player ${selectionState.currentPlayerNumber}.',
                             style: AppTextStyles.title,
                           ),
                           const SizedBox(height: AppSpacing.sm),
                           Text(
                             isComplete
-                                ? 'Secret selection is ready. Continue to the protected handoff before revealing the live match.'
-                                : selectionState.isSelectingPlayerOne
-                                    ? 'Player 1 is choosing privately. Only the active player should be looking at the screen.'
-                                    : 'Player 2 is choosing privately. Keep the device hidden from the opponent.',
+                                ? selectionState.isPlayerVsAi
+                                    ? 'Secret selection is ready. Continue to the transition screen, then let ${setupState.playerTwoName} take automated public turns.'
+                                    : 'Secret selection is ready. Continue to the protected handoff before revealing the live match.'
+                                : selectionState.isPlayerVsAi
+                                    ? 'Only you should be looking at the screen. The AI hidden tag will be assigned automatically after you lock your choice.'
+                                    : selectionState.isSelectingPlayerOne
+                                        ? 'Player 1 is choosing privately. Only the active player should be looking at the screen.'
+                                        : 'Player 2 is choosing privately. Keep the device hidden from the opponent.',
                             style:
                                 AppTextStyles.subtitle.copyWith(height: 1.45),
                           ),
@@ -339,8 +373,12 @@ class _SelectionHeroCard extends StatelessWidget {
               _SelectionPill(
                 icon: Icons.person_outline,
                 label: selectionState.isComplete
-                    ? '2 players ready'
-                    : 'Player ${selectionState.currentPlayerNumber} selecting',
+                    ? selectionState.isPlayerVsAi
+                        ? 'Human vs AI ready'
+                        : '2 players ready'
+                    : selectionState.isPlayerVsAi
+                        ? '${setupState.playerOneName} selecting'
+                        : 'Player ${selectionState.currentPlayerNumber} selecting',
               ),
               _SelectionPill(
                 icon: Icons.style_outlined,
@@ -373,7 +411,7 @@ class _SelectionStageTrack extends StatelessWidget {
       children: [
         Expanded(
           child: _StageNode(
-            title: 'Player 1',
+            title: selectionState.isPlayerVsAi ? 'You' : 'Player 1',
             subtitle: selectionState.playerOneTraitId == null
                 ? 'Waiting'
                 : selectionState.isSelectingPlayerOne &&
@@ -395,15 +433,22 @@ class _SelectionStageTrack extends StatelessWidget {
         ),
         Expanded(
           child: _StageNode(
-            title: 'Player 2',
-            subtitle: selectionState.playerTwoTraitId == null
-                ? selectionState.isSelectingPlayerOne
-                    ? 'Next up'
-                    : 'Choosing'
-                : 'Locked',
-            isActive: !selectionState.isSelectingPlayerOne &&
+            title: selectionState.isPlayerVsAi ? 'Tower AI' : 'Player 2',
+            subtitle: selectionState.isPlayerVsAi
+                ? selectionState.isComplete
+                    ? 'Auto-assigned'
+                    : 'Auto later'
+                : selectionState.playerTwoTraitId == null
+                    ? selectionState.isSelectingPlayerOne
+                        ? 'Next up'
+                        : 'Choosing'
+                    : 'Locked',
+            isActive: !selectionState.isPlayerVsAi &&
+                !selectionState.isSelectingPlayerOne &&
                 !selectionState.isComplete,
-            isDone: selectionState.playerTwoTraitId != null,
+            isDone: selectionState.isPlayerVsAi
+                ? selectionState.isComplete
+                : selectionState.playerTwoTraitId != null,
           ),
         ),
       ],
@@ -491,6 +536,7 @@ class _CategorySelectionTile extends StatefulWidget {
     required this.index,
     required this.isSelected,
     required this.playerNumber,
+    required this.isPlayerVsAi,
     required this.onTap,
   });
 
@@ -499,6 +545,7 @@ class _CategorySelectionTile extends StatefulWidget {
   final int index;
   final bool isSelected;
   final int playerNumber;
+  final bool isPlayerVsAi;
   final VoidCallback onTap;
 
   @override
@@ -567,8 +614,12 @@ class _CategorySelectionTileState extends State<_CategorySelectionTile> {
                             const SizedBox(height: 4),
                             Text(
                               widget.isSelected
-                                  ? 'Selected for Player ${widget.playerNumber}. Lock it below when ready.'
-                                  : 'Tap to privately stage this tag for Player ${widget.playerNumber}.',
+                                  ? widget.isPlayerVsAi
+                                      ? 'Selected for your hidden tag. Lock it below when ready, then the AI tag will be assigned automatically.'
+                                      : 'Selected for Player ${widget.playerNumber}. Lock it below when ready.'
+                                  : widget.isPlayerVsAi
+                                      ? 'Tap to privately stage this hidden tag for yourself.'
+                                      : 'Tap to privately stage this tag for Player ${widget.playerNumber}.',
                               style: AppTextStyles.subtitle.copyWith(
                                 color: widget.isSelected
                                     ? AppColors.text
@@ -700,12 +751,14 @@ class _CategorySelectionActionBar extends StatelessWidget {
   const _CategorySelectionActionBar({
     required this.selectionState,
     required this.onReset,
+    required this.setupState,
     this.selectedCategory,
     this.onConfirm,
     this.onContinue,
   });
 
   final CategorySelectionState selectionState;
+  final GameSetupState setupState;
   final TraitCategory? selectedCategory;
   final VoidCallback? onConfirm;
   final VoidCallback? onContinue;
@@ -730,10 +783,14 @@ class _CategorySelectionActionBar extends StatelessWidget {
               Expanded(
                 child: Text(
                   selectionState.isComplete
-                      ? 'Secret tags ready'
-                      : selectionState.isSelectingPlayerOne
-                          ? 'Player 1 selection'
-                          : 'Player 2 selection',
+                      ? selectionState.isPlayerVsAi
+                          ? 'Player vs AI ready'
+                          : 'Secret tags ready'
+                      : selectionState.isPlayerVsAi
+                          ? 'Your secret tag'
+                          : selectionState.isSelectingPlayerOne
+                              ? 'Player 1 selection'
+                              : 'Player 2 selection',
                   style: AppTextStyles.title,
                 ),
               ),
@@ -791,8 +848,12 @@ class _CategorySelectionActionBar extends StatelessWidget {
                   Expanded(
                     child: Text(
                       selectionState.isComplete
-                          ? 'Both private tags are locked and ready for the protected handoff.'
-                          : 'This selection is staged privately for Player ${selectionState.currentPlayerNumber}.',
+                          ? selectionState.isPlayerVsAi
+                              ? '${setupState.playerTwoName} will receive an auto-assigned hidden tag when the match begins.'
+                              : 'Both private tags are locked and ready for the protected handoff.'
+                          : selectionState.isPlayerVsAi
+                              ? 'This selection is staged privately for your hidden tag.'
+                              : 'This selection is staged privately for Player ${selectionState.currentPlayerNumber}.',
                       style: AppTextStyles.body.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -805,12 +866,16 @@ class _CategorySelectionActionBar extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           if (!selectionState.isComplete)
             AppButton(
-              label: selectionState.isSelectingPlayerOne
-                  ? 'Lock Player 1 Tag'
-                  : 'Save Player 2 Tag',
-              icon: selectionState.isSelectingPlayerOne
-                  ? Icons.lock_outline_rounded
-                  : Icons.check_circle_outline_rounded,
+              label: selectionState.isPlayerVsAi
+                  ? 'Lock Your Tag'
+                  : selectionState.isSelectingPlayerOne
+                      ? 'Lock Player 1 Tag'
+                      : 'Save Player 2 Tag',
+              icon: selectionState.isPlayerVsAi
+                  ? Icons.smart_toy_outlined
+                  : selectionState.isSelectingPlayerOne
+                      ? Icons.lock_outline_rounded
+                      : Icons.check_circle_outline_rounded,
               onPressed: onConfirm,
             )
           else ...[

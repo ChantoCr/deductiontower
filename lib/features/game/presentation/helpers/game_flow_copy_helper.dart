@@ -5,7 +5,7 @@ class GameFlowCopyHelper {
   const GameFlowCopyHelper();
 
   String setupHeroDescription() {
-    return 'This setup is designed for one-device multiplayer. Names, hints, and protected secret-tag selection stay clear before the live deduction phase begins.';
+    return 'This setup supports one-device multiplayer and the first mock player-vs-AI flow. Names, hints, and secret-tag preparation stay clear before the live deduction phase begins.';
   }
 
   String setupPlayersSectionDescription() {
@@ -28,12 +28,17 @@ class GameFlowCopyHelper {
     return 'Secret tags stay protected after this screen. The device is passed between players before private information is revealed again.';
   }
 
-  String turnTransitionTitle({
-    required bool isExistingMatch,
-    required bool isCompletedMatch,
-  }) {
+  String turnTransitionTitle({required GameMatch? match}) {
+    final isExistingMatch = match != null;
+    final isCompletedMatch = match?.status == MatchStatus.completed;
+    final isAiTurn = match?.currentPlayer.isAi == true && !isCompletedMatch;
+
     if (isCompletedMatch) {
       return 'Match Complete';
+    }
+
+    if (isAiTurn) {
+      return 'Tower AI Turn';
     }
 
     if (isExistingMatch) {
@@ -46,9 +51,14 @@ class GameFlowCopyHelper {
   String turnTransitionDescription({required GameMatch? match}) {
     final isExistingMatch = match != null;
     final isCompletedMatch = match?.status == MatchStatus.completed;
+    final isAiTurn = match?.currentPlayer.isAi == true && !isCompletedMatch;
 
     if (isCompletedMatch) {
       return 'The match is over. Open the result screen to review the winner, end reason, and full deduction trail.';
+    }
+
+    if (isAiTurn) {
+      return '${match!.currentPlayer.name} is ready to take a public turn. No device handoff is needed while the AI chooses its next move.';
     }
 
     if (isExistingMatch) {
@@ -58,12 +68,17 @@ class GameFlowCopyHelper {
     return 'Use this protection screen before revealing the first hidden tag and starting the live match.';
   }
 
-  String turnTransitionButtonLabel({
-    required bool isExistingMatch,
-    required bool isCompletedMatch,
-  }) {
+  String turnTransitionButtonLabel({required GameMatch? match}) {
+    final isExistingMatch = match != null;
+    final isCompletedMatch = match?.status == MatchStatus.completed;
+    final isAiTurn = match?.currentPlayer.isAi == true && !isCompletedMatch;
+
     if (isCompletedMatch) {
       return 'View Result';
+    }
+
+    if (isAiTurn) {
+      return 'Run AI Turn';
     }
 
     if (isExistingMatch) {
@@ -73,12 +88,17 @@ class GameFlowCopyHelper {
     return 'Start Match';
   }
 
-  String turnTransitionBadgeLabel({
-    required bool isExistingMatch,
-    required bool isCompletedMatch,
-  }) {
+  String turnTransitionBadgeLabel({required GameMatch? match}) {
+    final isExistingMatch = match != null;
+    final isCompletedMatch = match?.status == MatchStatus.completed;
+    final isAiTurn = match?.currentPlayer.isAi == true && !isCompletedMatch;
+
     if (isCompletedMatch) {
       return 'RESULT READY';
+    }
+
+    if (isAiTurn) {
+      return 'AI OPPONENT';
     }
 
     if (isExistingMatch) {

@@ -1,3 +1,7 @@
+import 'package:anime_deduction_tower/core/enums/player_control_type.dart';
+import 'package:anime_deduction_tower/core/enums/turn_action_type.dart';
+import 'package:anime_deduction_tower/features/ai_opponent/domain/services/ai_opponent_service.dart';
+import 'package:anime_deduction_tower/features/ai_opponent/presentation/providers/ai_opponent_providers.dart';
 import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/game_match.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/guess_result.dart';
@@ -19,14 +23,17 @@ class MatchController extends StateNotifier<GameMatch?> {
     required GameEngine gameEngine,
     required HintEngine hintEngine,
     required TraitFilterEngine traitFilterEngine,
+    required AiOpponentService aiOpponentService,
   })  : _gameEngine = gameEngine,
         _hintEngine = hintEngine,
         _traitFilterEngine = traitFilterEngine,
+        _aiOpponentService = aiOpponentService,
         super(null);
 
   final GameEngine _gameEngine;
   final HintEngine _hintEngine;
   final TraitFilterEngine _traitFilterEngine;
+  final AiOpponentService _aiOpponentService;
 
   void setMatch(GameMatch match) => state = match;
 
@@ -38,6 +45,7 @@ class MatchController extends StateNotifier<GameMatch?> {
     required String playerTwoTraitId,
     required List<TraitCategory> categories,
     required List<Character> characters,
+    bool playerTwoIsAi = false,
   }) {
     final playerOneTrait = _findTraitById(categories, playerOneTraitId);
     final playerTwoTrait = _findTraitById(categories, playerTwoTraitId);
@@ -72,6 +80,8 @@ class MatchController extends StateNotifier<GameMatch?> {
         validCharacterIds:
             playerTwoValidCharacters.map((character) => character.id).toList(),
         hintsRemaining: hintsPerPlayer,
+        controlType:
+            playerTwoIsAi ? PlayerControlType.ai : PlayerControlType.human,
       ),
       characterPoolIds: characterPoolIds,
     );
@@ -162,6 +172,73 @@ class MatchController extends StateNotifier<GameMatch?> {
     );
   }
 
+  GuessResult runAiTurn({
+    required List<TraitCategory> categories,
+    required List<Character> characters,
+  }) {
+    final match = _requireMatch();
+    if (!match.currentPlayer.isAi) {
+      throw StateError('The current player is not AI-controlled.');
+    }
+
+    final decision = _aiOpponentService.chooseTurn(
+      match: match,
+      categories: categories,
+      characters: characters,
+    );
+
+    switch (decision.actionType) {
+      case TurnActionType.guessCharacter:
+        final guessedCharacter = _findCharacterInPool(
+          match: match,
+          characters: characters,
+          characterId: decision.value,
+        );
+        final opponentSecretTrait = _findOpponentSecretTrait(match, categories);
+        final updatedMatch = _gameEngine.resolveCharacterGuess(
+          match: match,
+          guessedCharacter: guessedCharacter,
+          opponentSecretTrait: opponentSecretTrait,
+        );
+
+        state = updatedMatch;
+        final wasCorrect = updatedMatch.turns.last.wasCorrect;
+        return GuessResult(
+          isCorrect: wasCorrect,
+          message: wasCorrect
+              ? '${match.currentPlayer.name} guessed ${guessedCharacter.name}, and it matches your hidden tag.'
+              : '${match.currentPlayer.name} guessed ${guessedCharacter.name}, but it does not match your hidden tag.',
+          guessedValue: guessedCharacter.name,
+          actionType: updatedMatch.turns.last.actionType,
+        );
+      case TurnActionType.guessTrait:
+        final guessedTrait = _findTraitById(categories, decision.value);
+        final opponentSecretTrait = _findOpponentSecretTrait(match, categories);
+        final updatedMatch = _gameEngine.resolveTraitGuess(
+          match: match,
+          guessedTraitId: guessedTrait.id,
+          opponentSecretTrait: opponentSecretTrait,
+        );
+
+        state = updatedMatch;
+        final wasCorrect = updatedMatch.turns.last.wasCorrect;
+        return GuessResult(
+          isCorrect: wasCorrect,
+          message: wasCorrect
+              ? '${match.currentPlayer.name} guessed your hidden tag: ${guessedTrait.label}. The match is over.'
+              : '${match.currentPlayer.name} guessed ${guessedTrait.label}, but your hidden tag remains safe.',
+          guessedValue: guessedTrait.label,
+          actionType: updatedMatch.turns.last.actionType,
+        );
+      case TurnActionType.requestHint:
+      case TurnActionType.surrender:
+      case TurnActionType.pass:
+        throw StateError(
+          'Mock AI decisions currently support only character or trait guesses.',
+        );
+    }
+  }
+
   void clear() => state = null;
 
   TraitCategory _findOpponentSecretTrait(
@@ -217,5 +294,6 @@ final matchControllerProvider =
     gameEngine: ref.watch(gameEngineProvider),
     hintEngine: ref.watch(hintEngineProvider),
     traitFilterEngine: ref.watch(traitFilterEngineProvider),
+    aiOpponentService: ref.watch(aiOpponentServiceProvider),
   ),
 );

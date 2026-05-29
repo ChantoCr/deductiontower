@@ -88,7 +88,6 @@ A player wins by correctly identifying the opponent's hidden trait.
 
 - AI referee
 - AI-generated hints
-- Play vs AI mode
 - Online rooms with invite codes
 - Player profiles
 - Match statistics
@@ -471,6 +470,7 @@ Current implemented state includes:
 - expanded tag catalog for richer imported-character descriptors like hero, young, student, leader, strong, fast, muscular, super powers, super saiyan, fire user, ice user, lightning user, assassin, mentor, rival, strategist, blond hair, brown hair, red hair, blue hair, green hair, purple hair, gun user, cyborg, psychic, pink hair, water user, and more
 - character library name/series search plus imported-character badge support for easier verification in-app
 - premium gameplay-facing UI passes for home, setup, secret selection, protected handoff, match, and result screens
+- player-vs-AI foundation with setup-mode selection, auto-assigned AI hidden tags, and mock automated AI public turns
 - fixed bottom action areas so secret-tag selection and in-match submission no longer require scrolling to the end of the screen
 - hidden secret-tag reminder flow with icon-based reveal for safer local multiplayer privacy
 - animated correct/wrong feedback dialogs plus protected reveal micro-animations
