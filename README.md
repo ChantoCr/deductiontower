@@ -479,6 +479,11 @@ Current implemented state includes:
 - animated winner celebration banner plus richer result-screen replay flow
 - filterable and collapsible public match timelines in both live match and result views
 - broader hover/tap micro-feedback across cards, pool rows, and primary buttons
+- visual consistency pass for protected handoff and secret-tag selection with richer stage tracking and micro-animations
+- shared match/result timeline mapping helper plus winner-vs-loser comparative result stats
+- shared match lookup helpers for winner/loser, trait labels, character labels, and end-reason wording
+- upgraded secret reminder and category-guess dialog motion with staged confirmation and richer reveal/hide feedback
+- polished shared dialogs and utility panels, plus an optional Flame-backed result celebration backdrop behind the existing UI flow
 
 If the app is already running after JSON asset updates, use a full restart so the refreshed character catalog is reloaded.
 

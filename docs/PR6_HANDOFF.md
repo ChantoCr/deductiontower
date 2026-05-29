@@ -60,6 +60,28 @@ This chat focused on the exact UI-polish handoff scope from PR5.
 - upgraded `AppButton` with hover scale/shadow feedback
 - added more tactile hover/tap feedback for character pool rows and timeline event cards
 
+### 5. Turn-transition and secret-selection visual consistency pass
+- upgraded the protected handoff screen with richer stage-tracking cards, animated orb treatment, and cleaner match snapshot chips
+- upgraded secret-tag selection with a staged progress rail, clearer private-pick messaging, search clear UX, and more premium selectable category cards
+- improved bottom action-bar feedback for staged secret picks and ready-state transitions
+
+### 6. Shared presentation helpers + richer result analytics
+- extracted shared timeline/event mapping into a dedicated presentation helper so match and result screens no longer duplicate event wiring
+- moved the timeline event model into its own presentation model file for reuse
+- added shared lookup helpers for winner/loser resolution, trait labels, character labels, player-name lookup, and end-reason wording
+- added winner-vs-loser comparative result stats like correct guesses, incorrect guesses, tag guesses, character guesses, hints used, and turns taken
+- added new pure-Dart tests covering timeline mapping and comparative stat generation
+
+### 7. Secret reminder + category-guess dialog animation polish
+- upgraded the secret reminder card with richer hidden/revealed states, animated status treatment, and better privacy messaging
+- upgraded the category-guess dialog with staged selection, search clear UX, hover/tap feedback, and explicit confirm flow before submitting the final tag guess
+
+### 8. Shared dialog/utility polish + optional Flame celebration backdrop
+- upgraded the shared dialog system so info, feedback, and confirmation flows now use a more consistent animated shell
+- replaced the raw surrender dialog with the shared confirmation dialog flow
+- upgraded the hint utility panel with clearer ready/empty status treatment
+- added a lightweight optional Flame celebration backdrop behind the existing result banner so the effect stays visual-only and non-blocking
+
 ---
 
 ## Current Gameplay/UI Behavior To Remember
@@ -82,6 +104,7 @@ This chat focused on the exact UI-polish handoff scope from PR5.
 
 ### Shared UI feel
 - core cards and primary buttons now feel more premium on pointer-capable layouts through subtle lift/glow motion
+- turn-transition and secret-selection screens now visually match the newer result/match motion language more closely
 - touch feedback remains lightweight and should not block gameplay flow
 
 ---
@@ -122,10 +145,10 @@ Both passed.
 ## Recommended Next Scope
 
 Suggested next focus after this saved state:
-1. **extract shared timeline/event mapping helpers so match/result screens share less presentation wiring**
-2. **add richer winner-vs-loser comparative stats on the result screen**
-3. **polish turn-transition, secret-reminder, and category-selection micro-animations to match the new result/match motion quality**
-4. **consider optional Flame-backed celebration/background effects only after keeping core UI responsive**
+1. **extract more shared presentation copy/summary helpers where screens still repeat microcopy or action-state wording**
+2. **expand Flame-backed visual polish carefully to other safe presentation-only surfaces if performance stays strong**
+3. **polish remaining dialogs and small utility panels so they match the newer result/match/handoff motion quality**
+4. **evaluate whether result analytics should later include persistent match history/stat tracking once local persistence is introduced**
 
 ---
 

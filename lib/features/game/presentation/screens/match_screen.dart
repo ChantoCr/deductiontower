@@ -1,12 +1,13 @@
 import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
-import 'package:anime_deduction_tower/core/enums/turn_action_type.dart';
 import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/game_match.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
-import 'package:anime_deduction_tower/features/game/domain/entities/turn.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
+import 'package:anime_deduction_tower/features/game/presentation/helpers/match_lookup_helper.dart';
+import 'package:anime_deduction_tower/features/game/presentation/helpers/match_presentation_mapper.dart';
+import 'package:anime_deduction_tower/features/game/presentation/models/guess_history_entry.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/category_guess_dialog.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/character_pool_panel.dart';
@@ -197,26 +198,15 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
   }
 
   Future<void> _confirmSurrender() async {
-    final shouldSurrender = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Surrender Match?'),
-            content: const Text(
-              'This ends the match immediately and awards the win to the opponent.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Surrender'),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+    final shouldSurrender = await AppDialog.showConfirm(
+      context,
+      title: 'Surrender Match?',
+      message:
+          'This ends the match immediately and awards the win to the opponent.',
+      confirmLabel: 'Surrender',
+      cancelLabel: 'Keep Playing',
+      isDanger: true,
+    );
 
     if (!shouldSurrender || !mounted) {
       return;
@@ -251,6 +241,8 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const lookup = MatchLookupHelper();
+    const mapper = MatchPresentationMapper();
     final match = ref.watch(matchControllerProvider);
     final catalogAsync = ref.watch(validatedTraitCatalogProvider);
     final charactersAsync = ref.watch(charactersProvider);
@@ -291,9 +283,9 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
       orElse: () => const <Character>[],
     );
     final isTurnRevealed = _revealedPlayerId == match.currentPlayerId;
-    final currentPlayerTraitLabel = _findTraitLabel(
-      categories: categories,
-      traitId: match.currentPlayer.secretTraitId,
+    final currentPlayerTraitLabel = lookup.traitLabelForPlayer(
+      categories,
+      match.currentPlayer,
     );
 
     if (!isTurnRevealed) {
@@ -364,21 +356,17 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
         ),
       );
     }
-    final historyEntries = _buildHistoryEntries(
-      turns: match.turns,
-      characters: characters,
-      categories: categories,
+    final historyEntries = mapper.buildTimelineEntries(
       match: match,
+      categories: categories,
+      characters: characters,
     );
     final latestPublicEvent = match.turns.isEmpty || historyEntries.isEmpty
         ? null
         : historyEntries.first;
     final selectedCharacterName = _selectedCharacterId == null
         ? null
-        : _findCharacterName(
-            characters: characters,
-            characterId: _selectedCharacterId!,
-          );
+        : lookup.findCharacterName(characters, _selectedCharacterId!);
 
     final latestEventCard = latestPublicEvent == null
         ? null
@@ -424,6 +412,7 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
               hint: match.currentPlayer.hintsRemaining > 0
                   ? 'Request a private hint about the opponent\'s secret tag. It consumes one hint, then the device passes to the next player.'
                   : 'No hints remain for this player. Use character and tag guesses to continue deducing the answer.',
+              isActionAvailable: match.currentPlayer.hintsRemaining > 0,
             ),
             if (latestEventCard != null) ...[
               const SizedBox(height: AppSpacing.md),
@@ -511,121 +500,6 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
       final isExactNameMatch = character.name.toLowerCase() == typedValue;
       if (isInPool && isExactNameMatch) {
         return character;
-      }
-    }
-
-    return null;
-  }
-
-  List<GuessHistoryEntry> _buildHistoryEntries({
-    required List<Turn> turns,
-    required List<Character> characters,
-    required List<TraitCategory> categories,
-    required GameMatch match,
-  }) {
-    return turns
-        .map((turn) {
-          final playerName = turn.playerId == match.playerOne.id
-              ? match.playerOne.name
-              : match.playerTwo.name;
-
-          switch (turn.actionType) {
-            case TurnActionType.guessCharacter:
-              final characterName = _findCharacterName(
-                characters: characters,
-                characterId: turn.value,
-              );
-              return GuessHistoryEntry(
-                title: '$playerName guessed $characterName',
-                subtitle: turn.wasCorrect
-                    ? 'The character matched the opponent hidden tag.'
-                    : 'The character did not match the opponent hidden tag.',
-                icon: turn.wasCorrect
-                    ? Icons.check_circle_outline
-                    : Icons.cancel_outlined,
-                color: turn.wasCorrect ? AppColors.success : AppColors.error,
-                actionType: turn.actionType,
-                playerName: playerName,
-                wasCorrect: turn.wasCorrect,
-              );
-            case TurnActionType.guessTrait:
-              final traitLabel = _findTraitLabel(
-                    categories: categories,
-                    traitId: turn.value,
-                  ) ??
-                  turn.value;
-              return GuessHistoryEntry(
-                title: '$playerName guessed trait $traitLabel',
-                subtitle: turn.wasCorrect
-                    ? 'The final trait guess was correct.'
-                    : 'The final trait guess was incorrect.',
-                icon: turn.wasCorrect
-                    ? Icons.emoji_events_outlined
-                    : Icons.psychology_alt_outlined,
-                color: turn.wasCorrect ? AppColors.success : AppColors.error,
-                actionType: turn.actionType,
-                playerName: playerName,
-                wasCorrect: turn.wasCorrect,
-              );
-            case TurnActionType.surrender:
-              return GuessHistoryEntry(
-                title: '$playerName surrendered',
-                subtitle: 'The opponent won immediately by surrender.',
-                icon: Icons.flag_outlined,
-                color: AppColors.accent,
-                actionType: turn.actionType,
-                playerName: playerName,
-              );
-            case TurnActionType.requestHint:
-              return GuessHistoryEntry(
-                title: '$playerName requested a private hint',
-                subtitle:
-                    'A hidden clue was consumed, then the device passed to the next player.',
-                icon: Icons.lightbulb_outline,
-                color: AppColors.secondary,
-                actionType: turn.actionType,
-                playerName: playerName,
-              );
-            case TurnActionType.pass:
-              return GuessHistoryEntry(
-                title: '$playerName passed the turn',
-                subtitle: 'Control moved to the next player.',
-                icon: Icons.swap_horiz_rounded,
-                color: AppColors.muted,
-                actionType: turn.actionType,
-                playerName: playerName,
-              );
-          }
-        })
-        .toList()
-        .reversed
-        .toList();
-  }
-
-  String _findCharacterName({
-    required List<Character> characters,
-    required String characterId,
-  }) {
-    for (final character in characters) {
-      if (character.id == characterId) {
-        return character.name;
-      }
-    }
-
-    return characterId;
-  }
-
-  String? _findTraitLabel({
-    required List<TraitCategory> categories,
-    required String? traitId,
-  }) {
-    if (traitId == null) {
-      return null;
-    }
-
-    for (final category in categories) {
-      if (category.id == traitId) {
-        return category.label;
       }
     }
 

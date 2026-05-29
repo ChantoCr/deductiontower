@@ -1,9 +1,11 @@
 import 'dart:math' as math;
 
+import 'package:anime_deduction_tower/features/flame_board/game/deduction_tower_game.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 class ResultCelebrationBanner extends StatefulWidget {
@@ -11,12 +13,14 @@ class ResultCelebrationBanner extends StatefulWidget {
     required this.winnerName,
     required this.reasonLabel,
     required this.summary,
+    this.enableFlameBackdrop = true,
     super.key,
   });
 
   final String winnerName;
   final String reasonLabel;
   final String summary;
+  final bool enableFlameBackdrop;
 
   @override
   State<ResultCelebrationBanner> createState() =>
@@ -29,6 +33,10 @@ class _ResultCelebrationBannerState extends State<ResultCelebrationBanner>
     vsync: this,
     duration: const Duration(milliseconds: 3200),
   )..repeat();
+  late final DeductionTowerGame _celebrationGame = DeductionTowerGame(
+    celebrationMode: true,
+    showTower: false,
+  );
 
   @override
   void dispose() {
@@ -73,6 +81,15 @@ class _ResultCelebrationBannerState extends State<ResultCelebrationBanner>
                         ),
                       ),
                     ),
+                    if (widget.enableFlameBackdrop)
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: Opacity(
+                            opacity: 0.34,
+                            child: GameWidget(game: _celebrationGame),
+                          ),
+                        ),
+                      ),
                     ..._celebrationSparkles(
                       constraints: constraints,
                       angle: angle,
@@ -94,6 +111,8 @@ class _ResultCelebrationBannerState extends State<ResultCelebrationBanner>
                                     winnerName: widget.winnerName,
                                     reasonLabel: widget.reasonLabel,
                                     summary: widget.summary,
+                                    usesFlameBackdrop:
+                                        widget.enableFlameBackdrop,
                                   ),
                                 ),
                               ],
@@ -113,6 +132,7 @@ class _ResultCelebrationBannerState extends State<ResultCelebrationBanner>
                                   winnerName: widget.winnerName,
                                   reasonLabel: widget.reasonLabel,
                                   summary: widget.summary,
+                                  usesFlameBackdrop: widget.enableFlameBackdrop,
                                 ),
                               ],
                             ),
@@ -166,11 +186,13 @@ class _CelebrationCopy extends StatelessWidget {
     required this.winnerName,
     required this.reasonLabel,
     required this.summary,
+    required this.usesFlameBackdrop,
   });
 
   final String winnerName;
   final String reasonLabel;
   final String summary;
+  final bool usesFlameBackdrop;
 
   @override
   Widget build(BuildContext context) {
@@ -178,16 +200,34 @@ class _CelebrationCopy extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: AppColors.success.withValues(alpha: 0.14),
-            borderRadius: BorderRadius.circular(999),
-            border: Border.all(
-              color: AppColors.success.withValues(alpha: 0.18),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.success.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: AppColors.success.withValues(alpha: 0.18),
+                ),
+              ),
+              child: const Text('MATCH COMPLETE', style: AppTextStyles.label),
             ),
-          ),
-          child: const Text('MATCH COMPLETE', style: AppTextStyles.label),
+            if (usesFlameBackdrop) ...[
+              const SizedBox(width: AppSpacing.sm),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.secondary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: const Text('FLAME BACKDROP', style: AppTextStyles.label),
+              ),
+            ],
+          ],
         ),
         const SizedBox(height: AppSpacing.md),
         Text(

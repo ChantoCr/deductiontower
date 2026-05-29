@@ -1,11 +1,11 @@
 import 'package:anime_deduction_tower/app/router.dart';
-import 'package:anime_deduction_tower/core/enums/match_end_reason.dart';
-import 'package:anime_deduction_tower/core/enums/turn_action_type.dart';
 import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
-import 'package:anime_deduction_tower/features/game/domain/entities/turn.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
+import 'package:anime_deduction_tower/features/game/presentation/helpers/match_lookup_helper.dart';
+import 'package:anime_deduction_tower/features/game/presentation/helpers/match_presentation_mapper.dart';
+import 'package:anime_deduction_tower/features/game/presentation/models/match_result_comparison.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/guess_history.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/result_celebration_banner.dart';
@@ -24,6 +24,8 @@ class ResultScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const lookup = MatchLookupHelper();
+    const mapper = MatchPresentationMapper();
     final match = ref.watch(matchControllerProvider);
     final categories = ref.watch(validatedTraitCatalogProvider).maybeWhen(
           data: (catalog) => catalog.validCategories,
@@ -60,23 +62,21 @@ class ResultScreen extends ConsumerWidget {
       );
     }
 
-    final winnerName = match.winnerId == match.playerOne.id
-        ? match.playerOne.name
-        : match.winnerId == match.playerTwo.id
-            ? match.playerTwo.name
-            : 'No winner';
-    final playerOneTrait =
-        _findTraitLabel(categories, match.playerOne.secretTraitId);
-    final playerTwoTrait =
-        _findTraitLabel(categories, match.playerTwo.secretTraitId);
-    final timelineEntries = _buildTimelineEntries(
-      turns: match.turns,
+    final winnerName = lookup.winnerName(match);
+    final playerOneTrait = lookup.traitLabelForPlayer(
+      categories,
+      match.playerOne,
+    );
+    final playerTwoTrait = lookup.traitLabelForPlayer(
+      categories,
+      match.playerTwo,
+    );
+    final timelineEntries = mapper.buildTimelineEntries(
+      match: match,
       categories: categories,
       characters: characters,
-      playerOneName: match.playerOne.name,
-      playerTwoName: match.playerTwo.name,
-      playerOneId: match.playerOne.id,
     );
+    final comparison = mapper.buildResultComparison(match: match);
 
     return AppScaffold(
       title: 'Match Result',
@@ -144,7 +144,7 @@ class ResultScreen extends ConsumerWidget {
 
           final heroCard = ResultCelebrationBanner(
             winnerName: winnerName,
-            reasonLabel: _endReasonLabel(match.endReason),
+            reasonLabel: lookup.endReasonLabel(match.endReason),
             summary:
                 'Review the revealed tags, remaining hint economy, and the full public event timeline before starting the next round.',
           );
@@ -175,7 +175,7 @@ class ResultScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: _ResultStatCard(
-                      label: '${match.playerOne.name} Hints',
+                      label: '${match.playerOne.name} Hints Left',
                       value: '${match.playerOne.hintsRemaining}',
                       icon: Icons.looks_one_rounded,
                     ),
@@ -183,7 +183,7 @@ class ResultScreen extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _ResultStatCard(
-                      label: '${match.playerTwo.name} Hints',
+                      label: '${match.playerTwo.name} Hints Left',
                       value: '${match.playerTwo.hintsRemaining}',
                       icon: Icons.looks_two_rounded,
                     ),
@@ -192,6 +192,8 @@ class ResultScreen extends ConsumerWidget {
               ),
             ],
           );
+
+          final comparisonCard = _ResultComparisonCard(comparison: comparison);
 
           final revealedTagsCard = AppCard(
             glowColor: AppColors.secondary,
@@ -237,6 +239,8 @@ class ResultScreen extends ConsumerWidget {
                           children: [
                             statsBlock,
                             const SizedBox(height: AppSpacing.md),
+                            comparisonCard,
+                            const SizedBox(height: AppSpacing.md),
                             revealedTagsCard,
                           ],
                         ),
@@ -257,6 +261,8 @@ class ResultScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.md),
               statsBlock,
               const SizedBox(height: AppSpacing.md),
+              comparisonCard,
+              const SizedBox(height: AppSpacing.md),
               revealedTagsCard,
               const SizedBox(height: AppSpacing.md),
               timelineCard,
@@ -266,116 +272,6 @@ class ResultScreen extends ConsumerWidget {
         },
       ),
     );
-  }
-
-  List<GuessHistoryEntry> _buildTimelineEntries({
-    required List<Turn> turns,
-    required List<TraitCategory> categories,
-    required List<Character> characters,
-    required String playerOneName,
-    required String playerTwoName,
-    required String playerOneId,
-  }) {
-    return turns.reversed.map((turn) {
-      final playerName =
-          turn.playerId == playerOneId ? playerOneName : playerTwoName;
-
-      switch (turn.actionType) {
-        case TurnActionType.guessCharacter:
-          final characterName = _findCharacterName(characters, turn.value);
-          return GuessHistoryEntry(
-            title: '$playerName guessed $characterName',
-            subtitle: turn.wasCorrect
-                ? 'The character matched the hidden tag.'
-                : 'The character did not match the hidden tag.',
-            icon: turn.wasCorrect
-                ? Icons.check_circle_outline
-                : Icons.cancel_outlined,
-            color: turn.wasCorrect ? AppColors.success : AppColors.error,
-            actionType: turn.actionType,
-            playerName: playerName,
-            wasCorrect: turn.wasCorrect,
-          );
-        case TurnActionType.guessTrait:
-          final traitLabel =
-              _findTraitLabel(categories, turn.value) ?? turn.value;
-          return GuessHistoryEntry(
-            title: '$playerName guessed tag $traitLabel',
-            subtitle: turn.wasCorrect
-                ? 'The final tag guess was correct.'
-                : 'The final tag guess was incorrect.',
-            icon: turn.wasCorrect
-                ? Icons.emoji_events_outlined
-                : Icons.psychology_alt_outlined,
-            color: turn.wasCorrect ? AppColors.success : AppColors.error,
-            actionType: turn.actionType,
-            playerName: playerName,
-            wasCorrect: turn.wasCorrect,
-          );
-        case TurnActionType.requestHint:
-          return GuessHistoryEntry(
-            title: '$playerName requested a private hint',
-            subtitle: 'A hidden clue was consumed to continue the deduction.',
-            icon: Icons.lightbulb_outline,
-            color: AppColors.secondary,
-            actionType: turn.actionType,
-            playerName: playerName,
-          );
-        case TurnActionType.surrender:
-          return GuessHistoryEntry(
-            title: '$playerName surrendered',
-            subtitle: 'The opponent won immediately by surrender.',
-            icon: Icons.flag_outlined,
-            color: AppColors.accent,
-            actionType: turn.actionType,
-            playerName: playerName,
-          );
-        case TurnActionType.pass:
-          return GuessHistoryEntry(
-            title: '$playerName passed the turn',
-            subtitle: 'Control moved to the next player.',
-            icon: Icons.swap_horiz_rounded,
-            color: AppColors.muted,
-            actionType: turn.actionType,
-            playerName: playerName,
-          );
-      }
-    }).toList();
-  }
-
-  String _findCharacterName(List<Character> characters, String characterId) {
-    for (final character in characters) {
-      if (character.id == characterId) {
-        return character.name;
-      }
-    }
-
-    return characterId;
-  }
-
-  String? _findTraitLabel(List<TraitCategory> categories, String? traitId) {
-    if (traitId == null) {
-      return null;
-    }
-
-    for (final category in categories) {
-      if (category.id == traitId) {
-        return category.label;
-      }
-    }
-
-    return null;
-  }
-
-  String _endReasonLabel(MatchEndReason? endReason) {
-    switch (endReason) {
-      case MatchEndReason.correctTraitGuess:
-        return 'Victory by correct secret tag guess';
-      case MatchEndReason.surrender:
-        return 'Victory by surrender';
-      case null:
-        return 'Match ended';
-    }
   }
 }
 
@@ -405,6 +301,261 @@ class _ResultStatCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _ResultComparisonCard extends StatelessWidget {
+  const _ResultComparisonCard({required this.comparison});
+
+  final MatchResultComparison comparison;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      glowColor: AppColors.success,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Winner vs Loser Breakdown', style: AppTextStyles.title),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Compare match efficiency, guess accuracy, and support-action usage to see how the final deduction swung.',
+            style: AppTextStyles.subtitle.copyWith(height: 1.45),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: _PlayerResultPill(
+                  label: 'Winner',
+                  playerName: comparison.winner.playerName,
+                  color: AppColors.success,
+                  icon: Icons.emoji_events_outlined,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: _PlayerResultPill(
+                  label: comparison.loser.surrendered ? 'Surrendered' : 'Loser',
+                  playerName: comparison.loser.playerName,
+                  color: comparison.loser.surrendered
+                      ? AppColors.accent
+                      : AppColors.primary,
+                  icon: comparison.loser.surrendered
+                      ? Icons.flag_outlined
+                      : Icons.shield_outlined,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _ComparisonMetricRow(
+            label: 'Correct guesses',
+            winnerValue: comparison.winner.correctGuesses,
+            loserValue: comparison.loser.correctGuesses,
+            higherIsBetter: true,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _ComparisonMetricRow(
+            label: 'Incorrect guesses',
+            winnerValue: comparison.winner.incorrectGuesses,
+            loserValue: comparison.loser.incorrectGuesses,
+            higherIsBetter: false,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _ComparisonMetricRow(
+            label: 'Character guesses',
+            winnerValue: comparison.winner.characterGuesses,
+            loserValue: comparison.loser.characterGuesses,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _ComparisonMetricRow(
+            label: 'Tag guesses',
+            winnerValue: comparison.winner.traitGuesses,
+            loserValue: comparison.loser.traitGuesses,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _ComparisonMetricRow(
+            label: 'Hints used',
+            winnerValue: comparison.winner.hintsUsed,
+            loserValue: comparison.loser.hintsUsed,
+            higherIsBetter: false,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _ComparisonMetricRow(
+            label: 'Turns taken',
+            winnerValue: comparison.winner.turnsTaken,
+            loserValue: comparison.loser.turnsTaken,
+          ),
+          if (comparison.loser.surrendered) ...[
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.accent.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: AppColors.accent.withValues(alpha: 0.18),
+                ),
+              ),
+              child: Text(
+                '${comparison.loser.playerName} ended the match by surrender, so the winner closed the round without needing another public guess.',
+                style: AppTextStyles.body.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PlayerResultPill extends StatelessWidget {
+  const _PlayerResultPill({
+    required this.label,
+    required this.playerName,
+    required this.color,
+    required this.icon,
+  });
+
+  final String label;
+  final String playerName;
+  final Color color;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: color),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: AppTextStyles.label.copyWith(color: color)),
+                const SizedBox(height: 2),
+                Text(
+                  playerName,
+                  style:
+                      AppTextStyles.body.copyWith(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ComparisonMetricRow extends StatelessWidget {
+  const _ComparisonMetricRow({
+    required this.label,
+    required this.winnerValue,
+    required this.loserValue,
+    this.higherIsBetter,
+  });
+
+  final String label;
+  final int winnerValue;
+  final int loserValue;
+  final bool? higherIsBetter;
+
+  @override
+  Widget build(BuildContext context) {
+    final winnerColor = _resolveValueColor(
+      ownValue: winnerValue,
+      otherValue: loserValue,
+      ownWinsColor: AppColors.success,
+      otherWinsColor: AppColors.accent,
+    );
+    final loserColor = _resolveValueColor(
+      ownValue: loserValue,
+      otherValue: winnerValue,
+      ownWinsColor: AppColors.accent,
+      otherWinsColor: AppColors.success,
+    );
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 48,
+            child: Text(
+              '$winnerValue',
+              textAlign: TextAlign.left,
+              style: AppTextStyles.body.copyWith(
+                fontWeight: FontWeight.w800,
+                color: winnerColor,
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.subtitle.copyWith(
+                color: AppColors.text,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          SizedBox(
+            width: 48,
+            child: Text(
+              '$loserValue',
+              textAlign: TextAlign.right,
+              style: AppTextStyles.body.copyWith(
+                fontWeight: FontWeight.w800,
+                color: loserColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _resolveValueColor({
+    required int ownValue,
+    required int otherValue,
+    required Color ownWinsColor,
+    required Color otherWinsColor,
+  }) {
+    if (higherIsBetter == null || ownValue == otherValue) {
+      return AppColors.text;
+    }
+
+    final ownLeads =
+        higherIsBetter! ? ownValue > otherValue : ownValue < otherValue;
+    return ownLeads ? ownWinsColor : otherWinsColor.withValues(alpha: 0.66);
   }
 }
 

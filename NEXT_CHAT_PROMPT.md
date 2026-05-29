@@ -36,6 +36,12 @@ Current status:
 - match history now uses filterable, collapsible structured event cards during live play
 - the result screen now has an animated celebration banner plus a filterable/collapsible final replay timeline
 - shared cards, buttons, timeline tiles, and pool rows now have stronger premium hover/tap feedback
+- turn-transition and secret-tag selection now have a visual consistency pass with richer stage tracking, clearer privacy messaging, search clear UX, and stronger selection micro-animations
+- shared match/result timeline mapping now lives in a dedicated presentation helper with a reusable timeline entry model
+- shared match lookup helpers now cover winner/loser, trait labels, character labels, player-name lookup, and end-reason wording
+- the result screen now includes richer winner-vs-loser comparative stats
+- the secret reminder card and category-guess dialog now have more premium reveal/staging animation behavior
+- shared dialogs and the hint utility panel have a richer polish pass, and the result banner now supports an optional non-blocking Flame-backed celebration backdrop
 - import preview, review queue, approval, and curated promotion preview pipelines still exist and remain valid
 - `characters_import_preview.json` currently contains 1264 imported preview records
 - `characters_import_review_queue.json` currently contains 1264 review entries
@@ -48,10 +54,10 @@ Important runtime note:
 - if the app was already running when JSON assets changed, do a full restart to reload the updated catalog
 
 Suggested next scope:
-1. extract shared timeline/event mapping helpers so match/result screens share less presentation wiring
-2. add richer winner-vs-loser comparative stats on the result screen
-3. polish turn-transition, secret-reminder, and category-selection micro-animations to match the new result/match motion quality
-4. consider optional Flame-backed celebration/background effects only after keeping core UI responsive
+1. extract more shared presentation copy/summary helpers where screens still repeat microcopy or action-state wording
+2. expand Flame-backed visual polish carefully to other safe presentation-only surfaces if performance stays strong
+3. polish remaining dialogs and small utility panels so they match the new result/match/handoff motion quality
+4. evaluate whether result analytics should later include persistent match history/stat tracking once local persistence is introduced
 
 Rules:
 - Keep game logic pure Dart
