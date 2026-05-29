@@ -3,6 +3,7 @@ import 'package:anime_deduction_tower/features/game/presentation/models/guess_hi
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_badge.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
 import 'package:flutter/material.dart';
 
@@ -59,8 +60,13 @@ class _GuessHistoryState extends State<GuessHistory> {
           Row(
             children: [
               Expanded(child: Text(widget.title, style: AppTextStyles.title)),
-              _HistoryCountPill(
+              AppBadge(
                 label: '${filteredEntries.length}/${widget.entries.length}',
+                accent: AppColors.primary,
+                backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+                textStyle: AppTextStyles.body.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),
@@ -190,27 +196,6 @@ extension on _GuessHistoryFilter {
   }
 }
 
-class _HistoryCountPill extends StatelessWidget {
-  const _HistoryCountPill({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
-      ),
-    );
-  }
-}
-
 class _GuessHistoryEventTile extends StatefulWidget {
   const _GuessHistoryEventTile({required this.entry});
 
@@ -282,7 +267,17 @@ class _GuessHistoryEventTileState extends State<_GuessHistoryEventTile> {
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm),
-                        _EventTypeBadge(entry: event),
+                        AppBadge(
+                          label: _labelFor(event),
+                          accent: AppColors.text,
+                          backgroundColor:
+                              AppColors.background.withValues(alpha: 0.32),
+                          textStyle: AppTextStyles.label.copyWith(fontSize: 11),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -298,38 +293,17 @@ class _GuessHistoryEventTileState extends State<_GuessHistoryEventTile> {
   }
 }
 
-class _EventTypeBadge extends StatelessWidget {
-  const _EventTypeBadge({required this.entry});
-
-  final GuessHistoryEntry entry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.background.withValues(alpha: 0.32),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        _labelFor(entry),
-        style: AppTextStyles.label.copyWith(fontSize: 11),
-      ),
-    );
-  }
-
-  String _labelFor(GuessHistoryEntry entry) {
-    switch (entry.actionType) {
-      case TurnActionType.guessCharacter:
-        return entry.wasCorrect == true ? 'CHARACTER ✓' : 'CHARACTER';
-      case TurnActionType.guessTrait:
-        return entry.wasCorrect == true ? 'TAG ✓' : 'TAG';
-      case TurnActionType.requestHint:
-        return 'HINT';
-      case TurnActionType.surrender:
-        return 'SURRENDER';
-      case TurnActionType.pass:
-        return 'PASS';
-    }
+String _labelFor(GuessHistoryEntry entry) {
+  switch (entry.actionType) {
+    case TurnActionType.guessCharacter:
+      return entry.wasCorrect == true ? 'CHARACTER ✓' : 'CHARACTER';
+    case TurnActionType.guessTrait:
+      return entry.wasCorrect == true ? 'TAG ✓' : 'TAG';
+    case TurnActionType.requestHint:
+      return 'HINT';
+    case TurnActionType.surrender:
+      return 'SURRENDER';
+    case TurnActionType.pass:
+      return 'PASS';
   }
 }

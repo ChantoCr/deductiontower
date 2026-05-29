@@ -11,6 +11,7 @@ import 'package:anime_deduction_tower/shared/animations/pulse_animation.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_badge.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_button.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_scaffold.dart';
@@ -85,23 +86,19 @@ class TurnTransitionScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
+                          AppBadge(
+                            label: copy.turnTransitionBadgeLabel(
+                              isExistingMatch: isExistingMatch,
+                              isCompletedMatch: isCompletedMatch,
+                            ),
+                            accent: glowColor,
+                            backgroundColor: glowColor.withValues(alpha: 0.14),
+                            textStyle: AppTextStyles.label.copyWith(
+                              color: glowColor,
+                            ),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: glowColor.withValues(alpha: 0.14),
-                              borderRadius: BorderRadius.circular(999),
-                            ),
-                            child: Text(
-                              copy.turnTransitionBadgeLabel(
-                                isExistingMatch: isExistingMatch,
-                                isCompletedMatch: isCompletedMatch,
-                              ),
-                              style: AppTextStyles.label.copyWith(
-                                color: glowColor,
-                              ),
                             ),
                           ),
                           const SizedBox(height: AppSpacing.md),
@@ -140,23 +137,53 @@ class TurnTransitionScreen extends ConsumerWidget {
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                    _SecurityPill(
+                    AppBadge(
                       icon: Icons.visibility_off_outlined,
                       label: 'Private information stays hidden',
+                      accent: AppColors.secondary,
+                      backgroundColor: AppColors.surface.withValues(alpha: 0.8),
+                      borderColor: AppColors.primary.withValues(alpha: 0.16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                     ),
-                    _SecurityPill(
+                    AppBadge(
                       icon: Icons.phone_android_outlined,
                       label: 'Pass-the-device safe flow',
+                      accent: AppColors.secondary,
+                      backgroundColor: AppColors.surface.withValues(alpha: 0.8),
+                      borderColor: AppColors.primary.withValues(alpha: 0.16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                     ),
                     if (isExistingMatch && !isCompletedMatch)
-                      _SecurityPill(
+                      AppBadge(
                         icon: Icons.person_outline,
                         label: 'Next: ${match.currentPlayer.name}',
+                        accent: AppColors.secondary,
+                        backgroundColor:
+                            AppColors.surface.withValues(alpha: 0.8),
+                        borderColor: AppColors.primary.withValues(alpha: 0.16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
                       ),
                     if (isCompletedMatch)
-                      const _SecurityPill(
+                      AppBadge(
                         icon: Icons.history_toggle_off_outlined,
                         label: 'Final replay ready',
+                        accent: AppColors.secondary,
+                        backgroundColor:
+                            AppColors.surface.withValues(alpha: 0.8),
+                        borderColor: AppColors.primary.withValues(alpha: 0.16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
                       ),
                   ],
                 ),
@@ -436,38 +463,6 @@ class _HandoffStepNode extends StatelessWidget {
   }
 }
 
-class _SecurityPill extends StatelessWidget {
-  const _SecurityPill({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.16)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: AppColors.secondary),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              label,
-              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _ChecklistItem extends StatelessWidget {
   const _ChecklistItem({required this.title, required this.subtitle});
 
@@ -538,52 +533,31 @@ class _MatchSnapshotCard extends StatelessWidget {
             spacing: 10,
             runSpacing: 10,
             children: [
-              _SnapshotChip(
+              AppBadge(
                 icon: Icons.person_outline,
                 label: 'Next: ${match.currentPlayer.name}',
+                accent: AppColors.secondary,
+                backgroundColor: AppColors.background.withValues(alpha: 0.24),
               ),
-              _SnapshotChip(
+              AppBadge(
                 icon: Icons.timeline_outlined,
                 label: 'Turns: ${match.turns.length}',
+                accent: AppColors.secondary,
+                backgroundColor: AppColors.background.withValues(alpha: 0.24),
               ),
-              _SnapshotChip(
+              AppBadge(
                 icon: Icons.style_outlined,
                 label: 'Pool: ${match.characterPoolIds.length}',
+                accent: AppColors.secondary,
+                backgroundColor: AppColors.background.withValues(alpha: 0.24),
               ),
-              _SnapshotChip(
+              AppBadge(
                 icon: Icons.lightbulb_outline,
                 label: 'Hints: ${match.currentPlayer.hintsRemaining}',
+                accent: AppColors.secondary,
+                backgroundColor: AppColors.background.withValues(alpha: 0.24),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SnapshotChip extends StatelessWidget {
-  const _SnapshotChip({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.background.withValues(alpha: 0.24),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: AppColors.secondary),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

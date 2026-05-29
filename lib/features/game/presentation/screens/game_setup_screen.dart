@@ -6,9 +6,11 @@ import 'package:anime_deduction_tower/features/game/presentation/helpers/game_fl
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_badge.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_button.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_scaffold.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_summary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -187,16 +189,34 @@ class _SetupHeroCard extends StatelessWidget {
             spacing: 10,
             runSpacing: 10,
             children: [
-              _InfoPill(icon: Icons.shield_outlined, label: 'Protected turns'),
-              _InfoPill(
+              AppBadge(
+                icon: Icons.shield_outlined,
+                label: 'Protected turns',
+                accent: AppColors.secondary,
+                backgroundColor: AppColors.surface.withValues(alpha: 0.85),
+                borderColor: AppColors.primary.withValues(alpha: 0.14),
+              ),
+              AppBadge(
                 icon: Icons.groups_2_outlined,
                 label: 'Shared character pool',
+                accent: AppColors.secondary,
+                backgroundColor: AppColors.surface.withValues(alpha: 0.85),
+                borderColor: AppColors.primary.withValues(alpha: 0.14),
               ),
-              _InfoPill(
+              AppBadge(
                 icon: Icons.lightbulb_outline,
                 label: '$hints hints each',
+                accent: AppColors.secondary,
+                backgroundColor: AppColors.surface.withValues(alpha: 0.85),
+                borderColor: AppColors.primary.withValues(alpha: 0.14),
               ),
-              _InfoPill(icon: Icons.flag_outlined, label: 'No life system'),
+              AppBadge(
+                icon: Icons.flag_outlined,
+                label: 'No life system',
+                accent: AppColors.secondary,
+                backgroundColor: AppColors.surface.withValues(alpha: 0.85),
+                borderColor: AppColors.primary.withValues(alpha: 0.14),
+              ),
             ],
           ),
         ],
@@ -331,89 +351,23 @@ class _MatchPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     const copy = GameFlowCopyHelper();
 
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Match preview', style: AppTextStyles.title),
-          const SizedBox(height: AppSpacing.md),
-          _PreviewRow(label: 'Player one', value: playerOneName),
-          const SizedBox(height: AppSpacing.sm),
-          _PreviewRow(label: 'Player two', value: playerTwoName),
-          const SizedBox(height: AppSpacing.sm),
-          _PreviewRow(label: 'Hints per player', value: '$hints'),
-          const SizedBox(height: AppSpacing.md),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Text(
-              copy.matchPreviewPrivacyNote(),
-              style: AppTextStyles.subtitle.copyWith(height: 1.45),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PreviewRow extends StatelessWidget {
-  const _PreviewRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: AppTextStyles.subtitle.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Flexible(
-          child: Text(
-            value,
-            textAlign: TextAlign.right,
-            style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
-          ),
-        ),
+    return AppSummaryCard(
+      title: 'Match preview',
+      items: [
+        AppSummaryItem(label: 'Player one', value: playerOneName),
+        AppSummaryItem(label: 'Player two', value: playerTwoName),
+        AppSummaryItem(label: 'Hints per player', value: '$hints'),
       ],
-    );
-  }
-}
-
-class _InfoPill extends StatelessWidget {
-  const _InfoPill({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.14)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: AppColors.secondary),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ],
+      footer: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Text(
+          copy.matchPreviewPrivacyNote(),
+          style: AppTextStyles.subtitle.copyWith(height: 1.45),
+        ),
       ),
     );
   }

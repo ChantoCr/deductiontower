@@ -4,6 +4,7 @@ import 'package:anime_deduction_tower/features/characters/presentation/providers
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_badge.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/pool_privacy_notice.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +102,15 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
                             style: AppTextStyles.title,
                           ),
                         ),
-                        _PoolInfoPill(label: '${filteredPool.length} shown'),
+                        AppBadge(
+                          label: '${filteredPool.length} shown',
+                          accent: AppColors.primary,
+                          backgroundColor:
+                              AppColors.primary.withValues(alpha: 0.12),
+                          textStyle: AppTextStyles.body.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: AppSpacing.sm),
@@ -145,8 +154,14 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         if (seriesOptions.isNotEmpty)
-                          _PoolInfoPill(
+                          AppBadge(
                             label: '${seriesOptions.length} series',
+                            accent: AppColors.primary,
+                            backgroundColor:
+                                AppColors.primary.withValues(alpha: 0.12),
+                            textStyle: AppTextStyles.body.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                       ],
                     ),
@@ -467,22 +482,80 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
                                                       spacing: 8,
                                                       runSpacing: 6,
                                                       children: [
-                                                        _InlineMetaChip(
+                                                        AppBadge(
                                                           label:
                                                               _formatDifficulty(
                                                             character
                                                                 .difficulty,
                                                           ),
+                                                          accent:
+                                                              AppColors.primary,
+                                                          backgroundColor:
+                                                              AppColors.primary
+                                                                  .withValues(
+                                                            alpha: 0.08,
+                                                          ),
+                                                          textStyle:
+                                                              AppTextStyles
+                                                                  .subtitle
+                                                                  .copyWith(
+                                                            fontSize: 12,
+                                                          ),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 6,
+                                                          ),
                                                         ),
-                                                        _InlineMetaChip(
+                                                        AppBadge(
                                                           label:
                                                               '★ ${character.popularity}',
+                                                          accent:
+                                                              AppColors.primary,
+                                                          backgroundColor:
+                                                              AppColors.primary
+                                                                  .withValues(
+                                                            alpha: 0.08,
+                                                          ),
+                                                          textStyle:
+                                                              AppTextStyles
+                                                                  .subtitle
+                                                                  .copyWith(
+                                                            fontSize: 12,
+                                                          ),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 6,
+                                                          ),
                                                         ),
                                                         if (!isSelected)
-                                                          _InlineMetaChip(
+                                                          AppBadge(
                                                             label: isHovered
                                                                 ? 'Tap to stage'
                                                                 : 'Pool pick',
+                                                            accent: AppColors
+                                                                .primary,
+                                                            backgroundColor:
+                                                                AppColors
+                                                                    .primary
+                                                                    .withValues(
+                                                              alpha: 0.08,
+                                                            ),
+                                                            textStyle:
+                                                                AppTextStyles
+                                                                    .subtitle
+                                                                    .copyWith(
+                                                              fontSize: 12,
+                                                            ),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                              horizontal: 10,
+                                                              vertical: 6,
+                                                            ),
                                                           ),
                                                       ],
                                                     ),
@@ -741,48 +814,6 @@ class _CharacterPoolPanelState extends ConsumerState<CharacterPoolPanel> {
       case DifficultyLevel.hard:
         return 'Hard';
     }
-  }
-}
-
-class _PoolInfoPill extends StatelessWidget {
-  const _PoolInfoPill({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
-      ),
-    );
-  }
-}
-
-class _InlineMetaChip extends StatelessWidget {
-  const _InlineMetaChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.subtitle.copyWith(fontSize: 12),
-      ),
-    );
   }
 }
 

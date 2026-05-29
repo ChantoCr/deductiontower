@@ -12,9 +12,11 @@ import 'package:anime_deduction_tower/features/game/presentation/widgets/result_
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_badge.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_button.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_card.dart';
 import 'package:anime_deduction_tower/shared/widgets/app_scaffold.dart';
+import 'package:anime_deduction_tower/shared/widgets/app_summary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -199,23 +201,25 @@ class ResultScreen extends ConsumerWidget {
 
           final comparisonCard = _ResultComparisonCard(comparison: comparison);
 
-          final revealedTagsCard = AppCard(
+          final revealedTagsCard = AppSummaryCard(
+            title: 'Revealed Secret Tags',
             glowColor: AppColors.secondary,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Revealed Secret Tags', style: AppTextStyles.title),
-                const SizedBox(height: AppSpacing.md),
-                _ResultRevealRow(
-                  playerName: match.playerOne.name,
-                  traitLabel: playerOneTrait ?? 'Unknown',
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _ResultRevealRow(
-                  playerName: match.playerTwo.name,
-                  traitLabel: playerTwoTrait ?? 'Unknown',
-                ),
-              ],
+            rowBackgroundColor: AppColors.primary.withValues(alpha: 0.08),
+            items: [
+              AppSummaryItem(
+                label: match.playerOne.name,
+                value: playerOneTrait ?? 'Unknown',
+              ),
+              AppSummaryItem(
+                label: match.playerTwo.name,
+                value: playerTwoTrait ?? 'Unknown',
+              ),
+            ],
+            labelStyle:
+                AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
+            valueStyle: AppTextStyles.subtitle.copyWith(
+              color: AppColors.text,
+              fontWeight: FontWeight.w700,
             ),
           );
 
@@ -312,18 +316,14 @@ class _ResultStatCard extends StatelessWidget {
                 child: Icon(icon, color: accent),
               ),
               const Spacer(),
-              Container(
+              AppBadge(
+                label: 'MATCH STAT',
+                accent: accent,
+                backgroundColor: accent.withValues(alpha: 0.12),
+                textStyle: AppTextStyles.label.copyWith(color: accent),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                   vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  'MATCH STAT',
-                  style: AppTextStyles.label.copyWith(color: accent),
                 ),
               ),
             ],
@@ -590,48 +590,5 @@ class _ComparisonMetricRow extends StatelessWidget {
     final ownLeads =
         higherIsBetter! ? ownValue > otherValue : ownValue < otherValue;
     return ownLeads ? ownWinsColor : otherWinsColor.withValues(alpha: 0.66);
-  }
-}
-
-class _ResultRevealRow extends StatelessWidget {
-  const _ResultRevealRow({
-    required this.playerName,
-    required this.traitLabel,
-  });
-
-  final String playerName;
-  final String traitLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              playerName,
-              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Flexible(
-            child: Text(
-              traitLabel,
-              textAlign: TextAlign.right,
-              style: AppTextStyles.subtitle.copyWith(
-                color: AppColors.text,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

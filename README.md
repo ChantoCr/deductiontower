@@ -489,8 +489,8 @@ Current implemented state includes:
 
 If the app is already running after JSON asset updates, use a full restart so the refreshed character catalog is reloaded.
 
-The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state now includes the earlier premium gameplay retake passes plus animated result celebration, filterable/collapsible timelines, searchable series chips in the pool, and stronger hover/tap micro-feedback.
+The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state now includes the earlier premium gameplay retake passes plus animated result celebration, filterable/collapsible timelines, searchable series chips in the pool, shared presentation helpers, Flame-backed presentation-only polish, and stronger privacy-safe local multiplayer browser reset behavior.
 
 For the next handoff, see:
-- `docs/PR6_HANDOFF.md`
+- `docs/PR7_HANDOFF.md`
 - `NEXT_CHAT_PROMPT.md`
