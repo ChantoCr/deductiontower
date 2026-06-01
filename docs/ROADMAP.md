@@ -121,6 +121,8 @@
 - Add join by code
 - Add realtime sync
 - Add remote match state
+- Saved foundation preview: dedicated room-code lobby screen
+- Saved foundation preview: mock repository/controller architecture for future backend swap
 
 ---
 

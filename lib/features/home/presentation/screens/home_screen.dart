@@ -57,7 +57,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'Local multiplayer is ready for gameplay iteration, and a first mock player-vs-AI flow is now available while deeper AI and online systems continue to evolve.',
+                    'Local multiplayer is ready for gameplay iteration, Play vs AI now has a stronger presentation pass, and online multiplayer has started its room-code foundation preview.',
                     style: AppTextStyles.subtitle.copyWith(height: 1.45),
                   ),
                 ],
@@ -94,11 +94,12 @@ class HomeScreen extends ConsumerWidget {
               },
             ),
             const SizedBox(height: AppSpacing.md),
-            const MainMenuButton(
+            MainMenuButton(
               label: 'Online Match',
               subtitle:
-                  'Planned after the local mode is fully polished and stable.',
+                  'Preview the new room-code lobby foundation before realtime sync and remote match state are connected.',
               icon: Icons.wifi_tethering_rounded,
+              onPressed: () => context.go(AppRoutes.onlineMatch),
             ),
             const SizedBox(height: AppSpacing.xl),
             AppCard(

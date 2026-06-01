@@ -89,6 +89,7 @@ A player wins by correctly identifying the opponent's hidden trait.
 - AI referee
 - AI-generated hints
 - Online rooms with invite codes
+- Realtime room sync and remote match state
 - Player profiles
 - Match statistics
 - Achievements
@@ -473,6 +474,8 @@ Current implemented state includes:
 - player-vs-AI foundation with setup-mode selection, auto-assigned AI hidden tags, and mock automated AI public turns
 - first AI difficulty layer with easy/standard/hard behavior tuning, stronger public-probe scoring, and clearer AI-specific gameplay/result microcopy
 - fuller Play vs AI presentation pass with setup-time opponent profiling, in-match AI duel intel, persisted public reasoning notes, richer AI turn-complete dialogs, and result-screen AI performance analytics
+- online multiplayer foundation preview with a dedicated room-code lobby screen, mock room creation/join architecture, normalized join-code flow, and repository/controller boundaries ready for future realtime backend integration
+- online room UX polish with host-vs-guest path switching, clearer readiness messaging, formatted room-code presentation, and one-tap room-code copy flow
 - fixed bottom action areas so secret-tag selection and in-match submission no longer require scrolling to the end of the screen
 - hidden secret-tag reminder flow with icon-based reveal for safer local multiplayer privacy
 - animated correct/wrong feedback dialogs plus protected reveal micro-animations

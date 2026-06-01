@@ -185,6 +185,29 @@ Current player-vs-AI presentation also keeps a clear separation between:
 - core game-engine correctness and match-end resolution
 - Flutter widgets that explain AI posture, reasoning, and result analytics
 
+## Online Multiplayer Foundation Flow
+
+Current online multiplayer work is still a foundation preview, not a live backend.
+
+```txt
+Online lobby UI
+  ↓
+OnlineLobbyController
+  ↓
+OnlineRoomRepository interface
+  ↓
+Mock room repository implementation
+  ↓
+Preview room session state
+  ↓
+Room summary / next-steps UI
+```
+
+Important rules:
+- room creation and join-code UX can be built now without moving official match rules out of the game domain
+- realtime networking can later replace the mock repository behind the same controller boundary
+- remote match sync should eventually feed the existing game engine instead of duplicating rule resolution in the online layer
+
 ## Dependency Rule
 
 Outer layers can depend on inner layers.
