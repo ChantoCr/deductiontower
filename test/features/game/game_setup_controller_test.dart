@@ -1,4 +1,5 @@
 import 'package:anime_deduction_tower/core/constants/game_constants.dart';
+import 'package:anime_deduction_tower/core/enums/ai_difficulty.dart';
 import 'package:anime_deduction_tower/core/enums/game_mode.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,6 +46,15 @@ void main() {
       expect(controller.state.matchMode, GameMode.playerVsAi);
       expect(controller.state.playerTwoName, 'Tower AI');
       expect(controller.state.isPlayerVsAi, isTrue);
+    });
+
+    test('stores the selected ai difficulty independently from core rules', () {
+      final controller = GameSetupController();
+
+      controller.updateAiDifficulty(AiDifficulty.hard);
+
+      expect(controller.state.aiDifficulty, AiDifficulty.hard);
+      expect(controller.state.hints, GameConstants.defaultHints);
     });
   });
 }

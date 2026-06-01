@@ -167,14 +167,23 @@ Match State + Public History
   ↓
 AI Opponent Service
   ↓
-Mock AI Turn Decision
+Difficulty Profile (easy / standard / hard)
+  ↓
+Mock AI Turn Decision + Public Reasoning Summary
   ↓
 Game Engine Resolution
   ↓
 Updated Match State
+  ↓
+AI-specific setup / live / result presentation cards
 ```
 
 AI prompts may later receive the visible character pool, but AI must not determine official win/loss state. Even in player-vs-AI mode, final rule resolution still belongs to the game engine.
+
+Current player-vs-AI presentation also keeps a clear separation between:
+- AI decision-making data stored as public turn notes
+- core game-engine correctness and match-end resolution
+- Flutter widgets that explain AI posture, reasoning, and result analytics
 
 ## Dependency Rule
 

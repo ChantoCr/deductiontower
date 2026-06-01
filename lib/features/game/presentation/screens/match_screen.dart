@@ -4,10 +4,14 @@ import 'package:anime_deduction_tower/features/characters/domain/entities/charac
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/game_match.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
+import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
+import 'package:anime_deduction_tower/features/game/presentation/helpers/game_flow_copy_helper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/helpers/match_lookup_helper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/helpers/match_presentation_mapper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/ai_move_summary_card.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/ai_opponent_profile_card.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/category_guess_dialog.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/character_pool_panel.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/guess_history.dart';
@@ -269,6 +273,7 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
   Widget build(BuildContext context) {
     const lookup = MatchLookupHelper();
     const mapper = MatchPresentationMapper();
+    const copy = GameFlowCopyHelper();
 
     ref.listen<GameMatch?>(matchControllerProvider, (previous, next) {
       if (next == null) {
@@ -294,6 +299,7 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
     });
 
     final match = ref.watch(matchControllerProvider);
+    final setupState = ref.watch(gameSetupControllerProvider);
     final catalogAsync = ref.watch(validatedTraitCatalogProvider);
     final charactersAsync = ref.watch(charactersProvider);
 
@@ -333,6 +339,8 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
       orElse: () => const <Character>[],
     );
     final isTurnRevealed = _revealedPlayerId == match.currentPlayerId;
+    final isAiMatch = lookup.isAiMatch(match);
+    final aiPlayerName = lookup.aiPlayerName(match);
     final currentPlayerTraitLabel = lookup.traitLabelForPlayer(
       categories,
       match.currentPlayer,
@@ -340,9 +348,18 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
 
     if (!isTurnRevealed) {
       return AppScaffold(
-        title: 'Protected Turn',
+        title: isAiMatch ? 'Private Tag Check' : 'Protected Turn',
         child: MatchPrivacyGate(
           currentPlayerName: match.currentPlayer.name,
+          title: isAiMatch ? 'Private Tag Check' : 'Private Turn Protection',
+          description: isAiMatch
+              ? 'Only ${match.currentPlayer.name} should reveal this screen. No device handoff is needed in player-vs-AI mode, but your hidden tag still stays gated before the live tools appear.'
+              : null,
+          footerText: isAiMatch
+              ? 'The reveal stays separated from the live match so your hidden tag never flashes accidentally before ${aiPlayerName ?? 'the AI'} takes its public turns.'
+              : null,
+          buttonLabel:
+              isAiMatch ? 'Open ${match.currentPlayer.name}\'s Turn' : null,
           onReveal: () => _revealCurrentTurn(match.currentPlayerId),
         ),
       );
@@ -355,6 +372,7 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
     final latestPublicEvent = match.turns.isEmpty || historyEntries.isEmpty
         ? null
         : historyEntries.first;
+    final latestAiTurn = isAiMatch ? lookup.latestAiTurn(match) : null;
     final selectedCharacterName = _selectedCharacterId == null
         ? null
         : lookup.findCharacterName(characters, _selectedCharacterId!);
@@ -368,6 +386,11 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
       bottomBar: MatchActionBar(
         guessController: _guessController,
         selectedCharacterName: selectedCharacterName,
+        description: copy.actionConsoleDescription(
+          hasSelection: selectedCharacterName != null,
+          isPlayerVsAi: isAiMatch,
+          aiName: aiPlayerName,
+        ),
         canRequestHint:
             categories.isNotEmpty && match.currentPlayer.hintsRemaining > 0,
         canGuessTag: categories.isNotEmpty,
@@ -391,7 +414,32 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
             TurnPanel(
               currentPlayer: match.currentPlayer.name,
               hints: match.currentPlayer.hintsRemaining,
+              statusLabel: copy.turnPanelStatusLabel(
+                hints: match.currentPlayer.hintsRemaining,
+                isPlayerVsAi: isAiMatch,
+                aiDifficulty: setupState.aiDifficulty,
+              ),
+              description: copy.turnPanelDescription(
+                isPlayerVsAi: isAiMatch,
+                currentPlayerName: match.currentPlayer.name,
+                aiName: aiPlayerName,
+                aiDifficulty: setupState.aiDifficulty,
+              ),
             ),
+            if (isAiMatch) ...[
+              const SizedBox(height: AppSpacing.md),
+              AiOpponentProfileCard(
+                aiName: aiPlayerName ?? setupState.playerTwoName,
+                difficulty: setupState.aiDifficulty,
+                title: 'AI duel profile',
+                description: copy.aiOpponentLiveDescription(
+                  aiName: aiPlayerName ?? setupState.playerTwoName,
+                  difficulty: setupState.aiDifficulty,
+                ),
+                footer:
+                    'Your hidden tag still stays protected by the private reveal gate, even while the AI takes public-only automated turns.',
+              ),
+            ],
             const SizedBox(height: AppSpacing.md),
             SecretTraitCard(
               title: 'Your Secret Tag Reminder',
@@ -401,14 +449,29 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
             ),
             const SizedBox(height: AppSpacing.md),
             HintPanel(
-              hint: match.currentPlayer.hintsRemaining > 0
-                  ? 'Request a private hint about the opponent\'s secret tag. It consumes one hint, then the device passes to the next player.'
-                  : 'No hints remain for this player. Use character and tag guesses to continue deducing the answer.',
+              hint: copy.hintPanelDescription(
+                hasHints: match.currentPlayer.hintsRemaining > 0,
+                isPlayerVsAi: isAiMatch,
+                aiName: aiPlayerName,
+              ),
               isActionAvailable: match.currentPlayer.hintsRemaining > 0,
             ),
             if (latestEventCard != null) ...[
               const SizedBox(height: AppSpacing.md),
               latestEventCard,
+            ],
+            if (latestAiTurn?.publicNote != null) ...[
+              const SizedBox(height: AppSpacing.md),
+              AiMoveSummaryCard(
+                aiName: aiPlayerName ?? 'Tower AI',
+                difficulty: setupState.aiDifficulty,
+                turn: latestAiTurn!,
+                categories: categories,
+                characters: characters,
+                title: 'Latest AI read',
+                description:
+                    'The most recent automated public decision stays visible here so you can react before the next exchange.',
+              ),
             ],
             const SizedBox(height: AppSpacing.md),
             GuessHistory(
@@ -423,6 +486,11 @@ class _MatchScreenState extends ConsumerState<MatchScreen> {
             TowerView(
               label:
                   'Shared Character Pool • ${match.characterPoolIds.length} available',
+              statusLabel: copy.towerStatusLabel(isPlayerVsAi: isAiMatch),
+              description: copy.towerDescription(
+                isPlayerVsAi: isAiMatch,
+                aiName: aiPlayerName,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             CharacterPoolPanel(

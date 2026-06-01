@@ -33,8 +33,9 @@ class GameEngine {
   }
 
   GameMatch switchTurn(GameMatch match) {
-    final nextPlayerId =
-        match.currentPlayerId == match.playerOne.id ? match.playerTwo.id : match.playerOne.id;
+    final nextPlayerId = match.currentPlayerId == match.playerOne.id
+        ? match.playerTwo.id
+        : match.playerOne.id;
 
     return match.copyWith(currentPlayerId: nextPlayerId);
   }
@@ -48,6 +49,7 @@ class GameEngine {
     required Character guessedCharacter,
     required TraitCategory opponentSecretTrait,
     DateTime? createdAt,
+    String? publicNote,
   }) {
     final wasCorrect = matchRulesEngine.isCharacterGuessCorrect(
       character: guessedCharacter,
@@ -61,6 +63,7 @@ class GameEngine {
       value: guessedCharacter.id,
       wasCorrect: wasCorrect,
       createdAt: createdAt ?? DateTime.now(),
+      publicNote: publicNote,
     );
 
     final updatedMatch = recordTurn(match, turn);
@@ -72,6 +75,7 @@ class GameEngine {
     required String guessedTraitId,
     required TraitCategory opponentSecretTrait,
     DateTime? createdAt,
+    String? publicNote,
   }) {
     final wasCorrect = matchRulesEngine.isTraitGuessCorrect(
       guessedTraitId: guessedTraitId,
@@ -87,6 +91,7 @@ class GameEngine {
         value: guessedTraitId,
         wasCorrect: wasCorrect,
         createdAt: createdAt ?? DateTime.now(),
+        publicNote: publicNote,
       ),
     );
 
@@ -187,6 +192,8 @@ class GameEngine {
       return match.copyWith(playerTwo: updatedPlayer);
     }
 
-    throw StateError('Player ${updatedPlayer.id} does not belong to this match.');
+    throw StateError(
+      'Player ${updatedPlayer.id} does not belong to this match.',
+    );
   }
 }

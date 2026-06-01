@@ -1,4 +1,5 @@
 import 'package:anime_deduction_tower/core/constants/game_constants.dart';
+import 'package:anime_deduction_tower/core/enums/ai_difficulty.dart';
 import 'package:anime_deduction_tower/core/enums/game_mode.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,12 +9,14 @@ class GameSetupState {
     this.playerTwoName = 'Player 2',
     this.hints = GameConstants.defaultHints,
     this.matchMode = GameMode.localMultiplayer,
+    this.aiDifficulty = AiDifficulty.standard,
   });
 
   final String playerOneName;
   final String playerTwoName;
   final int hints;
   final GameMode matchMode;
+  final AiDifficulty aiDifficulty;
 
   bool get isPlayerVsAi => matchMode == GameMode.playerVsAi;
   bool get isLocalMultiplayer => matchMode == GameMode.localMultiplayer;
@@ -23,12 +26,14 @@ class GameSetupState {
     String? playerTwoName,
     int? hints,
     GameMode? matchMode,
+    AiDifficulty? aiDifficulty,
   }) {
     return GameSetupState(
       playerOneName: playerOneName ?? this.playerOneName,
       playerTwoName: playerTwoName ?? this.playerTwoName,
       hints: hints ?? this.hints,
       matchMode: matchMode ?? this.matchMode,
+      aiDifficulty: aiDifficulty ?? this.aiDifficulty,
     );
   }
 }
@@ -89,6 +94,10 @@ class GameSetupController extends StateNotifier<GameSetupState> {
       matchMode: mode,
       playerTwoName: playerTwoName,
     );
+  }
+
+  void updateAiDifficulty(AiDifficulty difficulty) {
+    state = state.copyWith(aiDifficulty: difficulty);
   }
 
   void updateHints(int value) {

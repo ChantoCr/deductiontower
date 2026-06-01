@@ -3,9 +3,42 @@ import 'package:anime_deduction_tower/features/characters/domain/entities/charac
 import 'package:anime_deduction_tower/features/game/domain/entities/game_match.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/player.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
+import 'package:anime_deduction_tower/features/game/domain/entities/turn.dart';
 
 class MatchLookupHelper {
   const MatchLookupHelper();
+
+  bool isAiMatch(GameMatch match) =>
+      match.playerOne.isAi || match.playerTwo.isAi;
+
+  Player? aiPlayer(GameMatch match) {
+    if (match.playerOne.isAi) {
+      return match.playerOne;
+    }
+
+    if (match.playerTwo.isAi) {
+      return match.playerTwo;
+    }
+
+    return null;
+  }
+
+  String? aiPlayerName(GameMatch match) => aiPlayer(match)?.name;
+
+  Turn? latestAiTurn(GameMatch match) {
+    final ai = aiPlayer(match);
+    if (ai == null) {
+      return null;
+    }
+
+    for (final turn in match.turns.reversed) {
+      if (turn.playerId == ai.id) {
+        return turn;
+      }
+    }
+
+    return null;
+  }
 
   Player winnerPlayer(GameMatch match) {
     if (match.winnerId == match.playerTwo.id) {

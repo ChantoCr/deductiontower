@@ -471,6 +471,8 @@ Current implemented state includes:
 - character library name/series search plus imported-character badge support for easier verification in-app
 - premium gameplay-facing UI passes for home, setup, secret selection, protected handoff, match, and result screens
 - player-vs-AI foundation with setup-mode selection, auto-assigned AI hidden tags, and mock automated AI public turns
+- first AI difficulty layer with easy/standard/hard behavior tuning, stronger public-probe scoring, and clearer AI-specific gameplay/result microcopy
+- fuller Play vs AI presentation pass with setup-time opponent profiling, in-match AI duel intel, persisted public reasoning notes, richer AI turn-complete dialogs, and result-screen AI performance analytics
 - fixed bottom action areas so secret-tag selection and in-match submission no longer require scrolling to the end of the screen
 - hidden secret-tag reminder flow with icon-based reveal for safer local multiplayer privacy
 - animated correct/wrong feedback dialogs plus protected reveal micro-animations
@@ -492,5 +494,5 @@ If the app is already running after JSON asset updates, use a full restart so th
 The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state now includes the earlier premium gameplay retake passes plus animated result celebration, filterable/collapsible timelines, searchable series chips in the pool, shared presentation helpers, Flame-backed presentation-only polish, and stronger privacy-safe local multiplayer browser reset behavior.
 
 For the next handoff, see:
-- `docs/PR7_HANDOFF.md`
+- `docs/PR8_HANDOFF.md`
 - `NEXT_CHAT_PROMPT.md`

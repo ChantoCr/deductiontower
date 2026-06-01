@@ -9,11 +9,15 @@ class TurnPanel extends StatelessWidget {
   const TurnPanel({
     required this.currentPlayer,
     required this.hints,
+    this.description,
+    this.statusLabel,
     super.key,
   });
 
   final String currentPlayer;
   final int hints;
+  final String? description;
+  final String? statusLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +56,11 @@ class TurnPanel extends StatelessWidget {
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
-                        copy.turnPanelStatusLabel(hints),
+                        statusLabel ??
+                            copy.turnPanelStatusLabel(
+                              hints: hints,
+                              isPlayerVsAi: false,
+                            ),
                         style: AppTextStyles.label.copyWith(color: accent),
                       ),
                     ),
@@ -93,7 +101,11 @@ class TurnPanel extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            copy.turnPanelDescription(),
+            description ??
+                copy.turnPanelDescription(
+                  isPlayerVsAi: false,
+                  currentPlayerName: currentPlayer,
+                ),
             style: AppTextStyles.subtitle.copyWith(height: 1.45),
           ),
         ],

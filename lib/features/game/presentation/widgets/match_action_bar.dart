@@ -17,6 +17,7 @@ class MatchActionBar extends StatelessWidget {
     required this.canRequestHint,
     required this.canGuessTag,
     this.selectedCharacterName,
+    this.description,
     super.key,
   });
 
@@ -30,6 +31,7 @@ class MatchActionBar extends StatelessWidget {
   final bool canRequestHint;
   final bool canGuessTag;
   final String? selectedCharacterName;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +123,10 @@ class MatchActionBar extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                selectedCharacterName == null
-                    ? 'Pick from the pool or type an exact character name, then submit without scrolling away from the action area.'
-                    : 'Your selected guess is staged below and ready for submission.',
+                description ??
+                    (selectedCharacterName == null
+                        ? 'Pick from the pool or type an exact character name, then submit without scrolling away from the action area.'
+                        : 'Your selected guess is staged below and ready for submission.'),
                 style: AppTextStyles.subtitle,
               ),
               if (selectedCharacterName != null) ...[

@@ -10,6 +10,7 @@ class GuessHistoryEntry {
     required this.actionType,
     required this.playerName,
     this.wasCorrect,
+    this.detailNote,
   });
 
   final String title;
@@ -19,6 +20,7 @@ class GuessHistoryEntry {
   final TurnActionType actionType;
   final String playerName;
   final bool? wasCorrect;
+  final String? detailNote;
 
   bool get isCharacterGuess => actionType == TurnActionType.guessCharacter;
 

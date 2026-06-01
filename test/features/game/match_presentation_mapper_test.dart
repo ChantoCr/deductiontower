@@ -93,6 +93,7 @@ void main() {
           value: 'crimson_emperor',
           wasCorrect: true,
           createdAt: DateTime(2025, 1, 1, 10, 2),
+          publicNote: 'Standard AI used Crimson Emperor as a public split.',
         ),
         Turn(
           id: 'turn_4',
@@ -120,6 +121,10 @@ void main() {
       expect(entries.first.title, 'Akira guessed tag Villain');
       expect(entries.first.subtitle, 'The final tag guess was correct.');
       expect(entries[1].title, 'Ren guessed Crimson Emperor');
+      expect(
+        entries[1].detailNote,
+        'Standard AI used Crimson Emperor as a public split.',
+      );
       expect(entries[2].title, 'Ren requested a private hint');
       expect(entries.last.title, 'Akira guessed Shadow Ninja');
     });

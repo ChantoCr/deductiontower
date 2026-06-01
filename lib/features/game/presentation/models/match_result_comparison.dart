@@ -42,4 +42,14 @@ class PlayerResultStats {
   final int passCount;
   final bool surrendered;
   final bool won;
+
+  int get resolvedGuesses => correctGuesses + incorrectGuesses;
+
+  double? get overallAccuracy =>
+      resolvedGuesses == 0 ? null : correctGuesses / resolvedGuesses;
+
+  double? get characterGuessAccuracy =>
+      characterGuesses == 0 ? null : correctCharacterGuesses / characterGuesses;
+
+  bool get usedFinalTagRead => traitGuesses > 0;
 }

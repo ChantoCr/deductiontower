@@ -8,6 +8,7 @@ class Turn {
     required this.value,
     required this.wasCorrect,
     required this.createdAt,
+    this.publicNote,
   });
 
   final String id;
@@ -16,4 +17,5 @@ class Turn {
   final String value;
   final bool wasCorrect;
   final DateTime createdAt;
+  final String? publicNote;
 }

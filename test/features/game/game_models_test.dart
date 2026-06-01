@@ -70,6 +70,7 @@ void main() {
         'value': 'shadow_ninja',
         'wasCorrect': true,
         'createdAt': '2026-05-16T00:00:00.000Z',
+        'publicNote': 'Hard AI used this as a clean split.',
       });
 
       final entity = model.toEntity();
@@ -77,6 +78,7 @@ void main() {
       expect(model.actionType, TurnActionType.guessCharacter);
       expect(entity.wasCorrect, isTrue);
       expect(entity.value, 'shadow_ninja');
+      expect(entity.publicNote, 'Hard AI used this as a clean split.');
     });
 
     test('falls back to pass action when input is unknown', () {

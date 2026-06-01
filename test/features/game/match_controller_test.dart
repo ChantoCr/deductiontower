@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:anime_deduction_tower/core/enums/ai_difficulty.dart';
 import 'package:anime_deduction_tower/core/enums/difficulty_level.dart';
 import 'package:anime_deduction_tower/core/enums/match_end_reason.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
@@ -188,6 +189,26 @@ void main() {
 
       expect(controller.state!.playerTwo.isAi, isTrue);
       expect(controller.state!.playerTwo.name, 'Tower AI');
+    });
+
+    test('runs an ai turn using the selected difficulty layer', () {
+      initializeStandardMatch(playerTwoIsAi: true);
+      controller.submitCharacterGuess(
+        characterId: 'shadow_ninja',
+        characters: characters,
+        categories: categories,
+      );
+
+      final result = controller.runAiTurn(
+        categories: categories,
+        characters: characters,
+        difficulty: AiDifficulty.standard,
+      );
+
+      expect(result.guessedValue, isNotEmpty);
+      expect(result.message, contains('Standard AI'));
+      expect(controller.state!.turns.last.publicNote, contains('Standard AI'));
+      expect(controller.state!.currentPlayerId, 'player_one');
     });
   });
 }

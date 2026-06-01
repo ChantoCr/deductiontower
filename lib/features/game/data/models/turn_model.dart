@@ -9,6 +9,7 @@ class TurnModel {
     required this.value,
     required this.wasCorrect,
     required this.createdAt,
+    this.publicNote,
   });
 
   final String id;
@@ -17,6 +18,7 @@ class TurnModel {
   final String value;
   final bool wasCorrect;
   final DateTime createdAt;
+  final String? publicNote;
 
   factory TurnModel.fromJson(Map<String, dynamic> json) {
     return TurnModel(
@@ -28,7 +30,9 @@ class TurnModel {
       ),
       value: json['value'] as String? ?? '',
       wasCorrect: json['wasCorrect'] as bool? ?? false,
-      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now(),
+      createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
+          DateTime.now(),
+      publicNote: json['publicNote'] as String?,
     );
   }
 
@@ -40,6 +44,7 @@ class TurnModel {
       value: value,
       wasCorrect: wasCorrect,
       createdAt: createdAt,
+      publicNote: publicNote,
     );
   }
 }

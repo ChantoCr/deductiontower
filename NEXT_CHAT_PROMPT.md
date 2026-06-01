@@ -1,10 +1,10 @@
 Start from:
 - README.md
 - AGENTS.md
-- docs/PR7_HANDOFF.md
+- docs/PR8_HANDOFF.md
 - NEXT_CHAT_PROMPT.md
 
-Continue Anime Deduction Tower from the saved gameplay/UI polish state after PR7.
+Continue Anime Deduction Tower from the saved PR8 player-vs-AI foundation + better AI reasoning + AI difficulty state.
 
 Before coding, read:
 - README.md
@@ -12,7 +12,7 @@ Before coding, read:
 - docs/ARCHITECTURE.md
 - docs/DATA_MODEL.md
 - docs/EXTERNAL_ANIME_DATA.md
-- docs/PR7_HANDOFF.md
+- docs/PR8_HANDOFF.md
 - NEXT_CHAT_PROMPT.md
 - skills/flutter-architecture/SKILL.md
 - skills/character-data-modeling/SKILL.md
@@ -20,47 +20,96 @@ Before coding, read:
 - skills/ui-ux-mobile/SKILL.md
 
 Current status:
-- the game has no lives
+- Flutter + Flame deduction game
+- no lives system
 - shared character pool gameplay is already wired
 - protected local turn reveal is implemented
 - setup names and hint count are editable and connected
-- every currently approved imported character has been merged into `assets/data/characters.json`
-- the runtime catalog currently contains 1276 characters
-- the tag catalog currently contains 40 tags
-- every current tag is represented in `assets/data/categories.json`
-- secret-tag selection and tag-guess selection support the full playable tag set
-- in-match submission uses a persistent bottom action console
-- secret-tag selection uses a persistent bottom action bar
-- the match screen hides the active player's secret tag by default and uses an icon-based reminder reveal
-- the result screen has an animated celebration banner, optional non-blocking Flame-backed backdrop, richer stat cards, and winner-vs-loser comparative stats
-- the match and result timelines use structured entries plus filter/collapse behavior
-- shared timeline/event mapping now lives in a dedicated presentation helper with reusable models
-- shared match lookup helpers now cover winner/loser, trait labels, character labels, player-name lookup, and end-reason wording
-- shared setup/transition/match microcopy helpers now cover more status wording across setup, handoff, turn, and tower panels
-- turn-transition and secret-tag selection now have a visual consistency pass with richer stage tracking, clearer privacy messaging, search clear UX, and stronger selection micro-animations
-- the secret reminder card and category-guess dialog now have more premium reveal/staging behavior
-- shared dialogs and utility panels have a richer polish pass
-- the tower view now has safe Flame-backed public-board presentation polish
-- the character pool browser supports pool search, searchable series chips, difficulty filters, staged-guess confirmation, and privacy-safe reset behavior
-- the pool browser now resets search/filter state between turns, scrolls back to top, clears staged guess text earlier in handoff-sensitive flows, and shows a short lock overlay before a privacy-cleared notice appears
-- match history now auto-resets filter/collapse state after handoff-sensitive turn changes
-- import preview, review queue, approval, and curated promotion preview pipelines still exist and remain valid
-- `characters_import_preview.json` currently contains 1264 imported preview records
-- `characters_import_review_queue.json` currently contains 1264 review entries
-- `characters_import_approval.json` currently contains 1263 approval entries
-- `characters_curated_promotion_preview.json` currently contains 1276 total promoted preview records
-- there is no approved staged backlog remaining outside the live runtime catalog
-- Vegeta still has the known non-blocking `series_mismatch` review note
+- runtime catalog is loaded from assets/data/characters.json
+- runtime catalog currently contains 1276 characters
+- tag catalog currently contains 40 tags
+- categories catalog currently contains 40 playable secret tags
+- every currently approved imported character is already merged into runtime
+- import preview / review queue / approval / curated promotion preview pipelines still exist and remain valid
+- there is no approved staged backlog remaining outside runtime
+- Vegeta still has the known non-blocking series_mismatch note
+
+Saved gameplay/UI state now includes:
+- premium home/setup/selection/handoff/match/result visual passes
+- persistent bottom action areas for secret-tag selection and in-match submission
+- result screen animated celebration banner
+- optional non-blocking Flame-backed result celebration backdrop
+- filterable + collapsible live and result timelines
+- shared timeline/event mapping helper
+- winner-vs-loser comparative result stats
+- shared lookup helpers for winner/loser, player names, trait labels, character labels, and end-reason wording
+- shared microcopy helper for setup / transition / match panels
+- upgraded secret reminder card
+- upgraded category-guess dialog with staged confirmation
+- upgraded shared dialogs and hint utility panel
+- tower view with safe Flame-backed presentation polish
+- character pool browser supports:
+  - name/series search
+  - searchable series chips
+  - difficulty filters
+  - staged guess confirmation
+  - privacy-safe reset between turns
+  - reset to top scroll position on handoff
+  - brief lock overlay before privacy-cleared notice
+- match history filters auto-reset after handoff-sensitive turn changes
+- staged character guess text/selection is cleared earlier in more handoff-sensitive cases
+
+Saved AI state now includes:
+- `Play vs AI` is enabled from the home screen
+- setup supports match mode selection:
+  - `Single Device Match`
+  - `Play vs AI`
+- player-vs-AI mode supports AI difficulty selection:
+  - easy
+  - standard
+  - hard
+- in player-vs-AI mode:
+  - the human picks only their own hidden tag
+  - the AI hidden tag is auto-assigned at match start
+  - the human still gets a protected hidden-tag reveal gate before live tools
+  - AI turns are public-only and do not need pass-the-device secrecy
+  - AI turns run from the transition screen and return to match/result afterward
+- AI reasoning now includes:
+  - candidate-trait narrowing from prior AI character guess results
+  - incorrect trait-guess elimination
+  - stronger character-probe scoring based on split quality / elimination value / popularity weighting
+  - better final trait-guess timing based on candidate count and remaining probe value
+  - short reasoning summaries returned with AI move decisions
+- AI remains mock/local and optional
+- official rule resolution still belongs to the game engine
+
+Important privacy behavior to preserve:
+- hidden-information UX must stay safe for one-device local multiplayer
+- when control passes to the next human player, browser/search/filter context must not leak
+- staged guess text must not leak
+- secret reminder visibility must not leak
+- Flame must remain presentation-only and contain no business logic
+
+Important architecture behavior to preserve:
+- keep game logic pure Dart
+- keep import logic in the data/import layer
+- keep AI action choice separate from game-engine rule resolution
+- keep AI difficulty as a behavior/config layer, not a rules layer
 
 Important runtime note:
-- if the app was already running when JSON assets changed, do a full restart to reload the updated catalog
+- if JSON assets change while the app is already running, do a full restart so Flutter reloads the asset bundle
 
 Suggested next scope:
-1. extract more shared presentation summary builders where screens still repeat composed stat rows or panel structures
-2. expand Flame-backed visual polish carefully to other safe presentation-only surfaces if performance stays strong
-3. do a final pass on remaining small panels/widgets so their badge, glow, and spacing systems are fully aligned
-4. evaluate whether result analytics should later include persistent match history/stat tracking once local persistence is introduced
-5. if privacy polish continues, check other temporary local-only UI state for leaks across handoff moments
+1. full UI polish for the Play vs AI flow
+   - richer AI identity treatment in setup/match/result
+   - stronger AI turn-complete summary presentation
+   - premium AI difficulty presentation throughout the flow
+2. refine AI reasoning summaries shown to the user
+   - clearer explanation wording
+   - maybe a dedicated AI move summary panel
+3. evaluate whether result analytics should later expose AI-vs-human per-turn analytics more explicitly
+4. later, consider a provider-backed AI opponent behind the same interface
+5. if privacy polish continues, keep checking temporary local-only UI state for leaks across human handoff moments
 
 Rules:
 - Keep game logic pure Dart
@@ -68,7 +117,9 @@ Rules:
 - Preserve protected local multiplayer secrecy
 - Preserve the fixed bottom action areas for secret-tag selection and in-match submission
 - Preserve the searchable series-chip flow for large rosters
-- Preserve the new privacy-safe browser reset, top scroll reset, staged-guess clearing, and lock-overlay flow
+- Preserve the privacy-safe browser reset, top-scroll reset, staged-guess clearing, and lock-overlay flow
 - Keep Flame visual polish presentation-only
+- Keep AI action choice separate from game-engine rule resolution
+- Keep AI difficulty as a behavior/config layer, not a rules layer
 - Prefer polished and readable gameplay UI over placeholder layouts
 - Add or update tests when logic changes

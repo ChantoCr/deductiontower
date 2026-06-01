@@ -282,6 +282,28 @@ class _GuessHistoryEventTileState extends State<_GuessHistoryEventTile> {
                     ),
                     const SizedBox(height: 4),
                     Text(event.subtitle, style: AppTextStyles.subtitle),
+                    if (event.detailNote != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.background.withValues(alpha: 0.26),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: event.color.withValues(alpha: 0.18),
+                          ),
+                        ),
+                        child: Text(
+                          event.detailNote!,
+                          style: AppTextStyles.body.copyWith(
+                            fontSize: 13,
+                            height: 1.4,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

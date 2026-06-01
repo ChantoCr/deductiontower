@@ -2,11 +2,16 @@ import 'package:anime_deduction_tower/app/router.dart';
 import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
+import 'package:anime_deduction_tower/features/game/presentation/controllers/game_setup_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
+import 'package:anime_deduction_tower/features/game/presentation/helpers/game_flow_copy_helper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/helpers/match_lookup_helper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/helpers/match_presentation_mapper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/models/match_result_comparison.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/ai_move_summary_card.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/ai_opponent_profile_card.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/ai_performance_summary_card.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/guess_history.dart';
 import 'package:anime_deduction_tower/features/game/presentation/widgets/result_celebration_banner.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
@@ -26,9 +31,11 @@ class ResultScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const copy = GameFlowCopyHelper();
     const lookup = MatchLookupHelper();
     const mapper = MatchPresentationMapper();
     final match = ref.watch(matchControllerProvider);
+    final setupState = ref.watch(gameSetupControllerProvider);
     final categories = ref.watch(validatedTraitCatalogProvider).maybeWhen(
           data: (catalog) => catalog.validCategories,
           orElse: () => const <TraitCategory>[],
@@ -73,12 +80,26 @@ class ResultScreen extends ConsumerWidget {
       categories,
       match.playerTwo,
     );
+    final isAiMatch = lookup.isAiMatch(match);
+    final aiPlayerName = lookup.aiPlayerName(match);
     final timelineEntries = mapper.buildTimelineEntries(
       match: match,
       categories: categories,
       characters: characters,
     );
     final comparison = mapper.buildResultComparison(match: match);
+    final latestAiTurn = isAiMatch ? lookup.latestAiTurn(match) : null;
+    final aiPlayer = isAiMatch ? lookup.aiPlayer(match) : null;
+    final aiStats = aiPlayer == null
+        ? null
+        : comparison.winner.playerId == aiPlayer.id
+            ? comparison.winner
+            : comparison.loser;
+    final humanStats = aiPlayer == null
+        ? null
+        : comparison.winner.playerId == aiPlayer.id
+            ? comparison.loser
+            : comparison.winner;
 
     return AppScaffold(
       title: 'Match Result',
@@ -147,8 +168,11 @@ class ResultScreen extends ConsumerWidget {
           final heroCard = ResultCelebrationBanner(
             winnerName: winnerName,
             reasonLabel: lookup.endReasonLabel(match.endReason),
-            summary:
-                'Review the revealed tags, remaining hint economy, and the full public event timeline before starting the next round.',
+            summary: copy.resultBannerSummary(
+              isPlayerVsAi: isAiMatch,
+              aiName: aiPlayerName,
+              aiDifficulty: setupState.aiDifficulty,
+            ),
           );
 
           final statsBlock = Column(
@@ -199,7 +223,14 @@ class ResultScreen extends ConsumerWidget {
             ],
           );
 
-          final comparisonCard = _ResultComparisonCard(comparison: comparison);
+          final comparisonCard = _ResultComparisonCard(
+            comparison: comparison,
+            description: copy.resultComparisonDescription(
+              isPlayerVsAi: isAiMatch,
+              aiName: aiPlayerName,
+              aiDifficulty: setupState.aiDifficulty,
+            ),
+          );
 
           final revealedTagsCard = AppSummaryCard(
             title: 'Revealed Secret Tags',
@@ -224,13 +255,51 @@ class ResultScreen extends ConsumerWidget {
           );
 
           final timelineCard = GuessHistory(
-            title: 'Final Timeline',
-            description:
-                'Filter the full public match story by guess type, outcome, or support actions, then expand the timeline when you want the complete deduction replay.',
+            title: isAiMatch ? 'Final Human vs AI Timeline' : 'Final Timeline',
+            description: isAiMatch
+                ? 'Filter the full public duel between you and ${aiPlayerName ?? 'the AI'}, then expand the replay to inspect how each probe and final read shaped the result.'
+                : 'Filter the full public match story by guess type, outcome, or support actions, then expand the timeline when you want the complete deduction replay.',
             entries: timelineEntries,
             collapsedCount: 6,
             emptyStateMessage: 'No final timeline events were recorded.',
           );
+
+          final aiSummaryCard = latestAiTurn?.publicNote == null
+              ? null
+              : AiMoveSummaryCard(
+                  aiName: aiPlayerName ?? setupState.playerTwoName,
+                  difficulty: setupState.aiDifficulty,
+                  turn: latestAiTurn!,
+                  categories: categories,
+                  characters: characters,
+                  title: 'Final AI move summary',
+                  description:
+                      'Use the closing automated read as a fast replay anchor before diving into the full public timeline.',
+                );
+
+          final aiProfileCard = !isAiMatch
+              ? null
+              : AiOpponentProfileCard(
+                  aiName: aiPlayerName ?? setupState.playerTwoName,
+                  difficulty: setupState.aiDifficulty,
+                  title: 'AI opponent profile',
+                  description: copy.aiOpponentResultDescription(
+                    aiName: aiPlayerName ?? setupState.playerTwoName,
+                    difficulty: setupState.aiDifficulty,
+                    aiWon: lookup.winnerPlayer(match).isAi,
+                  ),
+                  footer:
+                      'All AI actions still resolved through the same shared no-lives match engine as human turns.',
+                );
+
+          final aiPerformanceCard = aiStats == null || humanStats == null
+              ? null
+              : AiPerformanceSummaryCard(
+                  aiName: aiPlayerName ?? setupState.playerTwoName,
+                  difficulty: setupState.aiDifficulty,
+                  aiStats: aiStats,
+                  humanStats: humanStats,
+                );
 
           if (useWideLayout) {
             return SingleChildScrollView(
@@ -248,6 +317,18 @@ class ResultScreen extends ConsumerWidget {
                             statsBlock,
                             const SizedBox(height: AppSpacing.md),
                             comparisonCard,
+                            if (aiProfileCard != null) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              aiProfileCard,
+                            ],
+                            if (aiPerformanceCard != null) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              aiPerformanceCard,
+                            ],
+                            if (aiSummaryCard != null) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              aiSummaryCard,
+                            ],
                             const SizedBox(height: AppSpacing.md),
                             revealedTagsCard,
                           ],
@@ -270,6 +351,18 @@ class ResultScreen extends ConsumerWidget {
               statsBlock,
               const SizedBox(height: AppSpacing.md),
               comparisonCard,
+              if (aiProfileCard != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                aiProfileCard,
+              ],
+              if (aiPerformanceCard != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                aiPerformanceCard,
+              ],
+              if (aiSummaryCard != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                aiSummaryCard,
+              ],
               const SizedBox(height: AppSpacing.md),
               revealedTagsCard,
               const SizedBox(height: AppSpacing.md),
@@ -339,9 +432,13 @@ class _ResultStatCard extends StatelessWidget {
 }
 
 class _ResultComparisonCard extends StatelessWidget {
-  const _ResultComparisonCard({required this.comparison});
+  const _ResultComparisonCard({
+    required this.comparison,
+    required this.description,
+  });
 
   final MatchResultComparison comparison;
+  final String description;
 
   @override
   Widget build(BuildContext context) {
@@ -353,7 +450,7 @@ class _ResultComparisonCard extends StatelessWidget {
           const Text('Winner vs Loser Breakdown', style: AppTextStyles.title),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Compare match efficiency, guess accuracy, and support-action usage to see how the final deduction swung.',
+            description,
             style: AppTextStyles.subtitle.copyWith(height: 1.45),
           ),
           const SizedBox(height: AppSpacing.md),

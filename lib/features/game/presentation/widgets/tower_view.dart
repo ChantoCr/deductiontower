@@ -11,10 +11,14 @@ class TowerView extends StatefulWidget {
   const TowerView({
     super.key,
     this.label = 'Character Tower',
+    this.description,
+    this.statusLabel,
     this.enableFlameBackdrop = true,
   });
 
   final String label;
+  final String? description;
+  final String? statusLabel;
   final bool enableFlameBackdrop;
 
   @override
@@ -46,7 +50,8 @@ class _TowerViewState extends State<TowerView> {
                     Text(widget.label, style: AppTextStyles.title),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      copy.towerDescription(),
+                      widget.description ??
+                          copy.towerDescription(isPlayerVsAi: false),
                       style: AppTextStyles.subtitle.copyWith(height: 1.45),
                     ),
                   ],
@@ -63,7 +68,8 @@ class _TowerViewState extends State<TowerView> {
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
-                  copy.towerStatusLabel(),
+                  widget.statusLabel ??
+                      copy.towerStatusLabel(isPlayerVsAi: false),
                   style: AppTextStyles.label.copyWith(
                     color: AppColors.secondary,
                   ),

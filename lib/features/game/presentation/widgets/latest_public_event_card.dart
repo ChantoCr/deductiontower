@@ -67,6 +67,30 @@ class LatestPublicEventCard extends StatelessWidget {
                           latestPublicEvent.subtitle,
                           style: AppTextStyles.subtitle,
                         ),
+                        if (latestPublicEvent.detailNote != null) ...[
+                          const SizedBox(height: AppSpacing.sm),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: latestPublicEvent.color.withValues(
+                                  alpha: 0.16,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              latestPublicEvent.detailNote!,
+                              style: AppTextStyles.body.copyWith(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

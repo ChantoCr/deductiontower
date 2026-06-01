@@ -71,6 +71,26 @@ class AppDialog {
     );
   }
 
+  static Future<void> showCustom(
+    BuildContext context, {
+    required String title,
+    required Widget content,
+    required List<Widget> actions,
+    Color accentColor = AppColors.secondary,
+    IconData icon = Icons.info_outline,
+  }) {
+    return showDialog<void>(
+      context: context,
+      builder: (context) => _AnimatedDialogShell(
+        title: title,
+        accentColor: accentColor,
+        icon: icon,
+        content: content,
+        actions: actions,
+      ),
+    );
+  }
+
   static Future<bool> showConfirm(
     BuildContext context, {
     required String title,

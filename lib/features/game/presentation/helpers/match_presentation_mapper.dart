@@ -38,6 +38,7 @@ class MatchPresentationMapper {
             actionType: turn.actionType,
             playerName: playerName,
             wasCorrect: turn.wasCorrect,
+            detailNote: turn.publicNote,
           );
         case TurnActionType.guessTrait:
           final traitLabel =
@@ -54,6 +55,7 @@ class MatchPresentationMapper {
             actionType: turn.actionType,
             playerName: playerName,
             wasCorrect: turn.wasCorrect,
+            detailNote: turn.publicNote,
           );
         case TurnActionType.requestHint:
           return GuessHistoryEntry(

@@ -1,3 +1,4 @@
+import 'package:anime_deduction_tower/core/enums/ai_difficulty.dart';
 import 'package:anime_deduction_tower/core/enums/player_control_type.dart';
 import 'package:anime_deduction_tower/core/enums/turn_action_type.dart';
 import 'package:anime_deduction_tower/features/ai_opponent/domain/services/ai_opponent_service.dart';
@@ -175,6 +176,7 @@ class MatchController extends StateNotifier<GameMatch?> {
   GuessResult runAiTurn({
     required List<TraitCategory> categories,
     required List<Character> characters,
+    required AiDifficulty difficulty,
   }) {
     final match = _requireMatch();
     if (!match.currentPlayer.isAi) {
@@ -185,6 +187,7 @@ class MatchController extends StateNotifier<GameMatch?> {
       match: match,
       categories: categories,
       characters: characters,
+      difficulty: difficulty,
     );
 
     switch (decision.actionType) {
@@ -199,6 +202,7 @@ class MatchController extends StateNotifier<GameMatch?> {
           match: match,
           guessedCharacter: guessedCharacter,
           opponentSecretTrait: opponentSecretTrait,
+          publicNote: decision.summary,
         );
 
         state = updatedMatch;
@@ -206,8 +210,8 @@ class MatchController extends StateNotifier<GameMatch?> {
         return GuessResult(
           isCorrect: wasCorrect,
           message: wasCorrect
-              ? '${match.currentPlayer.name} guessed ${guessedCharacter.name}, and it matches your hidden tag.'
-              : '${match.currentPlayer.name} guessed ${guessedCharacter.name}, but it does not match your hidden tag.',
+              ? '${match.currentPlayer.name} tested ${guessedCharacter.name} and found a public match with your hidden tag. ${decision.summary}'
+              : '${match.currentPlayer.name} tested ${guessedCharacter.name}, but it did not match your hidden tag. ${decision.summary}',
           guessedValue: guessedCharacter.name,
           actionType: updatedMatch.turns.last.actionType,
         );
@@ -218,6 +222,7 @@ class MatchController extends StateNotifier<GameMatch?> {
           match: match,
           guessedTraitId: guessedTrait.id,
           opponentSecretTrait: opponentSecretTrait,
+          publicNote: decision.summary,
         );
 
         state = updatedMatch;
@@ -225,8 +230,8 @@ class MatchController extends StateNotifier<GameMatch?> {
         return GuessResult(
           isCorrect: wasCorrect,
           message: wasCorrect
-              ? '${match.currentPlayer.name} guessed your hidden tag: ${guessedTrait.label}. The match is over.'
-              : '${match.currentPlayer.name} guessed ${guessedTrait.label}, but your hidden tag remains safe.',
+              ? '${match.currentPlayer.name} locked in ${guessedTrait.label} and found your hidden tag. The match is over. ${decision.summary}'
+              : '${match.currentPlayer.name} locked in ${guessedTrait.label}, but your hidden tag remains safe. ${decision.summary}',
           guessedValue: guessedTrait.label,
           actionType: updatedMatch.turns.last.actionType,
         );

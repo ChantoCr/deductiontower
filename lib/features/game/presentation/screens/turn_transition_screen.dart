@@ -1,4 +1,5 @@
 import 'package:anime_deduction_tower/app/router.dart';
+import 'package:anime_deduction_tower/core/enums/ai_difficulty.dart';
 import 'package:anime_deduction_tower/core/enums/match_status.dart';
 import 'package:anime_deduction_tower/features/ai_opponent/presentation/providers/ai_opponent_providers.dart';
 import 'package:anime_deduction_tower/features/characters/presentation/providers/character_providers.dart';
@@ -8,6 +9,7 @@ import 'package:anime_deduction_tower/features/game/presentation/controllers/gam
 import 'package:anime_deduction_tower/features/game/presentation/controllers/match_controller.dart';
 import 'package:anime_deduction_tower/features/game/presentation/helpers/game_flow_copy_helper.dart';
 import 'package:anime_deduction_tower/features/game/presentation/providers/trait_category_providers.dart';
+import 'package:anime_deduction_tower/features/game/presentation/widgets/ai_move_summary_card.dart';
 import 'package:anime_deduction_tower/shared/animations/pulse_animation.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
@@ -28,13 +30,17 @@ class TurnTransitionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     const copy = GameFlowCopyHelper();
     final match = ref.watch(matchControllerProvider);
+    final setupState = ref.watch(gameSetupControllerProvider);
     final isExistingMatch = match != null;
     final isCompletedMatch = match?.status == MatchStatus.completed;
     final isAiTurn = match?.currentPlayer.isAi == true && !isCompletedMatch;
 
     final title = copy.turnTransitionTitle(match: match);
 
-    final description = copy.turnTransitionDescription(match: match);
+    final description = copy.turnTransitionDescription(
+      match: match,
+      aiDifficulty: setupState.aiDifficulty,
+    );
 
     final buttonLabel = copy.turnTransitionButtonLabel(match: match);
 
@@ -149,9 +155,13 @@ class TurnTransitionScreen extends ConsumerWidget {
                       ),
                     ),
                     AppBadge(
-                      icon: Icons.phone_android_outlined,
-                      label: 'Pass-the-device safe flow',
-                      accent: AppColors.secondary,
+                      icon: isAiTurn
+                          ? Icons.memory_outlined
+                          : Icons.phone_android_outlined,
+                      label: isAiTurn
+                          ? '${setupState.aiDifficulty.label} AI reasoning'
+                          : 'Pass-the-device safe flow',
+                      accent: isAiTurn ? AppColors.accent : AppColors.secondary,
                       backgroundColor: AppColors.surface.withValues(alpha: 0.8),
                       borderColor: AppColors.primary.withValues(alpha: 0.16),
                       padding: const EdgeInsets.symmetric(
@@ -207,10 +217,10 @@ class TurnTransitionScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 if (isAiTurn) ...[
-                  const _ChecklistItem(
+                  _ChecklistItem(
                     title: 'No handoff is required for this step',
                     subtitle:
-                        'The AI only performs public actions, so you can stay on the same device screen while its move resolves.',
+                        '${setupState.playerTwoName} is playing on ${setupState.aiDifficulty.label} difficulty and only performs public actions, so you can stay on the same device screen while its move resolves.',
                   ),
                   const SizedBox(height: AppSpacing.md),
                   const _ChecklistItem(
@@ -223,6 +233,10 @@ class TurnTransitionScreen extends ConsumerWidget {
                     title: 'Public history still stays visible',
                     subtitle:
                         'AI guesses are written into the same shared timeline and follow the same no-lives match rules.',
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  _AiDifficultyProfileCard(
+                    difficulty: setupState.aiDifficulty,
                   ),
                 ] else ...[
                   const _ChecklistItem(
@@ -298,22 +312,63 @@ class TurnTransitionScreen extends ConsumerWidget {
             (await ref.read(validatedTraitCatalogProvider.future))
                 .validCategories;
         final characters = await ref.read(charactersProvider.future);
+        final setupState = ref.read(gameSetupControllerProvider);
         final result = ref.read(matchControllerProvider.notifier).runAiTurn(
               categories: categories,
               characters: characters,
+              difficulty: setupState.aiDifficulty,
             );
+        final updatedMatch = ref.read(matchControllerProvider);
+        final latestAiTurn = updatedMatch?.turns.isNotEmpty == true
+            ? updatedMatch!.turns.last
+            : null;
 
         if (!context.mounted) {
           return;
         }
 
-        await AppDialog.showInfo(
+        await AppDialog.showCustom(
           context,
-          title: '${match.currentPlayer.name} Turn Complete',
-          message: result.message,
+          title: '${match.currentPlayer.name} Move Resolved',
+          accentColor: AppColors.accent,
+          icon: result.isCorrect
+              ? Icons.auto_awesome_outlined
+              : Icons.smart_toy_outlined,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                result.message,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.body.copyWith(height: 1.45),
+              ),
+              if (latestAiTurn != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                AiMoveSummaryCard(
+                  aiName: match.currentPlayer.name,
+                  difficulty: setupState.aiDifficulty,
+                  turn: latestAiTurn,
+                  categories: categories,
+                  characters: characters,
+                  title: 'AI public move summary',
+                  description:
+                      'This public read is now stored in the shared timeline and stays visible when you return to the live board.',
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            SizedBox(
+              width: 180,
+              child: AppButton(
+                label: 'Continue',
+                icon: Icons.arrow_forward_rounded,
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ],
         );
 
-        final updatedMatch = ref.read(matchControllerProvider);
         if (!context.mounted || updatedMatch == null) {
           return;
         }
@@ -569,6 +624,51 @@ class _ChecklistItem extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _AiDifficultyProfileCard extends StatelessWidget {
+  const _AiDifficultyProfileCard({required this.difficulty});
+
+  final AiDifficulty difficulty;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.accent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.18)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              AppBadge(
+                icon: Icons.smart_toy_outlined,
+                label: '${difficulty.label.toUpperCase()} PROFILE',
+                accent: AppColors.accent,
+                backgroundColor: AppColors.background.withValues(alpha: 0.24),
+                textStyle: AppTextStyles.label.copyWith(
+                  color: AppColors.accent,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            difficulty.shortDescription,
+            style: AppTextStyles.body.copyWith(
+              fontWeight: FontWeight.w600,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

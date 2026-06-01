@@ -10,11 +10,19 @@ class MatchPrivacyGate extends StatelessWidget {
   const MatchPrivacyGate({
     required this.currentPlayerName,
     required this.onReveal,
+    this.title = 'Private Turn Protection',
+    this.description,
+    this.footerText,
+    this.buttonLabel,
     super.key,
   });
 
   final String currentPlayerName;
   final VoidCallback onReveal;
+  final String title;
+  final String? description;
+  final String? footerText;
+  final String? buttonLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +48,8 @@ class MatchPrivacyGate extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            const Text(
-              'Private Turn Protection',
+            Text(
+              title,
               style: AppTextStyles.title,
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -50,8 +58,9 @@ class MatchPrivacyGate extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.sm),
-            const Text(
-              'Nothing private is shown until the active player explicitly reveals their turn.',
+            Text(
+              description ??
+                  'Nothing private is shown until the active player explicitly reveals their turn.',
               style: AppTextStyles.subtitle,
               textAlign: TextAlign.center,
             ),
@@ -65,15 +74,16 @@ class MatchPrivacyGate extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.14),
                 ),
               ),
-              child: const Text(
-                'Protected reveal is intentionally separated from the live match tools.',
+              child: Text(
+                footerText ??
+                    'Protected reveal is intentionally separated from the live match tools.',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.subtitle,
               ),
             ),
             const SizedBox(height: AppSpacing.xl),
             AppButton(
-              label: 'Reveal $currentPlayerName\'s Turn',
+              label: buttonLabel ?? 'Reveal $currentPlayerName\'s Turn',
               icon: Icons.visibility_outlined,
               onPressed: onReveal,
             ),

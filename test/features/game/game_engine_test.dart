@@ -73,10 +73,15 @@ void main() {
         match: match,
         guessedCharacter: guessedCharacter,
         opponentSecretTrait: opponentTrait,
+        publicNote: 'AI used a balanced public probe.',
       );
 
       expect(updatedMatch.turns, hasLength(1));
       expect(updatedMatch.turns.single.wasCorrect, isTrue);
+      expect(
+        updatedMatch.turns.single.publicNote,
+        'AI used a balanced public probe.',
+      );
       expect(updatedMatch.currentPlayerId, 'player_two');
     });
 
