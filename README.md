@@ -476,6 +476,11 @@ Current implemented state includes:
 - fuller Play vs AI presentation pass with setup-time opponent profiling, in-match AI duel intel, persisted public reasoning notes, richer AI turn-complete dialogs, and result-screen AI performance analytics
 - online multiplayer foundation preview with a dedicated room-code lobby screen, mock room creation/join architecture, normalized join-code flow, and repository/controller boundaries ready for future realtime backend integration
 - online room UX polish with host-vs-guest path switching, clearer readiness messaging, formatted room-code presentation, and one-tap room-code copy flow
+- backend-ready online datasource/repository abstraction with mock, Firebase-preview, and Supabase-preview adapters that preserve the same lobby contract before realtime sync is wired
+- explicit remote online match contract models for bootstrap payloads, public match state, private player state, and queued player actions ahead of Firebase-backed room/match syncing
+- pure Dart remote match bootstrap service that converts a ready online room plus secret selections into initial payload/public/private match state without moving official rules into the UI
+- mock remote lobby event simulation for guest join and remote ready toggling so pre-backend room previews can mimic a more realistic second-device lifecycle
+- remote-ready online lobby model expansion with participant-level session snapshots, local-ready state handling, and room phases for waiting, ready-check, and sync handoff preview
 - fixed bottom action areas so secret-tag selection and in-match submission no longer require scrolling to the end of the screen
 - hidden secret-tag reminder flow with icon-based reveal for safer local multiplayer privacy
 - animated correct/wrong feedback dialogs plus protected reveal micro-animations
@@ -497,5 +502,5 @@ If the app is already running after JSON asset updates, use a full restart so th
 The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state now includes the earlier premium gameplay retake passes plus animated result celebration, filterable/collapsible timelines, searchable series chips in the pool, shared presentation helpers, Flame-backed presentation-only polish, and stronger privacy-safe local multiplayer browser reset behavior.
 
 For the next handoff, see:
-- `docs/PR8_HANDOFF.md`
+- `docs/PR13_HANDOFF.md`
 - `NEXT_CHAT_PROMPT.md`

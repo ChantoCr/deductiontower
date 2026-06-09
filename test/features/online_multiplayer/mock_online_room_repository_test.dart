@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:anime_deduction_tower/features/online_multiplayer/data/repositories/mock_online_room_repository_impl.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_participant.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -22,6 +23,11 @@ void main() {
       expect(session.isHost, isTrue);
       expect(session.phase, OnlineRoomPhase.waitingForOpponent);
       expect(session.guestPlayerName, isNull);
+      expect(session.participants, hasLength(1));
+      expect(
+        session.localParticipant.role,
+        OnlineRoomParticipantRole.host,
+      );
     });
 
     test('builds a join preview room for a guest player', () {
@@ -34,7 +40,62 @@ void main() {
       expect(session.hostPlayerName, 'Remote Host');
       expect(session.guestPlayerName, 'Guest');
       expect(session.isHost, isFalse);
-      expect(session.phase, OnlineRoomPhase.readyToSync);
+      expect(session.phase, OnlineRoomPhase.waitingForReady);
+      expect(session.participants, hasLength(2));
+      expect(
+        session.localParticipant.role,
+        OnlineRoomParticipantRole.guest,
+      );
+    });
+
+    test('updates local readiness without changing waiting-for-opponent rooms',
+        () {
+      final session = repository.createRoom(hostPlayerName: 'Host');
+
+      final updated = repository.setLocalParticipantReady(
+        session: session,
+        isReady: true,
+      );
+
+      expect(updated.localParticipant.isReady, isTrue);
+      expect(updated.phase, OnlineRoomPhase.waitingForOpponent);
+    });
+
+    test('simulates a remote guest joining a host preview room', () {
+      final session = repository.createRoom(hostPlayerName: 'Host');
+
+      final updated = repository.simulateRemoteGuestJoin(
+        session: session,
+        guestPlayerName: 'Remote Guest',
+      );
+
+      expect(updated.participants, hasLength(2));
+      expect(updated.guestPlayerName, 'Remote Guest');
+      expect(updated.primaryRemoteParticipant?.isLocalPlayer, isFalse);
+      expect(updated.phase, OnlineRoomPhase.waitingForReady);
+    });
+
+    test('updates remote readiness and promotes a full ready lobby into ready-to-sync phase', () {
+      final session = repository.joinRoomPreview(
+        roomCode: 'a1b2c3',
+        guestPlayerName: 'Guest',
+      );
+      final remoteParticipant = session.primaryRemoteParticipant;
+
+      final remoteReady = repository.setRemoteParticipantReady(
+        session: session,
+        participantId: remoteParticipant!.id,
+        isReady: true,
+      );
+      final updated = repository.setLocalParticipantReady(
+        session: remoteReady,
+        isReady: true,
+      );
+
+      expect(remoteReady.primaryRemoteParticipant?.isReady, isTrue);
+      expect(updated.localParticipant.isReady, isTrue);
+      expect(updated.isEveryoneReady, isTrue);
+      expect(updated.phase, OnlineRoomPhase.readyToSync);
     });
   });
 }

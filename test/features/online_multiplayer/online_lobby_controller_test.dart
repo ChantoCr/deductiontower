@@ -41,6 +41,7 @@ void main() {
 
       expect(session.isHost, isTrue);
       expect(session.phase, OnlineRoomPhase.waitingForOpponent);
+      expect(session.localParticipant.displayName, 'Host Player');
       expect(controller.state.activeSession, isNotNull);
       expect(controller.state.joinCode, session.roomCode);
     });
@@ -53,8 +54,9 @@ void main() {
       final session = controller.joinRoomPreview();
 
       expect(session.isHost, isFalse);
-      expect(session.phase, OnlineRoomPhase.readyToSync);
+      expect(session.phase, OnlineRoomPhase.waitingForReady);
       expect(session.guestPlayerName, 'Guest Player');
+      expect(session.localParticipant.displayName, 'Guest Player');
       expect(controller.state.activeSession?.roomCode, 'ABC123');
       expect(controller.state.lobbyMode, OnlineLobbyMode.join);
     });
@@ -70,12 +72,56 @@ void main() {
       expect(controller.state.canJoinRoom, isTrue);
     });
 
+    test('toggles local readiness inside an active room preview', () {
+      controller.updatePlayerName('Host Player');
+      controller.createRoomPreview();
+
+      final updated = controller.toggleLocalReady();
+
+      expect(updated.localParticipant.isReady, isTrue);
+      expect(controller.state.activeSession?.localParticipant.isReady, isTrue);
+    });
+
+    test('simulates a remote guest join in a host preview', () {
+      controller.updatePlayerName('Host Player');
+      controller.createRoomPreview();
+
+      final updated = controller.simulateRemoteGuestJoin();
+
+      expect(updated.guestPlayerName, 'Remote Guest');
+      expect(updated.participants, hasLength(2));
+      expect(controller.state.canSimulateRemoteGuestJoin, isFalse);
+      expect(controller.state.canSimulateRemoteReadyToggle, isTrue);
+    });
+
+    test('toggles remote readiness inside an active preview room', () {
+      controller.updatePlayerName('Host Player');
+      controller.createRoomPreview();
+      controller.simulateRemoteGuestJoin();
+
+      final updated = controller.toggleRemoteReady();
+
+      expect(updated.primaryRemoteParticipant?.isReady, isTrue);
+      expect(controller.state.activeSession?.primaryRemoteParticipant?.isReady, isTrue);
+    });
+
     test('throws when join preview code is incomplete', () {
       controller.updateLobbyMode(OnlineLobbyMode.join);
       controller.updatePlayerName('Guest Player');
       controller.updateJoinCode('abc1');
 
       expect(() => controller.joinRoomPreview(), throwsStateError);
+    });
+
+    test('throws when ready state is changed without an active session', () {
+      expect(() => controller.toggleLocalReady(), throwsStateError);
+    });
+
+    test('throws when remote ready is toggled without a remote participant', () {
+      controller.updatePlayerName('Host Player');
+      controller.createRoomPreview();
+
+      expect(() => controller.toggleRemoteReady(), throwsStateError);
     });
   });
 }

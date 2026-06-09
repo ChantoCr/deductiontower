@@ -1,3 +1,5 @@
+import 'package:anime_deduction_tower/features/online_multiplayer/data/config/online_backend_target.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_participant.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/controllers/online_lobby_controller.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/providers/online_multiplayer_providers.dart';
@@ -43,6 +45,7 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(onlineLobbyControllerProvider);
     final controller = ref.read(onlineLobbyControllerProvider.notifier);
+    final backendTarget = ref.watch(onlineBackendTargetProvider);
 
     if (_playerNameController.text != state.playerName) {
       _playerNameController.value = _playerNameController.value.copyWith(
@@ -120,6 +123,11 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
                           state.isHostMode ? 'Host preview' : 'Guest preview',
                       accent: AppColors.primary,
                     ),
+                    AppBadge(
+                      icon: Icons.storage_rounded,
+                      label: backendTarget.label,
+                      accent: AppColors.success,
+                    ),
                   ],
                 ),
               ],
@@ -132,6 +140,7 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
           );
 
           final readinessCard = _LobbyReadinessCard(state: state);
+          final backendCard = _BackendTargetCard(target: backendTarget);
 
           final controlsCard = AppCard(
             glowColor: AppColors.primary,
@@ -233,9 +242,15 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
                 )
               : _RoomSessionCard(
                   session: state.activeSession!,
+                  canSimulateRemoteGuestJoin: state.canSimulateRemoteGuestJoin,
+                  canSimulateRemoteReadyToggle:
+                      state.canSimulateRemoteReadyToggle,
                   onClear: controller.clearSession,
                   onCopyRoomCode: () =>
                       _copyRoomCode(state.activeSession!.roomCode),
+                  onToggleReady: _toggleLocalReady,
+                  onSimulateRemoteGuestJoin: _simulateRemoteGuestJoin,
+                  onToggleRemoteReady: _toggleRemoteReady,
                 );
 
           final nextStepsCard = AppCard(
@@ -278,7 +293,16 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(flex: 6, child: modeCard),
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          children: [
+                            modeCard,
+                            const SizedBox(height: AppSpacing.md),
+                            backendCard,
+                          ],
+                        ),
+                      ),
                       const SizedBox(width: AppSpacing.md),
                       Expanded(flex: 8, child: readinessCard),
                     ],
@@ -313,6 +337,8 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
               const SizedBox(height: AppSpacing.md),
               modeCard,
               const SizedBox(height: AppSpacing.md),
+              backendCard,
+              const SizedBox(height: AppSpacing.md),
               readinessCard,
               const SizedBox(height: AppSpacing.md),
               controlsCard,
@@ -337,6 +363,93 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Room code $roomCode copied.')),
     );
+  }
+
+  void _toggleLocalReady() {
+    try {
+      final session =
+          ref.read(onlineLobbyControllerProvider.notifier).toggleLocalReady();
+      if (!mounted) {
+        return;
+      }
+
+      final readinessLabel = session.localParticipant.isReady
+          ? 'marked ready'
+          : 'marked not ready';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${session.localParticipant.displayName} is now $readinessLabel.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$error')),
+      );
+    }
+  }
+
+  void _simulateRemoteGuestJoin() {
+    try {
+      final session = ref
+          .read(onlineLobbyControllerProvider.notifier)
+          .simulateRemoteGuestJoin();
+      if (!mounted) {
+        return;
+      }
+
+      final remoteGuestName = session.guestPlayerName ?? 'Remote Guest';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '$remoteGuestName joined the mock room preview.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$error')),
+      );
+    }
+  }
+
+  void _toggleRemoteReady() {
+    try {
+      final session =
+          ref.read(onlineLobbyControllerProvider.notifier).toggleRemoteReady();
+      if (!mounted) {
+        return;
+      }
+
+      final remoteParticipant = session.primaryRemoteParticipant;
+      final readinessLabel = remoteParticipant?.isReady == true
+          ? 'marked ready'
+          : 'marked not ready';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${remoteParticipant?.displayName ?? 'Remote participant'} is now $readinessLabel.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$error')),
+      );
+    }
   }
 
   void _runAction(
@@ -407,6 +520,41 @@ class _LobbyModeCard extends StatelessWidget {
   }
 }
 
+class _BackendTargetCard extends StatelessWidget {
+  const _BackendTargetCard({required this.target});
+
+  final OnlineBackendTarget target;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      glowColor: AppColors.success,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Backend boundary', style: AppTextStyles.title),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'The online lobby now resolves through a datasource boundary so backend work can grow behind the same repository without touching game-rule ownership.',
+            style: AppTextStyles.subtitle.copyWith(height: 1.45),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AppBadge(
+            icon: Icons.storage_rounded,
+            label: target.label,
+            accent: AppColors.success,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            target.description,
+            style: AppTextStyles.body.copyWith(height: 1.45),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _LobbyReadinessCard extends StatelessWidget {
   const _LobbyReadinessCard({required this.state});
 
@@ -465,6 +613,18 @@ class _LobbyReadinessCard extends StatelessWidget {
                       : 'Code: ${_formatRoomCode(state.joinCode)}',
                   accent: AppColors.primary,
                 ),
+              if (state.activeSession != null)
+                AppBadge(
+                  icon: state.activeSession!.localParticipant.isReady
+                      ? Icons.check_circle_outline
+                      : Icons.radio_button_unchecked_outlined,
+                  label: state.activeSession!.localParticipant.isReady
+                      ? 'Local player ready'
+                      : 'Local player not ready',
+                  accent: state.activeSession!.localParticipant.isReady
+                      ? AppColors.success
+                      : AppColors.accent,
+                ),
             ],
           ),
         ],
@@ -507,38 +667,48 @@ class _EmptySessionCard extends StatelessWidget {
 class _RoomSessionCard extends StatelessWidget {
   const _RoomSessionCard({
     required this.session,
+    required this.canSimulateRemoteGuestJoin,
+    required this.canSimulateRemoteReadyToggle,
     required this.onClear,
     required this.onCopyRoomCode,
+    required this.onToggleReady,
+    required this.onSimulateRemoteGuestJoin,
+    required this.onToggleRemoteReady,
   });
 
   final OnlineRoomSession session;
+  final bool canSimulateRemoteGuestJoin;
+  final bool canSimulateRemoteReadyToggle;
   final VoidCallback onClear;
   final VoidCallback onCopyRoomCode;
+  final VoidCallback onToggleReady;
+  final VoidCallback onSimulateRemoteGuestJoin;
+  final VoidCallback onToggleRemoteReady;
 
   @override
   Widget build(BuildContext context) {
     final accent = session.isHost ? AppColors.secondary : AppColors.accent;
+    final localParticipant = session.localParticipant;
 
     return AppSummaryCard(
       title: 'Active room preview',
-      description: session.phase == OnlineRoomPhase.waitingForOpponent
-          ? 'This host-side mock room is ready for a future remote guest connection.'
-          : 'This join-side preview shows the minimum session shape needed before remote match syncing begins.',
+      description: _phaseDescription(session),
       glowColor: accent,
       rowBackgroundColor: accent.withValues(alpha: 0.08),
       items: [
-        AppSummaryItem(label: 'Role', value: session.isHost ? 'Host' : 'Guest'),
-        AppSummaryItem(label: 'Room code', value: session.roomCode),
-        AppSummaryItem(label: 'Host', value: session.hostPlayerName),
         AppSummaryItem(
-          label: 'Guest',
-          value: session.guestPlayerName ?? 'Waiting for opponent',
+          label: 'Local role',
+          value: session.isHost ? 'Host' : 'Guest',
+        ),
+        AppSummaryItem(label: 'Room code', value: session.roomCode),
+        AppSummaryItem(label: 'Phase', value: _phaseLabel(session.phase)),
+        AppSummaryItem(
+          label: 'Participants',
+          value: '${session.participantCount}/2',
         ),
         AppSummaryItem(
-          label: 'Phase',
-          value: session.phase == OnlineRoomPhase.waitingForOpponent
-              ? 'Waiting for opponent'
-              : 'Ready to sync',
+          label: 'Local readiness',
+          value: localParticipant.isReady ? 'Ready' : 'Not ready',
         ),
       ],
       footer: Column(
@@ -575,23 +745,168 @@ class _RoomSessionCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
+          const Text('Lobby participants', style: AppTextStyles.title),
+          const SizedBox(height: AppSpacing.sm),
+          Column(
+            children: session.participants
+                .map(
+                  (participant) => Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: _ParticipantStatusTile(participant: participant),
+                  ),
+                )
+                .toList(),
+          ),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
               Expanded(
                 child: AppButton(
-                  label: 'Copy Code',
-                  icon: Icons.copy_rounded,
-                  onPressed: onCopyRoomCode,
+                  label: localParticipant.isReady
+                      ? 'Mark Not Ready'
+                      : 'Mark Ready',
+                  icon: localParticipant.isReady
+                      ? Icons.pause_circle_outline
+                      : Icons.check_circle_outline,
+                  onPressed: onToggleReady,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: AppButton(
-                  label: 'Clear Preview',
-                  icon: Icons.refresh_rounded,
+                  label: 'Copy Code',
+                  icon: Icons.copy_rounded,
                   isPrimary: false,
-                  onPressed: onClear,
+                  onPressed: onCopyRoomCode,
                 ),
+              ),
+            ],
+          ),
+          if (canSimulateRemoteGuestJoin || canSimulateRemoteReadyToggle) ...[
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.secondary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: AppColors.secondary.withValues(alpha: 0.14),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Mock remote event controls',
+                    style: AppTextStyles.title,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Use these preview-only controls to mimic a second device joining the room or changing remote readiness before realtime backend syncing exists.',
+                    style: AppTextStyles.subtitle.copyWith(height: 1.4),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  if (canSimulateRemoteGuestJoin)
+                    AppButton(
+                      label: 'Simulate Remote Guest Join',
+                      icon: Icons.person_add_alt_1_rounded,
+                      isPrimary: false,
+                      onPressed: onSimulateRemoteGuestJoin,
+                    ),
+                  if (canSimulateRemoteGuestJoin && canSimulateRemoteReadyToggle)
+                    const SizedBox(height: AppSpacing.sm),
+                  if (canSimulateRemoteReadyToggle)
+                    AppButton(
+                      label: session.primaryRemoteParticipant?.isReady == true
+                          ? 'Simulate Remote Not Ready'
+                          : 'Simulate Remote Ready',
+                      icon: session.primaryRemoteParticipant?.isReady == true
+                          ? Icons.pause_circle_outline
+                          : Icons.cloud_done_outlined,
+                      isPrimary: false,
+                      onPressed: onToggleRemoteReady,
+                    ),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: 'Clear Preview',
+            icon: Icons.refresh_rounded,
+            isPrimary: false,
+            onPressed: onClear,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ParticipantStatusTile extends StatelessWidget {
+  const _ParticipantStatusTile({required this.participant});
+
+  final OnlineRoomParticipant participant;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = participant.isReady ? AppColors.success : AppColors.accent;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: accent.withValues(alpha: 0.14)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  participant.displayName,
+                  style: AppTextStyles.body.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              AppBadge(
+                label: participant.role == OnlineRoomParticipantRole.host
+                    ? 'HOST'
+                    : 'GUEST',
+                accent: AppColors.secondary,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              AppBadge(
+                icon: participant.isLocalPlayer
+                    ? Icons.phone_android_outlined
+                    : Icons.cloud_outlined,
+                label: participant.isLocalPlayer
+                    ? 'Local preview'
+                    : 'Remote preview',
+                accent: AppColors.primary,
+              ),
+              AppBadge(
+                icon: _connectionIcon(participant.connectionState),
+                label: _connectionLabel(participant.connectionState),
+                accent: AppColors.secondary,
+              ),
+              AppBadge(
+                icon: participant.isReady
+                    ? Icons.check_circle_outline
+                    : Icons.radio_button_unchecked_outlined,
+                label: participant.isReady ? 'Ready' : 'Not ready',
+                accent: accent,
               ),
             ],
           ),
@@ -645,6 +960,50 @@ class _NextStepRow extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+String _phaseLabel(OnlineRoomPhase phase) {
+  switch (phase) {
+    case OnlineRoomPhase.waitingForOpponent:
+      return 'Waiting for opponent';
+    case OnlineRoomPhase.waitingForReady:
+      return 'Waiting for ready';
+    case OnlineRoomPhase.readyToSync:
+      return 'Ready to sync';
+  }
+}
+
+String _phaseDescription(OnlineRoomSession session) {
+  switch (session.phase) {
+    case OnlineRoomPhase.waitingForOpponent:
+      return 'This room is waiting for a second participant before remote syncing can begin.';
+    case OnlineRoomPhase.waitingForReady:
+      return 'Both participant slots exist in preview form, but at least one side still needs to mark ready before sync handoff.';
+    case OnlineRoomPhase.readyToSync:
+      return 'Every participant in the preview lobby is marked ready, so the session shape is prepared for a future realtime handoff.';
+  }
+}
+
+IconData _connectionIcon(OnlineRoomParticipantConnectionState state) {
+  switch (state) {
+    case OnlineRoomParticipantConnectionState.localPreview:
+      return Icons.smartphone_outlined;
+    case OnlineRoomParticipantConnectionState.waitingRemote:
+      return Icons.hourglass_top_rounded;
+    case OnlineRoomParticipantConnectionState.connected:
+      return Icons.cloud_done_outlined;
+  }
+}
+
+String _connectionLabel(OnlineRoomParticipantConnectionState state) {
+  switch (state) {
+    case OnlineRoomParticipantConnectionState.localPreview:
+      return 'Local preview';
+    case OnlineRoomParticipantConnectionState.waitingRemote:
+      return 'Waiting remote';
+    case OnlineRoomParticipantConnectionState.connected:
+      return 'Connected preview';
   }
 }
 

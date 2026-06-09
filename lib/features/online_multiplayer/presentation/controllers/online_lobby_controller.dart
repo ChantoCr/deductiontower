@@ -27,6 +27,14 @@ class OnlineLobbyState {
   bool get canJoinRoom =>
       isJoinMode && playerName.trim().isNotEmpty && joinCode.trim().length == 6;
 
+  bool get canSimulateRemoteGuestJoin =>
+      activeSession != null &&
+      activeSession!.isHost &&
+      !activeSession!.hasGuest;
+
+  bool get canSimulateRemoteReadyToggle =>
+      activeSession?.primaryRemoteParticipant != null;
+
   OnlineLobbyState copyWith({
     String? playerName,
     String? joinCode,
@@ -109,8 +117,71 @@ class OnlineLobbyController extends StateNotifier<OnlineLobbyState> {
     return session;
   }
 
+  OnlineRoomSession toggleLocalReady() {
+    final session = _requireActiveSession(
+      errorMessage:
+          'Create or join a room preview before changing ready state.',
+    );
+
+    final updatedSession = _repository.setLocalParticipantReady(
+      session: session,
+      isReady: !session.localParticipant.isReady,
+    );
+
+    state = state.copyWith(activeSession: updatedSession);
+    return updatedSession;
+  }
+
+  OnlineRoomSession simulateRemoteGuestJoin({
+    String guestPlayerName = 'Remote Guest',
+  }) {
+    final session = _requireActiveSession(
+      errorMessage: 'Create a host room preview before simulating a guest join.',
+    );
+    if (!session.isHost) {
+      throw StateError('Remote guest join simulation is only available in host previews.');
+    }
+
+    final updatedSession = _repository.simulateRemoteGuestJoin(
+      session: session,
+      guestPlayerName: guestPlayerName,
+    );
+
+    state = state.copyWith(activeSession: updatedSession);
+    return updatedSession;
+  }
+
+  OnlineRoomSession toggleRemoteReady() {
+    final session = _requireActiveSession(
+      errorMessage:
+          'Create or join a room preview before changing remote ready state.',
+    );
+    final remoteParticipant = session.primaryRemoteParticipant;
+    if (remoteParticipant == null) {
+      throw StateError('No remote participant is available to simulate yet.');
+    }
+
+    final updatedSession = _repository.setRemoteParticipantReady(
+      session: session,
+      participantId: remoteParticipant.id,
+      isReady: !remoteParticipant.isReady,
+    );
+
+    state = state.copyWith(activeSession: updatedSession);
+    return updatedSession;
+  }
+
   void clearSession() {
     state = state.copyWith(clearSession: true);
+  }
+
+  OnlineRoomSession _requireActiveSession({required String errorMessage}) {
+    final session = state.activeSession;
+    if (session == null) {
+      throw StateError(errorMessage);
+    }
+
+    return session;
   }
 
   String _normalizeName(String value) {

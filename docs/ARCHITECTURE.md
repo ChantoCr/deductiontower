@@ -196,17 +196,32 @@ OnlineLobbyController
   ↓
 OnlineRoomRepository interface
   ↓
-Mock room repository implementation
+OnlineRoomRepositoryImpl
+  ↓
+OnlineRoomDataSource
+  ↓
+Mock / Firebase-preview / Supabase-preview datasource adapter
   ↓
 Preview room session state
+  ↓
+RemoteMatchBootstrapService
+  ↓
+RemoteMatchBootstrapPayload
+  ↓
+RemoteMatchPublicState + RemotePlayerPrivateState + OnlinePlayerAction
   ↓
 Room summary / next-steps UI
 ```
 
 Important rules:
 - room creation and join-code UX can be built now without moving official match rules out of the game domain
-- realtime networking can later replace the mock repository behind the same controller boundary
+- realtime networking can later replace the current preview datasource adapter behind the same repository boundary
+- mock preview datasource simulation can mimic remote join/ready events now, but it must remain clearly separate from real backend sync
+- remote match bootstrap, public-state, private-state, and action contracts should stay explicit instead of being mixed into ad-hoc UI maps
+- remote room-to-match startup should flow through the bootstrap service instead of being assembled separately in widgets/controllers
 - remote match sync should eventually feed the existing game engine instead of duplicating rule resolution in the online layer
+- lobby state should model participants, readiness, and room phase explicitly so backend swap work does not depend on ad-hoc UI strings
+- backend-target selection belongs in the data/presentation boundary, not in the game domain
 
 ## Dependency Rule
 

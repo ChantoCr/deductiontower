@@ -119,10 +119,17 @@
 
 - Add room creation
 - Add join by code
+- Add backend-ready datasource/repository boundary before live sync
+- Add remote match bootstrap payload + public/private/action contracts
+- Add remote match bootstrap service
 - Add realtime sync
 - Add remote match state
 - Saved foundation preview: dedicated room-code lobby screen
-- Saved foundation preview: mock repository/controller architecture for future backend swap
+- Saved foundation preview: participant-based room session model and ready-state phases
+- Saved foundation preview: backend-targeted preview datasource/repository architecture for future Firebase or Supabase swap
+- Saved foundation preview: explicit remote bootstrap/public/private/action models for future Firebase room and match syncing
+- Saved foundation preview: pure Dart bootstrap service that converts a ready room plus secret selections into initial remote payload/public/private match state
+- Saved foundation preview: mock remote guest-join and remote-ready simulation controls for more realistic pre-backend lobby testing
 
 ---
 
