@@ -63,4 +63,38 @@ class OnlineRoomRepositoryImpl implements OnlineRoomRepository {
       isReady: isReady,
     );
   }
+
+  @override
+  Future<OnlineRoomSession> createRoomRealtime({
+    required String hostPlayerName,
+  }) {
+    return _dataSource.createRoomRealtime(hostPlayerName: hostPlayerName);
+  }
+
+  @override
+  Future<OnlineRoomSession> joinRoomRealtime({
+    required String roomCode,
+    required String guestPlayerName,
+  }) {
+    return _dataSource.joinRoomRealtime(
+      roomCode: roomCode,
+      guestPlayerName: guestPlayerName,
+    );
+  }
+
+  @override
+  Future<OnlineRoomSession> setLocalParticipantReadyRealtime({
+    required OnlineRoomSession session,
+    required bool isReady,
+  }) {
+    return _dataSource.setLocalParticipantReadyRealtime(
+      session: session,
+      isReady: isReady,
+    );
+  }
+
+  @override
+  Stream<OnlineRoomSession> watchRoom(String roomCode) {
+    return _dataSource.watchRoom(roomCode);
+  }
 }

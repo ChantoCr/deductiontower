@@ -130,6 +130,8 @@
 - Saved foundation preview: explicit remote bootstrap/public/private/action models for future Firebase room and match syncing
 - Saved foundation preview: pure Dart bootstrap service that converts a ready room plus secret selections into initial remote payload/public/private match state
 - Saved foundation preview: mock remote guest-join and remote-ready simulation controls for more realistic pre-backend lobby testing
+- Saved foundation preview: on-screen remote bootstrap summary card for payload/public/private preview without live backend sync
+- Saved backend step: Firebase-backed room creation/join/watch scaffolding plus local-ready updates behind runtime-configured datasource boundaries
 
 ---
 

@@ -97,5 +97,27 @@ void main() {
       expect(updated.isEveryoneReady, isTrue);
       expect(updated.phase, OnlineRoomPhase.readyToSync);
     });
+
+    test('supports mock realtime room creation and watching', () async {
+      final session = await repository.createRoomRealtime(hostPlayerName: 'Host');
+      final watchedSession = await repository.watchRoom(session.roomCode).first;
+
+      expect(session.roomCode, hasLength(6));
+      expect(watchedSession.roomCode, session.roomCode);
+      expect(watchedSession.localParticipant.displayName, 'Host');
+      expect(watchedSession.phase, OnlineRoomPhase.waitingForOpponent);
+    });
+
+    test('supports mock realtime ready updates', () async {
+      final session = await repository.createRoomRealtime(hostPlayerName: 'Host');
+
+      final updated = await repository.setLocalParticipantReadyRealtime(
+        session: session,
+        isReady: true,
+      );
+
+      expect(updated.localParticipant.isReady, isTrue);
+      expect(updated.phase, OnlineRoomPhase.waitingForOpponent);
+    });
   });
 }

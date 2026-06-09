@@ -25,4 +25,20 @@ abstract class OnlineRoomDataSource {
     required String participantId,
     required bool isReady,
   });
+
+  Future<OnlineRoomSession> createRoomRealtime({
+    required String hostPlayerName,
+  });
+
+  Future<OnlineRoomSession> joinRoomRealtime({
+    required String roomCode,
+    required String guestPlayerName,
+  });
+
+  Future<OnlineRoomSession> setLocalParticipantReadyRealtime({
+    required OnlineRoomSession session,
+    required bool isReady,
+  });
+
+  Stream<OnlineRoomSession> watchRoom(String roomCode);
 }

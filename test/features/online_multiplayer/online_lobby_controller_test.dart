@@ -105,6 +105,26 @@ void main() {
       expect(controller.state.activeSession?.primaryRemoteParticipant?.isReady, isTrue);
     });
 
+    test('creates a mock realtime host room and binds live watch state', () async {
+      controller.updatePlayerName('Host Player');
+
+      final session = await controller.createRoomRealtime();
+
+      expect(session.isHost, isTrue);
+      expect(controller.state.activeSession?.roomCode, session.roomCode);
+      expect(controller.state.activeSession?.localParticipant.displayName, 'Host Player');
+    });
+
+    test('updates local readiness through the realtime controller path', () async {
+      controller.updatePlayerName('Host Player');
+      await controller.createRoomRealtime();
+
+      final updated = await controller.toggleLocalReadyRealtime();
+
+      expect(updated.localParticipant.isReady, isTrue);
+      expect(controller.state.activeSession?.localParticipant.isReady, isTrue);
+    });
+
     test('throws when join preview code is incomplete', () {
       controller.updateLobbyMode(OnlineLobbyMode.join);
       controller.updatePlayerName('Guest Player');

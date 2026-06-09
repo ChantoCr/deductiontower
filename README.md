@@ -480,6 +480,8 @@ Current implemented state includes:
 - explicit remote online match contract models for bootstrap payloads, public match state, private player state, and queued player actions ahead of Firebase-backed room/match syncing
 - pure Dart remote match bootstrap service that converts a ready online room plus secret selections into initial payload/public/private match state without moving official rules into the UI
 - mock remote lobby event simulation for guest join and remote ready toggling so pre-backend room previews can mimic a more realistic second-device lifecycle
+- on-screen remote bootstrap preview summary that assembles payload/public/private online match state from a ready mock room while keeping secret trait values masked in the UI
+- first Firebase-backed online room wiring with anonymous-auth-ready initialization, Firestore room creation/join/watch hooks, realtime-ready local ready updates, and a preserved mock-preview fallback path behind the same datasource boundary
 - remote-ready online lobby model expansion with participant-level session snapshots, local-ready state handling, and room phases for waiting, ready-check, and sync handoff preview
 - fixed bottom action areas so secret-tag selection and in-match submission no longer require scrolling to the end of the screen
 - hidden secret-tag reminder flow with icon-based reveal for safer local multiplayer privacy
@@ -502,5 +504,5 @@ If the app is already running after JSON asset updates, use a full restart so th
 The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state now includes the earlier premium gameplay retake passes plus animated result celebration, filterable/collapsible timelines, searchable series chips in the pool, shared presentation helpers, Flame-backed presentation-only polish, and stronger privacy-safe local multiplayer browser reset behavior.
 
 For the next handoff, see:
-- `docs/PR13_HANDOFF.md`
+- `docs/PR16_HANDOFF.md`
 - `NEXT_CHAT_PROMPT.md`

@@ -1,10 +1,10 @@
 Start from:
 - README.md
 - AGENTS.md
-- docs/PR13_HANDOFF.md
+- docs/PR16_HANDOFF.md
 - NEXT_CHAT_PROMPT_SHORT.md
 
-Continue Anime Deduction Tower from the saved PR13 state.
+Continue Anime Deduction Tower from the saved PR16 state.
 
 Current saved state:
 - no-lives deduction game
@@ -37,20 +37,27 @@ Saved online multiplayer state:
   - readyToSync
 - local ready toggle support exists
 - mock remote guest join and remote ready simulation now exist for preview/testing
+- the online screen now includes an on-screen bootstrap preview summary once a mock room reaches `readyToSync`
 - online room flow now has an explicit datasource/repository boundary
-- backend preview targets now include:
+- backend targets now include:
   - mockPreview
   - firebasePreview
+  - firebaseBackend
   - supabasePreview
 - default provider target remains `mockPreview`
-- Firebase/Supabase preview adapters currently preserve the same local preview behavior
+- first Firebase backend wiring now exists for:
+  - anonymous-auth-ready init guard
+  - Firestore room create/join/watch
+  - Firestore local ready updates
 - explicit remote contract models now exist for:
   - `RemoteMatchBootstrapPayload`
   - `RemoteMatchPublicState`
   - `RemotePlayerPrivateState`
   - `OnlinePlayerAction`
 - a pure Dart `RemoteMatchBootstrapService` now converts a ready room plus secret selections into initial remote payload/public/private state
-- this is still preview/local architecture only, not realtime backend sync
+- the preview trait assignment uses a deterministic preview seed service and keeps secret values masked in the UI
+- runtime Firebase config is required before using the real Firebase backend target
+- Firebase backend still does not yet persist bootstrap/public/private match documents
 
 Important rules:
 - keep game logic pure Dart
@@ -65,6 +72,9 @@ Important rules:
 - add/update tests when logic changes
 
 Best next focus:
-- wire a bootstrap preview summary into the online foundation screen
-- or later Firebase-backed room creation/join/watch behind the current datasource boundary
-- or after backend wiring add realtime room watch/reconnect states
+- wire Firestore private/player and public/match bootstrap documents
+- persist:
+  - `RemotePlayerPrivateState`
+  - `RemoteMatchBootstrapPayload`
+  - initial `RemoteMatchPublicState`
+- then add Firebase room watch/reconnect UX states

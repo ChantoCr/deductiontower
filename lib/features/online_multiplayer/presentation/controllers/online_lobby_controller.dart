@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/repositories/online_room_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,6 +59,7 @@ class OnlineLobbyController extends StateNotifier<OnlineLobbyState> {
         super(const OnlineLobbyState());
 
   final OnlineRoomRepository _repository;
+  StreamSubscription<OnlineRoomSession>? _roomSubscription;
 
   void updatePlayerName(String value) {
     state = state.copyWith(playerName: _normalizeName(value));
@@ -71,6 +74,8 @@ class OnlineLobbyController extends StateNotifier<OnlineLobbyState> {
       return;
     }
 
+    _roomSubscription?.cancel();
+    _roomSubscription = null;
     state = state.copyWith(
       lobbyMode: mode,
       clearSession: true,
@@ -84,6 +89,25 @@ class OnlineLobbyController extends StateNotifier<OnlineLobbyState> {
     }
 
     final session = _repository.createRoom(hostPlayerName: normalizedName);
+    state = state.copyWith(
+      playerName: normalizedName,
+      joinCode: session.roomCode,
+      lobbyMode: OnlineLobbyMode.host,
+      activeSession: session,
+    );
+    return session;
+  }
+
+  Future<OnlineRoomSession> createRoomRealtime() async {
+    final normalizedName = _normalizeName(state.playerName);
+    if (normalizedName.isEmpty) {
+      throw StateError('Player name is required before creating a room.');
+    }
+
+    final session = await _repository.createRoomRealtime(
+      hostPlayerName: normalizedName,
+    );
+    await _bindRoomWatch(session.roomCode);
     state = state.copyWith(
       playerName: normalizedName,
       joinCode: session.roomCode,
@@ -117,6 +141,31 @@ class OnlineLobbyController extends StateNotifier<OnlineLobbyState> {
     return session;
   }
 
+  Future<OnlineRoomSession> joinRoomRealtime() async {
+    final normalizedName = _normalizeName(state.playerName);
+    if (normalizedName.isEmpty) {
+      throw StateError('Player name is required before joining a room.');
+    }
+
+    final normalizedCode = _repository.normalizeRoomCode(state.joinCode);
+    if (normalizedCode.length != 6) {
+      throw StateError('Enter a 6-character room code before joining.');
+    }
+
+    final session = await _repository.joinRoomRealtime(
+      roomCode: normalizedCode,
+      guestPlayerName: normalizedName,
+    );
+    await _bindRoomWatch(normalizedCode);
+    state = state.copyWith(
+      playerName: normalizedName,
+      joinCode: normalizedCode,
+      lobbyMode: OnlineLobbyMode.join,
+      activeSession: session,
+    );
+    return session;
+  }
+
   OnlineRoomSession toggleLocalReady() {
     final session = _requireActiveSession(
       errorMessage:
@@ -124,6 +173,21 @@ class OnlineLobbyController extends StateNotifier<OnlineLobbyState> {
     );
 
     final updatedSession = _repository.setLocalParticipantReady(
+      session: session,
+      isReady: !session.localParticipant.isReady,
+    );
+
+    state = state.copyWith(activeSession: updatedSession);
+    return updatedSession;
+  }
+
+  Future<OnlineRoomSession> toggleLocalReadyRealtime() async {
+    final session = _requireActiveSession(
+      errorMessage:
+          'Create or join a realtime room before changing ready state.',
+    );
+
+    final updatedSession = await _repository.setLocalParticipantReadyRealtime(
       session: session,
       isReady: !session.localParticipant.isReady,
     );
@@ -172,7 +236,19 @@ class OnlineLobbyController extends StateNotifier<OnlineLobbyState> {
   }
 
   void clearSession() {
+    _roomSubscription?.cancel();
+    _roomSubscription = null;
     state = state.copyWith(clearSession: true);
+  }
+
+  Future<void> _bindRoomWatch(String roomCode) async {
+    await _roomSubscription?.cancel();
+    _roomSubscription = _repository.watchRoom(roomCode).listen((session) {
+      state = state.copyWith(
+        joinCode: session.roomCode,
+        activeSession: session,
+      );
+    });
   }
 
   OnlineRoomSession _requireActiveSession({required String errorMessage}) {
@@ -186,5 +262,11 @@ class OnlineLobbyController extends StateNotifier<OnlineLobbyState> {
 
   String _normalizeName(String value) {
     return value.trim();
+  }
+
+  @override
+  void dispose() {
+    _roomSubscription?.cancel();
+    super.dispose();
   }
 }

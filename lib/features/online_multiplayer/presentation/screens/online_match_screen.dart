@@ -3,6 +3,7 @@ import 'package:anime_deduction_tower/features/online_multiplayer/domain/entitie
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/controllers/online_lobby_controller.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/providers/online_multiplayer_providers.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/presentation/widgets/online_bootstrap_preview_card.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
@@ -46,6 +47,9 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
     final state = ref.watch(onlineLobbyControllerProvider);
     final controller = ref.read(onlineLobbyControllerProvider.notifier);
     final backendTarget = ref.watch(onlineBackendTargetProvider);
+    final usesFirebaseBackend =
+        backendTarget == OnlineBackendTarget.firebaseBackend;
+    final supportsMockSimulation = !usesFirebaseBackend;
 
     if (_playerNameController.text != state.playerName) {
       _playerNameController.value = _playerNameController.value.copyWith(
@@ -211,24 +215,42 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
                 ],
                 const SizedBox(height: AppSpacing.md),
                 AppButton(
-                  label: state.isHostMode ? 'Create Mock Room' : 'Preview Join',
+                  label: state.isHostMode
+                      ? usesFirebaseBackend
+                          ? 'Create Firebase Room'
+                          : 'Create Mock Room'
+                      : usesFirebaseBackend
+                          ? 'Join Firebase Room'
+                          : 'Preview Join',
                   icon: state.isHostMode
                       ? Icons.add_home_work_outlined
                       : Icons.login_rounded,
                   onPressed: state.isHostMode
                       ? state.canCreateRoom
-                          ? () => _runAction(
-                                () => controller.createRoomPreview(),
-                                successMessage:
-                                    'Mock host room created. Realtime syncing comes later.',
-                              )
+                          ? usesFirebaseBackend
+                              ? () => _runAsyncAction(
+                                    () => controller.createRoomRealtime(),
+                                    successMessage:
+                                        'Firebase room created. Live room watching is now bound to this session.',
+                                  )
+                              : () => _runAction(
+                                    () => controller.createRoomPreview(),
+                                    successMessage:
+                                        'Mock host room created. Realtime syncing comes later.',
+                                  )
                           : null
                       : state.canJoinRoom
-                          ? () => _runAction(
-                                () => controller.joinRoomPreview(),
-                                successMessage:
-                                    'Join preview completed. This is still a local mock lobby state.',
-                              )
+                          ? usesFirebaseBackend
+                              ? () => _runAsyncAction(
+                                    () => controller.joinRoomRealtime(),
+                                    successMessage:
+                                        'Firebase room joined. Live room watching is now bound to this session.',
+                                  )
+                              : () => _runAction(
+                                    () => controller.joinRoomPreview(),
+                                    successMessage:
+                                        'Join preview completed. This is still a local mock lobby state.',
+                                  )
                           : null,
                 ),
               ],
@@ -242,13 +264,16 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
                 )
               : _RoomSessionCard(
                   session: state.activeSession!,
-                  canSimulateRemoteGuestJoin: state.canSimulateRemoteGuestJoin,
+                  canSimulateRemoteGuestJoin:
+                      supportsMockSimulation && state.canSimulateRemoteGuestJoin,
                   canSimulateRemoteReadyToggle:
-                      state.canSimulateRemoteReadyToggle,
+                      supportsMockSimulation && state.canSimulateRemoteReadyToggle,
                   onClear: controller.clearSession,
                   onCopyRoomCode: () =>
                       _copyRoomCode(state.activeSession!.roomCode),
-                  onToggleReady: _toggleLocalReady,
+                  onToggleReady: usesFirebaseBackend
+                      ? _toggleLocalReadyRealtime
+                      : _toggleLocalReady,
                   onSimulateRemoteGuestJoin: _simulateRemoteGuestJoin,
                   onToggleRemoteReady: _toggleRemoteReady,
                 );
@@ -317,6 +342,8 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
                           children: [
                             controlsCard,
                             const SizedBox(height: AppSpacing.md),
+                            const OnlineBootstrapPreviewCard(),
+                            const SizedBox(height: AppSpacing.md),
                             nextStepsCard,
                           ],
                         ),
@@ -344,6 +371,8 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
               controlsCard,
               const SizedBox(height: AppSpacing.md),
               sessionCard,
+              const SizedBox(height: AppSpacing.md),
+              const OnlineBootstrapPreviewCard(),
               const SizedBox(height: AppSpacing.md),
               nextStepsCard,
               const SizedBox(height: 40),
@@ -392,6 +421,21 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
         SnackBar(content: Text('$error')),
       );
     }
+  }
+
+  void _toggleLocalReadyRealtime() {
+    _runAsyncAction(
+      () => ref
+          .read(onlineLobbyControllerProvider.notifier)
+          .toggleLocalReadyRealtime(),
+      successMessage: 'Firebase ready state updated for the local participant.',
+      successBuilder: (session) {
+        final readinessLabel = session.localParticipant.isReady
+            ? 'marked ready'
+            : 'marked not ready';
+        return '${session.localParticipant.displayName} is now $readinessLabel.';
+      },
+    );
   }
 
   void _simulateRemoteGuestJoin() {
@@ -446,6 +490,31 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
         return;
       }
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$error')),
+      );
+    }
+  }
+
+  Future<void> _runAsyncAction(
+    Future<OnlineRoomSession> Function() action, {
+    required String successMessage,
+    String Function(OnlineRoomSession session)? successBuilder,
+  }) async {
+    try {
+      final session = await action();
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(successBuilder?.call(session) ?? successMessage),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('$error')),
       );

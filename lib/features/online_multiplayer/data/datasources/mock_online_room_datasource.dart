@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:anime_deduction_tower/core/utils/id_generator.dart';
@@ -12,6 +13,8 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
   static const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
   final Random _random;
+  final Map<String, OnlineRoomSession> _realtimeSessions = {};
+  final Map<String, StreamController<OnlineRoomSession>> _roomControllers = {};
 
   @override
   String normalizeRoomCode(String value) {
@@ -44,6 +47,25 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
   }
 
   @override
+  Future<OnlineRoomSession> createRoomRealtime({
+    required String hostPlayerName,
+  }) async {
+    final previewSession = createRoom(hostPlayerName: hostPlayerName);
+    final session = previewSession.copyWith(
+      participants: previewSession.participants
+          .map(
+            (participant) => participant.copyWith(
+              connectionState: OnlineRoomParticipantConnectionState.connected,
+            ),
+          )
+          .toList(),
+    );
+
+    _persistRealtimeSession(session);
+    return session;
+  }
+
+  @override
   OnlineRoomSession joinRoomPreview({
     required String roomCode,
     required String guestPlayerName,
@@ -73,6 +95,48 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
   }
 
   @override
+  Future<OnlineRoomSession> joinRoomRealtime({
+    required String roomCode,
+    required String guestPlayerName,
+  }) async {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final existingSession = _realtimeSessions[normalizedRoomCode];
+    if (existingSession == null) {
+      throw StateError('Mock realtime room $normalizedRoomCode was not found.');
+    }
+
+    if (existingSession.hasGuest) {
+      throw StateError('Mock realtime room $normalizedRoomCode is already full.');
+    }
+
+    final guest = OnlineRoomParticipant(
+      id: IdGenerator.next('online_guest'),
+      displayName: guestPlayerName.trim(),
+      role: OnlineRoomParticipantRole.guest,
+      connectionState: OnlineRoomParticipantConnectionState.connected,
+      isLocalPlayer: true,
+    );
+
+    final updatedHostParticipants = existingSession.participants
+        .map(
+          (participant) => participant.copyWith(
+            isLocalPlayer: false,
+            connectionState: OnlineRoomParticipantConnectionState.connected,
+          ),
+        )
+        .toList();
+
+    final updatedSession = existingSession.copyWith(
+      localParticipantId: guest.id,
+      participants: [...updatedHostParticipants, guest],
+      phase: OnlineRoomPhase.waitingForReady,
+    );
+
+    _persistRealtimeSession(updatedSession);
+    return updatedSession;
+  }
+
+  @override
   OnlineRoomSession setLocalParticipantReady({
     required OnlineRoomSession session,
     required bool isReady,
@@ -82,6 +146,20 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
       participantId: session.localParticipantId,
       isReady: isReady,
     );
+  }
+
+  @override
+  Future<OnlineRoomSession> setLocalParticipantReadyRealtime({
+    required OnlineRoomSession session,
+    required bool isReady,
+  }) async {
+    final updated = _updateParticipantReady(
+      session: session,
+      participantId: session.localParticipantId,
+      isReady: isReady,
+    );
+    _persistRealtimeSession(updated);
+    return updated;
   }
 
   @override
@@ -145,6 +223,22 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
     );
   }
 
+  @override
+  Stream<OnlineRoomSession> watchRoom(String roomCode) async* {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final controller = _roomControllers.putIfAbsent(
+      normalizedRoomCode,
+      () => StreamController<OnlineRoomSession>.broadcast(),
+    );
+
+    final session = _realtimeSessions[normalizedRoomCode];
+    if (session != null) {
+      yield session;
+    }
+
+    yield* controller.stream;
+  }
+
   OnlineRoomSession _updateParticipantReady({
     required OnlineRoomSession session,
     required String participantId,
@@ -160,6 +254,15 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
 
     final updatedSession = session.copyWith(participants: updatedParticipants);
     return updatedSession.copyWith(phase: _resolvePhase(updatedSession));
+  }
+
+  void _persistRealtimeSession(OnlineRoomSession session) {
+    _realtimeSessions[session.roomCode] = session;
+    final controller = _roomControllers.putIfAbsent(
+      session.roomCode,
+      () => StreamController<OnlineRoomSession>.broadcast(),
+    );
+    controller.add(session);
   }
 
   OnlineRoomPhase _resolvePhase(OnlineRoomSession session) {

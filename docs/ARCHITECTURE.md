@@ -217,8 +217,11 @@ Important rules:
 - room creation and join-code UX can be built now without moving official match rules out of the game domain
 - realtime networking can later replace the current preview datasource adapter behind the same repository boundary
 - mock preview datasource simulation can mimic remote join/ready events now, but it must remain clearly separate from real backend sync
+- Firebase backend wiring should stay behind runtime initialization/config guards so the app can still boot in mock mode without generated platform setup
 - remote match bootstrap, public-state, private-state, and action contracts should stay explicit instead of being mixed into ad-hoc UI maps
 - remote room-to-match startup should flow through the bootstrap service instead of being assembled separately in widgets/controllers
+- preview UI can display bootstrap summaries, but it should only read derived contract models instead of generating remote match payloads inside widgets
+- realtime room create/join/watch and ready updates should flow through repository/datasource methods instead of calling Firebase APIs directly from presentation code
 - remote match sync should eventually feed the existing game engine instead of duplicating rule resolution in the online layer
 - lobby state should model participants, readiness, and room phase explicitly so backend swap work does not depend on ad-hoc UI strings
 - backend-target selection belongs in the data/presentation boundary, not in the game domain

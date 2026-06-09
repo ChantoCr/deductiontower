@@ -1,10 +1,10 @@
 Start from:
 - README.md
 - AGENTS.md
-- docs/PR13_HANDOFF.md
+- docs/PR16_HANDOFF.md
 - NEXT_CHAT_PROMPT.md
 
-Continue Anime Deduction Tower from the saved PR13 state.
+Continue Anime Deduction Tower from the saved PR16 state.
 
 Before coding, read:
 - README.md
@@ -13,7 +13,7 @@ Before coding, read:
 - docs/DATA_MODEL.md
 - docs/EXTERNAL_ANIME_DATA.md
 - docs/ROADMAP.md
-- docs/PR13_HANDOFF.md
+- docs/PR16_HANDOFF.md
 - NEXT_CHAT_PROMPT.md
 - skills/flutter-architecture/SKILL.md
 - skills/testing/SKILL.md
@@ -76,9 +76,16 @@ Saved online multiplayer foundation now includes:
 - explicit backend-target provider/config with:
   - `mockPreview`
   - `firebasePreview`
+  - `firebaseBackend`
   - `supabasePreview`
 - repository implementation now resolves through an `OnlineRoomDataSource`
 - Firebase and Supabase preview adapters currently preserve the same local preview contract as the mock datasource
+- first Firebase backend wiring now exists for:
+  - guarded runtime initialization from dart-define config
+  - anonymous-auth-backed room creation
+  - room join by code
+  - room watch stream binding
+  - local ready updates through Firestore
 - explicit remote contract models now exist for:
   - `RemoteMatchBootstrapPayload`
   - `RemoteMatchPublicState`
@@ -86,6 +93,10 @@ Saved online multiplayer foundation now includes:
   - `OnlinePlayerAction`
 - online data models now serialize those contracts in a Firestore-friendly shape for later room/match syncing
 - a pure Dart `RemoteMatchBootstrapService` now converts a ready room plus secret selections into initial remote payload/public/private state
+- the online foundation screen now includes an on-screen bootstrap preview summary once a mock room reaches `readyToSync`
+- preview trait assignment uses a deterministic preview seed service and keeps secret values masked in the UI
+- runtime Firebase config is required before using the real Firebase backend target
+- Firebase backend still does not yet persist bootstrap/private/public match documents
 
 Important architecture rules:
 - keep game logic pure Dart
@@ -104,14 +115,17 @@ Validated at saved state:
 - `flutter test` passes
 
 Strongest next scope options:
-1. wire a bootstrap preview summary into the online foundation screen
-2. later Firebase-backed room creation/join/watch behind the current datasource boundary
-3. after backend wiring add realtime room watch/reconnect states
+1. wire Firestore private/player and public/match bootstrap documents
+2. persist:
+   - `RemotePlayerPrivateState`
+   - `RemoteMatchBootstrapPayload`
+   - initial `RemoteMatchPublicState`
+3. then add Firebase room watch/reconnect UX states
 
 If continuing online multiplayer, prefer this order:
-- bootstrap preview wiring
-- Firebase room wiring later
+- Firestore bootstrap/private/public docs
 - realtime watch/reconnect states after that
+- online setup refinements where needed
 
 Rules:
 - Keep game logic pure Dart
