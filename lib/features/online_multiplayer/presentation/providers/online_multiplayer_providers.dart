@@ -7,11 +7,18 @@ import 'package:anime_deduction_tower/features/online_multiplayer/data/datasourc
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/online_room_datasource.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/supabase_online_room_preview_datasource.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/repositories/online_room_repository_impl.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/services/remote_match_firestore_bundle_builder.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_bootstrap_result.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_screen_state.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/repositories/online_room_repository.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_action_factory.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_bootstrap_service.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_preview_seed_service.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_screen_state_loader.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/presentation/controllers/online_action_queue_controller.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/controllers/online_lobby_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,7 +33,22 @@ final onlineRoomDataSourceProvider = Provider<OnlineRoomDataSource>((ref) {
     case OnlineBackendTarget.firebasePreview:
       return FirebaseOnlineRoomPreviewDataSource();
     case OnlineBackendTarget.firebaseBackend:
-      return FirebaseOnlineRoomDataSource();
+      final bootstrapService = ref.watch(remoteMatchBootstrapServiceProvider);
+      final previewSeedService = ref.watch(
+        remoteMatchPreviewSeedServiceProvider,
+      );
+      final hintsPerPlayer = ref.watch(onlinePreviewHintsPerPlayerProvider);
+      return FirebaseOnlineRoomDataSource(
+        loadValidCategories: () async {
+          final validation = await ref.read(validatedTraitCatalogProvider.future);
+          return validation.validCategories;
+        },
+        loadCharacters: () => ref.read(charactersProvider.future),
+        bootstrapService: bootstrapService,
+        previewSeedService: previewSeedService,
+        firestoreBundleBuilder: const RemoteMatchFirestoreBundleBuilder(),
+        hintsPerPlayer: hintsPerPlayer,
+      );
     case OnlineBackendTarget.supabasePreview:
       return SupabaseOnlineRoomPreviewDataSource();
   }
@@ -49,6 +71,22 @@ final remoteMatchPreviewSeedServiceProvider =
 );
 
 final onlinePreviewHintsPerPlayerProvider = Provider<int>((ref) => 2);
+
+final remoteMatchScreenStateLoaderProvider =
+    Provider<RemoteMatchScreenStateLoader>(
+  (ref) => const RemoteMatchScreenStateLoader(),
+);
+
+final remoteMatchActionFactoryProvider = Provider<RemoteMatchActionFactory>(
+  (ref) => const RemoteMatchActionFactory(),
+);
+
+final onlineActionQueueControllerProvider = Provider<OnlineActionQueueController>(
+  (ref) => OnlineActionQueueController(
+    repository: ref.watch(onlineRoomRepositoryProvider),
+    actionFactory: ref.watch(remoteMatchActionFactoryProvider),
+  ),
+);
 
 final onlineLobbyControllerProvider =
     StateNotifierProvider<OnlineLobbyController, OnlineLobbyState>(
@@ -87,5 +125,70 @@ final remoteMatchBootstrapPreviewProvider =
         playerSeeds: playerSeeds,
         categories: validation.validCategories,
         characters: characters,
+      );
+});
+
+final remoteMatchHandoffProvider =
+    StreamProvider<RemoteMatchHandoffSnapshot?>((ref) {
+  final backendTarget = ref.watch(onlineBackendTargetProvider);
+  final session = ref.watch(
+    onlineLobbyControllerProvider.select((state) => state.activeSession),
+  );
+
+  if (backendTarget != OnlineBackendTarget.firebaseBackend || session == null) {
+    return Stream.value(null);
+  }
+
+  return ref.watch(onlineRoomRepositoryProvider).watchMatchHandoff(
+        roomCode: session.roomCode,
+        participantId: session.localParticipantId,
+      );
+});
+
+final remoteMatchScreenStateProvider =
+    StreamProvider<RemoteMatchScreenState?>((ref) {
+  final backendTarget = ref.watch(onlineBackendTargetProvider);
+  final session = ref.watch(
+    onlineLobbyControllerProvider.select((state) => state.activeSession),
+  );
+
+  if (backendTarget != OnlineBackendTarget.firebaseBackend || session == null) {
+    return Stream.value(null);
+  }
+
+  final loader = ref.watch(remoteMatchScreenStateLoaderProvider);
+
+  return ref.watch(onlineRoomRepositoryProvider).watchMatchHandoff(
+        roomCode: session.roomCode,
+        participantId: session.localParticipantId,
+      ).asyncMap((handoff) async {
+        if (handoff == null || !handoff.isComplete) {
+          return null;
+        }
+
+        final validation = await ref.read(validatedTraitCatalogProvider.future);
+        final categories = validation.validCategories;
+        final characters = await ref.read(charactersProvider.future);
+
+        return loader.load(
+          handoff: handoff,
+          categories: categories,
+          characters: characters,
+        );
+      });
+});
+
+final onlinePlayerActionsProvider = StreamProvider<List<OnlinePlayerAction>>((ref) {
+  final backendTarget = ref.watch(onlineBackendTargetProvider);
+  final session = ref.watch(
+    onlineLobbyControllerProvider.select((state) => state.activeSession),
+  );
+
+  if (backendTarget != OnlineBackendTarget.firebaseBackend || session == null) {
+    return Stream.value(const <OnlinePlayerAction>[]);
+  }
+
+  return ref.watch(onlineRoomRepositoryProvider).watchPlayerActions(
+        session.roomCode,
       );
 });

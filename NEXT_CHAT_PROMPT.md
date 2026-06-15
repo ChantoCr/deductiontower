@@ -1,139 +1,50 @@
 Start from:
 - README.md
 - AGENTS.md
-- docs/PR16_HANDOFF.md
+- docs/PR19_HANDOFF.md
 - NEXT_CHAT_PROMPT.md
 
-Continue Anime Deduction Tower from the saved PR16 state.
+Continue Anime Deduction Tower from the saved PR19 state.
 
 Before coding, read:
 - README.md
 - AGENTS.md
 - docs/ARCHITECTURE.md
 - docs/DATA_MODEL.md
-- docs/EXTERNAL_ANIME_DATA.md
 - docs/ROADMAP.md
-- docs/PR16_HANDOFF.md
+- docs/PR19_HANDOFF.md
 - NEXT_CHAT_PROMPT.md
 - skills/flutter-architecture/SKILL.md
 - skills/testing/SKILL.md
 - skills/ui-ux-mobile/SKILL.md
 
-Current status:
-- Flutter + Flame deduction game
-- no-lives rules
-- shared character pool gameplay is already wired
-- protected local multiplayer secrecy is implemented
-- premium setup/selection/handoff/match/result UI is already in place
-- runtime catalog is loaded from assets/data/characters.json
-- runtime catalog currently contains 1276 characters
-- tag catalog currently contains 40 tags
-- categories catalog currently contains 40 playable secret tags
-- every currently approved imported character is already merged into runtime
-- import preview / review queue / approval / curated promotion preview pipeline still exists and remains valid
-- there is no approved staged backlog remaining outside runtime
-- Vegeta still has the known non-blocking `series_mismatch` note
+Current online multiplayer state now includes:
+- mock preview room create/join/readiness flow
+- Firebase-backed realtime room create/join/watch/readiness flow
+- explicit remote contracts for bootstrap/public/private/action state
+- pure Dart remote bootstrap service
+- deterministic preview seed service
+- Firebase bootstrap persistence for:
+  - `online_rooms/{roomCode}/match_bootstrap/current`
+  - `online_rooms/{roomCode}/match_public/current`
+  - `online_rooms/{roomCode}/private_player_state/{participantId}`
+- Firebase watch/read support for those persisted docs through the datasource/repository boundary
+- reconnect-aware room-to-match handoff UX in the online lobby screen
+- read-only remote match screen-state hydration from persisted bootstrap/public/private docs plus local catalog data
+- mock mode still preserved when Firebase config is missing
 
-Saved local multiplayer / privacy state includes:
-- protected hidden-tag reveal flow for one-device human play
-- privacy-safe character pool browser reset between human turns
-- search/filter/scroll/staged-guess reset on handoff
-- lock overlay and privacy-cleared notice
-- fixed bottom action areas for secret-tag selection and in-match submission
-
-Saved AI state includes:
-- `Play vs AI` is enabled from home
-- setup supports local multiplayer and player-vs-AI
-- AI difficulty supports:
-  - easy
-  - standard
-  - hard
-- AI hidden tag is auto-assigned
-- AI turns are public-only and run from the transition screen
-- AI reasoning summaries are now persisted into public turn notes
-- AI move summaries appear in dialog, latest-event, timeline, match, and result screens
-- setup/match/result now include richer AI profile and performance presentation
-- official rule resolution still belongs to the game engine
-
-Saved online multiplayer foundation now includes:
-- enabled `Online Match` button from home
-- dedicated online room foundation screen
-- online feature-first structure with domain/data/presentation separation
-- room-code normalization and copy flow
-- host-vs-guest lobby mode switching
-- readiness messaging and room preview UX
-- remote-ready lobby model with:
-  - participant-level entities
-  - local participant identity
-  - explicit roles
-  - explicit connection-state preview modeling
-  - explicit room phases:
-    - waitingForOpponent
-    - waitingForReady
-    - readyToSync
-  - local ready toggle support
-- mock remote guest join and remote ready simulation now exist for preview/testing
-- explicit backend-target provider/config with:
-  - `mockPreview`
-  - `firebasePreview`
-  - `firebaseBackend`
-  - `supabasePreview`
-- repository implementation now resolves through an `OnlineRoomDataSource`
-- Firebase and Supabase preview adapters currently preserve the same local preview contract as the mock datasource
-- first Firebase backend wiring now exists for:
-  - guarded runtime initialization from dart-define config
-  - anonymous-auth-backed room creation
-  - room join by code
-  - room watch stream binding
-  - local ready updates through Firestore
-- explicit remote contract models now exist for:
-  - `RemoteMatchBootstrapPayload`
-  - `RemoteMatchPublicState`
-  - `RemotePlayerPrivateState`
-  - `OnlinePlayerAction`
-- online data models now serialize those contracts in a Firestore-friendly shape for later room/match syncing
-- a pure Dart `RemoteMatchBootstrapService` now converts a ready room plus secret selections into initial remote payload/public/private state
-- the online foundation screen now includes an on-screen bootstrap preview summary once a mock room reaches `readyToSync`
-- preview trait assignment uses a deterministic preview seed service and keeps secret values masked in the UI
-- runtime Firebase config is required before using the real Firebase backend target
-- Firebase backend still does not yet persist bootstrap/private/public match documents
-
-Important architecture rules:
+Important rules:
 - keep game logic pure Dart
-- keep import logic in the data/import layer
-- keep AI action choice separate from game-engine rule resolution
-- keep AI difficulty as a behavior/config layer, not a rules layer
-- keep online lobby / room transport state separate from official match-rule resolution
-- future backend/realtime work should extend the online datasource/repository boundary instead of bypassing it
+- keep online room/lobby/backend transport separate from official match-rule resolution
+- keep bootstrap/public/private/action contracts explicit
+- keep read-only remote hydration separate from future action resolution
+- keep Firebase runtime init guarded so mock mode still works without config
+- keep reconnect/handoff UI read-only with respect to bootstrap assembly
 - keep Flame presentation-only
+- add or update tests when logic changes
+- if JSON assets change while the app is already running, remind that a full app restart is needed
 
-Important runtime note:
-- if JSON assets change while the app is already running, do a full restart so Flutter reloads the asset bundle
-
-Validated at saved state:
-- `flutter analyze` passes
-- `flutter test` passes
-
-Strongest next scope options:
-1. wire Firestore private/player and public/match bootstrap documents
-2. persist:
-   - `RemotePlayerPrivateState`
-   - `RemoteMatchBootstrapPayload`
-   - initial `RemoteMatchPublicState`
-3. then add Firebase room watch/reconnect UX states
-
-If continuing online multiplayer, prefer this order:
-- Firestore bootstrap/private/public docs
-- realtime watch/reconnect states after that
-- online setup refinements where needed
-
-Rules:
-- Keep game logic pure Dart
-- Keep import logic in the data/import layer
-- Preserve protected local multiplayer secrecy
-- Preserve fixed bottom action areas and privacy reset behavior
-- Preserve searchable series-chip flow for large rosters
-- Keep Flame presentation-only
-- Keep AI action choice separate from game-engine rule resolution
-- Keep online room/lobby state separate from official match-rule resolution
-- Add or update tests when logic changes
+Best next scope:
+1. add queued online player action submission through the datasource/repository boundary
+2. add read/watch support for queued action state
+3. keep official action resolution outside widgets and outside Firebase transport glue

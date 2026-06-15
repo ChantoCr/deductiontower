@@ -3,27 +3,58 @@ import 'dart:math';
 
 import 'package:anime_deduction_tower/app/firebase_app_initializer.dart';
 import 'package:anime_deduction_tower/core/utils/id_generator.dart';
+import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
+import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/online_room_datasource.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/models/online_player_action_model.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_match_bootstrap_payload_model.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_match_public_state_model.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_player_private_state_model.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/services/remote_match_firestore_bundle_builder.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_participant.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_bootstrap_service.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_preview_seed_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
   FirebaseOnlineRoomDataSource({
+    required Future<List<TraitCategory>> Function() loadValidCategories,
+    required Future<List<Character>> Function() loadCharacters,
     FirebaseAuth? auth,
     FirebaseFirestore? firestore,
     Random? random,
-  })  : _auth = auth ?? FirebaseAuth.instance,
+    RemoteMatchBootstrapService? bootstrapService,
+    RemoteMatchPreviewSeedService? previewSeedService,
+    RemoteMatchFirestoreBundleBuilder? firestoreBundleBuilder,
+    int hintsPerPlayer = 2,
+  })  : _loadValidCategories = loadValidCategories,
+        _loadCharacters = loadCharacters,
+        _auth = auth ?? FirebaseAuth.instance,
         _firestore = firestore ?? FirebaseFirestore.instance,
-        _random = random ?? Random();
+        _random = random ?? Random(),
+        _bootstrapService = bootstrapService ?? const RemoteMatchBootstrapService(),
+        _previewSeedService = previewSeedService ?? const RemoteMatchPreviewSeedService(),
+        _firestoreBundleBuilder = firestoreBundleBuilder ??
+            const RemoteMatchFirestoreBundleBuilder(),
+        _hintsPerPlayer = hintsPerPlayer;
 
   static const roomCodeLength = 6;
   static const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  static const _currentDocumentId = 'current';
 
+  final Future<List<TraitCategory>> Function() _loadValidCategories;
+  final Future<List<Character>> Function() _loadCharacters;
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
   final Random _random;
+  final RemoteMatchBootstrapService _bootstrapService;
+  final RemoteMatchPreviewSeedService _previewSeedService;
+  final RemoteMatchFirestoreBundleBuilder _firestoreBundleBuilder;
+  final int _hintsPerPlayer;
 
   CollectionReference<Map<String, dynamic>> get _roomsCollection =>
       _firestore.collection('online_rooms');
@@ -188,7 +219,13 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
       'updatedAt': now,
     });
 
-    return _fetchSession(session.roomCode);
+    final updatedSession = await _fetchSession(session.roomCode);
+    if (updatedSession.phase == OnlineRoomPhase.readyToSync &&
+        updatedSession.isEveryoneReady) {
+      await _persistBootstrapDocumentsIfNeeded(updatedSession);
+    }
+
+    return updatedSession;
   }
 
   @override
@@ -270,6 +307,255 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
         await participantSub.cancel();
       };
     });
+  }
+
+  @override
+  Stream<RemoteMatchHandoffSnapshot?> watchMatchHandoff({
+    required String roomCode,
+    required String participantId,
+  }) {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final roomRef = _roomsCollection.doc(normalizedRoomCode);
+
+    return Stream.multi((controller) async {
+      await FirebaseAppInitializer.ensureInitializedForOnlineBackend();
+      await _ensureSignedIn();
+
+      Map<String, dynamic>? bootstrapData;
+      Map<String, dynamic>? publicStateData;
+      Map<String, dynamic>? privateStateData;
+      var hasBootstrapSnapshot = false;
+      var hasPublicStateSnapshot = false;
+      var hasPrivateStateSnapshot = false;
+
+      void emitIfReady() {
+        if (!hasBootstrapSnapshot ||
+            !hasPublicStateSnapshot ||
+            !hasPrivateStateSnapshot) {
+          return;
+        }
+
+        if (bootstrapData == null &&
+            publicStateData == null &&
+            privateStateData == null) {
+          controller.add(null);
+          return;
+        }
+
+        try {
+          controller.add(
+            RemoteMatchHandoffSnapshot(
+              roomCode: normalizedRoomCode,
+              localParticipantId: participantId,
+              bootstrapPayload: bootstrapData == null
+                  ? null
+                  : RemoteMatchBootstrapPayloadModel.fromJson(
+                      bootstrapData!,
+                    ).toEntity(),
+              publicState: publicStateData == null
+                  ? null
+                  : RemoteMatchPublicStateModel.fromJson(
+                      publicStateData!,
+                    ).toEntity(),
+              privateState: privateStateData == null
+                  ? null
+                  : RemotePlayerPrivateStateModel.fromJson(
+                      privateStateData!,
+                    ).toEntity(),
+            ),
+          );
+        } catch (error, stackTrace) {
+          controller.addError(error, stackTrace);
+        }
+      }
+
+      final bootstrapSub = roomRef
+          .collection('match_bootstrap')
+          .doc(_currentDocumentId)
+          .snapshots()
+          .listen(
+        (snapshot) {
+          hasBootstrapSnapshot = true;
+          bootstrapData = snapshot.data();
+          emitIfReady();
+        },
+        onError: controller.addError,
+      );
+
+      final publicStateSub = roomRef
+          .collection('match_public')
+          .doc(_currentDocumentId)
+          .snapshots()
+          .listen(
+        (snapshot) {
+          hasPublicStateSnapshot = true;
+          publicStateData = snapshot.data();
+          emitIfReady();
+        },
+        onError: controller.addError,
+      );
+
+      final privateStateSub = roomRef
+          .collection('private_player_state')
+          .doc(participantId)
+          .snapshots()
+          .listen(
+        (snapshot) {
+          hasPrivateStateSnapshot = true;
+          privateStateData = snapshot.data();
+          emitIfReady();
+        },
+        onError: controller.addError,
+      );
+
+      controller.onCancel = () async {
+        await bootstrapSub.cancel();
+        await publicStateSub.cancel();
+        await privateStateSub.cancel();
+      };
+    });
+  }
+
+  @override
+  Future<OnlinePlayerAction> submitPlayerAction({
+    required String roomCode,
+    required OnlinePlayerAction action,
+  }) async {
+    await FirebaseAppInitializer.ensureInitializedForOnlineBackend();
+    final user = await _ensureSignedIn();
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final roomRef = _roomsCollection.doc(normalizedRoomCode);
+
+    if (action.submittedByUserId != user.uid) {
+      throw StateError('Queued action user id does not match the signed-in Firebase user.');
+    }
+
+    final publicMatchDoc =
+        await roomRef.collection('match_public').doc(_currentDocumentId).get();
+    if (!publicMatchDoc.exists) {
+      throw StateError(
+        'Remote match bootstrap is not ready yet for room $normalizedRoomCode.',
+      );
+    }
+
+    final model = OnlinePlayerActionModel.fromEntity(action);
+    await roomRef.collection('player_actions').doc(action.actionId).set(model.toJson());
+    return action;
+  }
+
+  @override
+  Stream<List<OnlinePlayerAction>> watchPlayerActions(String roomCode) {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final roomRef = _roomsCollection.doc(normalizedRoomCode);
+
+    return Stream.multi((controller) async {
+      await FirebaseAppInitializer.ensureInitializedForOnlineBackend();
+      await _ensureSignedIn();
+
+      final actionSub = roomRef.collection('player_actions').snapshots().listen(
+        (snapshot) {
+          try {
+            final actions = snapshot.docs
+                .map((doc) => OnlinePlayerActionModel.fromJson(doc.data()).toEntity())
+                .toList()
+              ..sort((left, right) => right.createdAt.compareTo(left.createdAt));
+            controller.add(actions);
+          } catch (error, stackTrace) {
+            controller.addError(error, stackTrace);
+          }
+        },
+        onError: controller.addError,
+      );
+
+      controller.onCancel = () async {
+        await actionSub.cancel();
+      };
+    });
+  }
+
+  Future<void> _persistBootstrapDocumentsIfNeeded(
+    OnlineRoomSession session,
+  ) async {
+    final roomRef = _roomsCollection.doc(session.roomCode);
+    final publicMatchDoc =
+        await roomRef.collection('match_public').doc(_currentDocumentId).get();
+    if (publicMatchDoc.exists) {
+      return;
+    }
+
+    final categories = await _loadValidCategories();
+    if (categories.isEmpty) {
+      throw StateError(
+        'No valid trait categories are available for Firebase bootstrap.',
+      );
+    }
+
+    final characters = await _loadCharacters();
+    final participantUserIds = await _loadParticipantUserIds(roomRef);
+    final bootstrapCreatedAt = session.createdAt.toUtc();
+    final bootstrapSeeds = _previewSeedService.buildSeeds(
+      room: session,
+      validCategories: categories,
+      participantUserIds: participantUserIds,
+    );
+    final bootstrapResult = _bootstrapService.build(
+      room: session,
+      hintsPerPlayer: _hintsPerPlayer,
+      playerSeeds: bootstrapSeeds,
+      categories: categories,
+      characters: characters,
+      matchId: _matchIdForRoom(session.roomCode),
+      createdAt: bootstrapCreatedAt,
+    );
+    final bundle = _firestoreBundleBuilder.build(bootstrapResult);
+
+    final batch = _firestore.batch();
+    batch.set(
+      roomRef.collection('match_bootstrap').doc(_currentDocumentId),
+      bundle.bootstrapDocument,
+    );
+    batch.set(
+      roomRef.collection('match_public').doc(_currentDocumentId),
+      bundle.publicMatchDocument,
+    );
+    for (final entry in bundle.privatePlayerDocuments.entries) {
+      batch.set(
+        roomRef.collection('private_player_state').doc(entry.key),
+        entry.value,
+      );
+    }
+    batch.set(
+      roomRef,
+      {
+        ...bundle.roomDocumentPatch,
+        'updatedAt': FieldValue.serverTimestamp(),
+      },
+      SetOptions(merge: true),
+    );
+
+    await batch.commit();
+  }
+
+  Future<Map<String, String>> _loadParticipantUserIds(
+    DocumentReference<Map<String, dynamic>> roomRef,
+  ) async {
+    final participantsSnapshot = await roomRef.collection('participants').get();
+    final participantUserIds = <String, String>{};
+
+    for (final participantDoc in participantsSnapshot.docs) {
+      final data = participantDoc.data();
+      final participantId = data['participantId'] as String? ?? participantDoc.id;
+      final userId = (data['userId'] as String?)?.trim();
+      if (userId != null && userId.isNotEmpty) {
+        participantUserIds[participantId] = userId;
+      }
+    }
+
+    return participantUserIds;
+  }
+
+  String _matchIdForRoom(String roomCode) {
+    return 'match_$roomCode';
   }
 
   Future<User> _ensureSignedIn() async {

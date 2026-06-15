@@ -77,6 +77,20 @@ void main() {
       expect(seeds.first.secretTraitId, isNot(seeds.last.secretTraitId));
     });
 
+    test('uses provided participant user ids when building non-preview seeds', () {
+      final seeds = service.buildSeeds(
+        room: room,
+        validCategories: categories,
+        participantUserIds: const {
+          'host_1': 'firebase_uid_host',
+          'guest_1': 'firebase_uid_guest',
+        },
+      );
+
+      expect(seeds.first.userId, 'firebase_uid_host');
+      expect(seeds.last.userId, 'firebase_uid_guest');
+    });
+
     test('reuses the only available category when just one valid category exists', () {
       final seeds = service.buildSeeds(
         room: room,

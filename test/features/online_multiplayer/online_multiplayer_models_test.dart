@@ -6,6 +6,7 @@ import 'package:anime_deduction_tower/features/online_multiplayer/data/models/on
 import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_match_bootstrap_payload_model.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_match_public_state_model.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_player_private_state_model.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -145,6 +146,67 @@ void main() {
       expect(model.secretTraitId, '');
       expect(model.secretTraitLocked, isFalse);
       expect(model.toEntity().hasPrivateHint, isFalse);
+    });
+  });
+
+  group('RemoteMatchHandoffSnapshot', () {
+    test('reports reconnect readiness only when bootstrap public and private docs exist', () {
+      final payload = RemoteMatchBootstrapPayloadModel.fromJson({
+        'roomCode': 'AB12CD',
+        'matchId': 'match_AB12CD',
+        'hostParticipantId': 'host_1',
+        'guestParticipantId': 'guest_1',
+        'startingParticipantId': 'host_1',
+        'hostPlayerName': 'Host',
+        'guestPlayerName': 'Guest',
+        'hintsPerPlayer': 2,
+        'hostSecretTraitId': 'black_hair',
+        'guestSecretTraitId': 'villain',
+        'sharedCharacterPoolIds': ['goku', 'vegeta'],
+        'createdAt': '2026-06-09T12:00:00.000Z',
+      }).toEntity();
+      final publicState = RemoteMatchPublicStateModel.fromJson({
+        'matchId': 'match_AB12CD',
+        'roomCode': 'AB12CD',
+        'status': 'inProgress',
+        'currentTurnParticipantId': 'host_1',
+        'turnNumber': 0,
+        'sharedCharacterPoolIds': ['goku', 'vegeta'],
+        'playerPublicState': const {},
+        'matchVersion': 0,
+        'createdAt': '2026-06-09T12:00:00.000Z',
+        'updatedAt': '2026-06-09T12:00:00.000Z',
+      }).toEntity();
+      final privateState = RemotePlayerPrivateStateModel.fromJson({
+        'participantId': 'host_1',
+        'userId': 'firebase_uid_host',
+        'secretTraitId': 'black_hair',
+        'secretTraitLocked': true,
+        'hasViewedSecret': true,
+        'hintsUsed': 0,
+        'selectedAt': '2026-06-09T12:00:00.000Z',
+        'updatedAt': '2026-06-09T12:00:00.000Z',
+      }).toEntity();
+
+      final partial = RemoteMatchHandoffSnapshot(
+        roomCode: 'AB12CD',
+        localParticipantId: 'host_1',
+        bootstrapPayload: payload,
+      );
+      final complete = RemoteMatchHandoffSnapshot(
+        roomCode: 'AB12CD',
+        localParticipantId: 'host_1',
+        bootstrapPayload: payload,
+        publicState: publicState,
+        privateState: privateState,
+      );
+
+      expect(partial.hasBootstrapPayload, isTrue);
+      expect(partial.hasPublicState, isFalse);
+      expect(partial.isComplete, isFalse);
+      expect(complete.hasPrivateState, isTrue);
+      expect(complete.isComplete, isTrue);
+      expect(complete.matchId, 'match_AB12CD');
     });
   });
 

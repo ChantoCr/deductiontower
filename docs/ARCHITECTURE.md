@@ -222,6 +222,14 @@ Important rules:
 - remote room-to-match startup should flow through the bootstrap service instead of being assembled separately in widgets/controllers
 - preview UI can display bootstrap summaries, but it should only read derived contract models instead of generating remote match payloads inside widgets
 - realtime room create/join/watch and ready updates should flow through repository/datasource methods instead of calling Firebase APIs directly from presentation code
+- the Firebase backend path can persist explicit bootstrap artifacts once a room reaches `readyToSync`, including:
+  - `match_bootstrap/current`
+  - `match_public/current`
+  - `private_player_state/{participantId}`
+- the Firebase backend path can also watch those persisted docs through the datasource/repository boundary so room-to-match reconnect UX stays outside widgets and outside core rule resolution
+- remote bootstrap document persistence should reuse the pure Dart bootstrap service and explicit contract models instead of rebuilding match rules inside Firebase-specific code
+- room-to-match handoff UI should read explicit persisted bootstrap/public/private contracts instead of reconstructing them ad hoc in presentation code
+- a read-only remote match screen-state loader can convert persisted bootstrap/public/private docs plus local catalog data into a gameplay-ready screen model without moving official rule resolution into widgets
 - remote match sync should eventually feed the existing game engine instead of duplicating rule resolution in the online layer
 - lobby state should model participants, readiness, and room phase explicitly so backend swap work does not depend on ad-hoc UI strings
 - backend-target selection belongs in the data/presentation boundary, not in the game domain

@@ -132,6 +132,9 @@
 - Saved foundation preview: mock remote guest-join and remote-ready simulation controls for more realistic pre-backend lobby testing
 - Saved foundation preview: on-screen remote bootstrap summary card for payload/public/private preview without live backend sync
 - Saved backend step: Firebase-backed room creation/join/watch scaffolding plus local-ready updates behind runtime-configured datasource boundaries
+- Saved backend step: Firestore bootstrap persistence for `match_bootstrap/current`, `match_public/current`, and per-player private bootstrap docs once a room reaches `readyToSync`
+- Saved backend step: live read/watch of persisted bootstrap/public/private docs plus reconnect-aware room-to-match handoff UX in the online lobby screen
+- Saved backend step: read-only remote match screen-state loader that hydrates a gameplay-ready online match model from persisted bootstrap/public/private docs and local catalog data
 
 ---
 

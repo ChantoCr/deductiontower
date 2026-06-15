@@ -3,7 +3,7 @@ import 'package:anime_deduction_tower/features/online_multiplayer/domain/entitie
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/controllers/online_lobby_controller.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/providers/online_multiplayer_providers.dart';
-import 'package:anime_deduction_tower/features/online_multiplayer/presentation/widgets/online_bootstrap_preview_card.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/presentation/widgets/online_room_handoff_card.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
@@ -342,7 +342,7 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
                           children: [
                             controlsCard,
                             const SizedBox(height: AppSpacing.md),
-                            const OnlineBootstrapPreviewCard(),
+                            const OnlineRoomHandoffCard(),
                             const SizedBox(height: AppSpacing.md),
                             nextStepsCard,
                           ],
@@ -372,7 +372,7 @@ class _OnlineMatchScreenState extends ConsumerState<OnlineMatchScreen> {
               const SizedBox(height: AppSpacing.md),
               sessionCard,
               const SizedBox(height: AppSpacing.md),
-              const OnlineBootstrapPreviewCard(),
+              const OnlineRoomHandoffCard(),
               const SizedBox(height: AppSpacing.md),
               nextStepsCard,
               const SizedBox(height: 40),

@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:anime_deduction_tower/core/enums/turn_action_type.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/repositories/mock_online_room_repository_impl.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_participant.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -118,6 +120,41 @@ void main() {
 
       expect(updated.localParticipant.isReady, isTrue);
       expect(updated.phase, OnlineRoomPhase.waitingForOpponent);
+    });
+
+    test('returns no persisted handoff docs in mock mode', () async {
+      final session = await repository.createRoomRealtime(hostPlayerName: 'Host');
+      final handoff = await repository
+          .watchMatchHandoff(
+            roomCode: session.roomCode,
+            participantId: session.localParticipantId,
+          )
+          .first;
+
+      expect(handoff, isNull);
+    });
+
+    test('stores and watches queued online player actions in mock mode', () async {
+      final session = await repository.createRoomRealtime(hostPlayerName: 'Host');
+      final action = OnlinePlayerAction(
+        actionId: 'online_action_1',
+        submittedByParticipantId: session.localParticipantId,
+        submittedByUserId: 'mock_user_host',
+        actionType: TurnActionType.requestHint,
+        expectedMatchVersion: 0,
+        createdAt: DateTime.parse('2026-06-15T10:00:00.000Z'),
+      );
+
+      await repository.submitPlayerAction(
+        roomCode: session.roomCode,
+        action: action,
+      );
+
+      final watchedActions = await repository.watchPlayerActions(session.roomCode).first;
+
+      expect(watchedActions, hasLength(1));
+      expect(watchedActions.first.actionId, 'online_action_1');
+      expect(watchedActions.first.actionType, TurnActionType.requestHint);
     });
   });
 }

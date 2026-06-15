@@ -8,6 +8,7 @@ class RemoteMatchPreviewSeedService {
   List<RemotePlayerBootstrapSeed> buildSeeds({
     required OnlineRoomSession room,
     required List<TraitCategory> validCategories,
+    Map<String, String> participantUserIds = const {},
   }) {
     final host = room.hostParticipant;
     final guest = room.guestParticipant;
@@ -35,15 +36,27 @@ class RemoteMatchPreviewSeedService {
     return [
       RemotePlayerBootstrapSeed(
         participantId: host.id,
-        userId: 'preview_user_${host.id}',
+        userId: _resolveUserId(host.id, participantUserIds),
         secretTraitId: hostTrait.id,
       ),
       RemotePlayerBootstrapSeed(
         participantId: guest.id,
-        userId: 'preview_user_${guest.id}',
+        userId: _resolveUserId(guest.id, participantUserIds),
         secretTraitId: guestTrait.id,
       ),
     ];
+  }
+
+  String _resolveUserId(
+    String participantId,
+    Map<String, String> participantUserIds,
+  ) {
+    final resolvedUserId = participantUserIds[participantId]?.trim();
+    if (resolvedUserId != null && resolvedUserId.isNotEmpty) {
+      return resolvedUserId;
+    }
+
+    return 'preview_user_$participantId';
   }
 
   int _seedIndex(String roomCode, int length) {

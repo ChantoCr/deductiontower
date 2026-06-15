@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:anime_deduction_tower/core/utils/id_generator.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/online_room_datasource.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_participant.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
 
 class MockOnlineRoomDataSource implements OnlineRoomDataSource {
   MockOnlineRoomDataSource({Random? random}) : _random = random ?? Random();
@@ -15,6 +17,9 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
   final Random _random;
   final Map<String, OnlineRoomSession> _realtimeSessions = {};
   final Map<String, StreamController<OnlineRoomSession>> _roomControllers = {};
+  final Map<String, List<OnlinePlayerAction>> _roomActions = {};
+  final Map<String, StreamController<List<OnlinePlayerAction>>> _actionControllers =
+      {};
 
   @override
   String normalizeRoomCode(String value) {
@@ -236,6 +241,46 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
       yield session;
     }
 
+    yield* controller.stream;
+  }
+
+  @override
+  Stream<RemoteMatchHandoffSnapshot?> watchMatchHandoff({
+    required String roomCode,
+    required String participantId,
+  }) {
+    return Stream.value(null);
+  }
+
+  @override
+  Future<OnlinePlayerAction> submitPlayerAction({
+    required String roomCode,
+    required OnlinePlayerAction action,
+  }) async {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final actions = [...(_roomActions[normalizedRoomCode] ?? const <OnlinePlayerAction>[])];
+    actions.insert(0, action);
+    _roomActions[normalizedRoomCode] = actions;
+
+    final controller = _actionControllers.putIfAbsent(
+      normalizedRoomCode,
+      () => StreamController<List<OnlinePlayerAction>>.broadcast(),
+    );
+    controller.add(List<OnlinePlayerAction>.unmodifiable(actions));
+    return action;
+  }
+
+  @override
+  Stream<List<OnlinePlayerAction>> watchPlayerActions(String roomCode) async* {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final controller = _actionControllers.putIfAbsent(
+      normalizedRoomCode,
+      () => StreamController<List<OnlinePlayerAction>>.broadcast(),
+    );
+
+    yield List<OnlinePlayerAction>.unmodifiable(
+      _roomActions[normalizedRoomCode] ?? const <OnlinePlayerAction>[],
+    );
     yield* controller.stream;
   }
 
