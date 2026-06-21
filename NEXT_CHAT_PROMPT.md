@@ -1,50 +1,59 @@
 Start from:
 - README.md
 - AGENTS.md
-- docs/PR19_HANDOFF.md
+- docs/PR32_HANDOFF.md
 - NEXT_CHAT_PROMPT.md
 
-Continue Anime Deduction Tower from the saved PR19 state.
+Continue Anime Deduction Tower from saved PR32 state.
 
 Before coding, read:
-- README.md
-- AGENTS.md
 - docs/ARCHITECTURE.md
-- docs/DATA_MODEL.md
 - docs/ROADMAP.md
-- docs/PR19_HANDOFF.md
-- NEXT_CHAT_PROMPT.md
+- docs/DATA_MODEL.md
 - skills/flutter-architecture/SKILL.md
 - skills/testing/SKILL.md
 - skills/ui-ux-mobile/SKILL.md
 
-Current online multiplayer state now includes:
-- mock preview room create/join/readiness flow
-- Firebase-backed realtime room create/join/watch/readiness flow
-- explicit remote contracts for bootstrap/public/private/action state
-- pure Dart remote bootstrap service
-- deterministic preview seed service
-- Firebase bootstrap persistence for:
-  - `online_rooms/{roomCode}/match_bootstrap/current`
-  - `online_rooms/{roomCode}/match_public/current`
-  - `online_rooms/{roomCode}/private_player_state/{participantId}`
-- Firebase watch/read support for those persisted docs through the datasource/repository boundary
-- reconnect-aware room-to-match handoff UX in the online lobby screen
-- read-only remote match screen-state hydration from persisted bootstrap/public/private docs plus local catalog data
-- mock mode still preserved when Firebase config is missing
+Current saved state:
+- local no-lives gameplay is working
+- protected one-device multiplayer secrecy is working
+- AI mode is working with easy/standard/hard behavior
+- online room foundation is working with mock + Firebase-backed room create/join/watch/readiness
+- explicit remote contracts exist for bootstrap/public/private/action
+- Firestore bootstrap docs are persisted and watched
+- reconnect-aware handoff UX exists
+- read-only remote screen-state hydration exists
+- queued online player action submission/watch exists
+- pure Dart queued-action resolver/application flow exists
+- current official online action-resolution owner is still the host client by default
+- Firebase backend mode now has a dedicated backend-authority service path
+  - datasource-owned queue draining
+  - preserved `backendService` metadata
+  - preserved canonical public event persistence
+- resolved action docs preserve:
+  - resolvedByParticipantId
+  - resolvedByUserId
+  - resolutionSource
+- canonical public online event docs now persist for future remote timeline/result UI
+- room participants preserve userId
+- runtime catalog: 1276 characters
+- tags: 40
+- categories: 40
 
 Important rules:
 - keep game logic pure Dart
-- keep online room/lobby/backend transport separate from official match-rule resolution
+- keep online transport separate from official match-rule resolution
 - keep bootstrap/public/private/action contracts explicit
-- keep read-only remote hydration separate from future action resolution
-- keep Firebase runtime init guarded so mock mode still works without config
-- keep reconnect/handoff UI read-only with respect to bootstrap assembly
+- keep read-only hydration separate from action resolution
+- keep queued action transport separate from resolution
+- keep action resolution pure Dart where possible
+- keep authority/resolver metadata explicit
+- keep Firebase focused on persistence/watch/concurrency guards, not rule ownership
+- keep widgets thin
 - keep Flame presentation-only
-- add or update tests when logic changes
-- if JSON assets change while the app is already running, remind that a full app restart is needed
+- add/update tests when logic changes
+- if JSON assets change, remind that a full app restart is needed
 
-Best next scope:
-1. add queued online player action submission through the datasource/repository boundary
-2. add read/watch support for queued action state
-3. keep official action resolution outside widgets and outside Firebase transport glue
+Best next step:
+- move the dedicated backend-authority service into a true Cloud Function / server-owned runtime while preserving current explicit action metadata and canonical public event shape
+- or add an explicit backend resolution lease/claim flow before that server migration

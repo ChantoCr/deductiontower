@@ -48,4 +48,38 @@ class RemoteMatchPublicState {
 
     return null;
   }
+
+  RemoteMatchPublicState copyWith({
+    MatchStatus? status,
+    String? currentTurnParticipantId,
+    int? turnNumber,
+    List<String>? sharedCharacterPoolIds,
+    List<RemoteMatchPublicPlayerState>? playerStates,
+    String? winnerParticipantId,
+    MatchEndReason? endReason,
+    String? lastResolvedActionId,
+    int? matchVersion,
+    DateTime? updatedAt,
+    bool clearWinnerParticipantId = false,
+    bool clearEndReason = false,
+  }) {
+    return RemoteMatchPublicState(
+      matchId: matchId,
+      roomCode: roomCode,
+      status: status ?? this.status,
+      currentTurnParticipantId:
+          currentTurnParticipantId ?? this.currentTurnParticipantId,
+      turnNumber: turnNumber ?? this.turnNumber,
+      sharedCharacterPoolIds: sharedCharacterPoolIds ?? this.sharedCharacterPoolIds,
+      playerStates: playerStates ?? this.playerStates,
+      winnerParticipantId: clearWinnerParticipantId
+          ? null
+          : winnerParticipantId ?? this.winnerParticipantId,
+      endReason: clearEndReason ? null : endReason ?? this.endReason,
+      lastResolvedActionId: lastResolvedActionId ?? this.lastResolvedActionId,
+      matchVersion: matchVersion ?? this.matchVersion,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

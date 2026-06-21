@@ -6,7 +6,9 @@ import 'package:anime_deduction_tower/features/online_multiplayer/data/datasourc
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_participant.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_action_resolution.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_public_event.dart';
 
 class MockOnlineRoomDataSource implements OnlineRoomDataSource {
   MockOnlineRoomDataSource({Random? random}) : _random = random ?? Random();
@@ -18,8 +20,11 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
   final Map<String, OnlineRoomSession> _realtimeSessions = {};
   final Map<String, StreamController<OnlineRoomSession>> _roomControllers = {};
   final Map<String, List<OnlinePlayerAction>> _roomActions = {};
-  final Map<String, StreamController<List<OnlinePlayerAction>>> _actionControllers =
-      {};
+  final Map<String, StreamController<List<OnlinePlayerAction>>>
+      _actionControllers = {};
+  final Map<String, List<RemoteMatchPublicEvent>> _roomPublicEvents = {};
+  final Map<String, StreamController<List<RemoteMatchPublicEvent>>>
+      _publicEventControllers = {};
 
   @override
   String normalizeRoomCode(String value) {
@@ -40,6 +45,7 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
       role: OnlineRoomParticipantRole.host,
       connectionState: OnlineRoomParticipantConnectionState.localPreview,
       isLocalPlayer: true,
+      userId: 'mock_user_host',
     );
 
     return OnlineRoomSession(
@@ -81,6 +87,7 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
       role: OnlineRoomParticipantRole.host,
       connectionState: OnlineRoomParticipantConnectionState.connected,
       isLocalPlayer: false,
+      userId: 'mock_user_host',
     );
     final guest = OnlineRoomParticipant(
       id: IdGenerator.next('online_guest'),
@@ -88,6 +95,7 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
       role: OnlineRoomParticipantRole.guest,
       connectionState: OnlineRoomParticipantConnectionState.localPreview,
       isLocalPlayer: true,
+      userId: 'mock_user_guest',
     );
 
     return OnlineRoomSession(
@@ -111,7 +119,9 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
     }
 
     if (existingSession.hasGuest) {
-      throw StateError('Mock realtime room $normalizedRoomCode is already full.');
+      throw StateError(
+        'Mock realtime room $normalizedRoomCode is already full.',
+      );
     }
 
     final guest = OnlineRoomParticipant(
@@ -120,6 +130,7 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
       role: OnlineRoomParticipantRole.guest,
       connectionState: OnlineRoomParticipantConnectionState.connected,
       isLocalPlayer: true,
+      userId: 'mock_user_guest',
     );
 
     final updatedHostParticipants = existingSession.participants
@@ -184,6 +195,7 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
       role: OnlineRoomParticipantRole.guest,
       connectionState: OnlineRoomParticipantConnectionState.connected,
       isLocalPlayer: false,
+      userId: 'mock_user_guest',
     );
 
     final updatedHostParticipants = session.participants.map((participant) {
@@ -218,7 +230,9 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
     }
 
     if (targetParticipant.first.isLocalPlayer) {
-      throw StateError('Use local readiness updates for the local participant.');
+      throw StateError(
+        'Use local readiness updates for the local participant.',
+      );
     }
 
     return _updateParticipantReady(
@@ -253,12 +267,22 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
   }
 
   @override
+  Future<RemoteMatchHandoffSnapshot?> readMatchHandoff({
+    required String roomCode,
+    required String participantId,
+  }) async {
+    return null;
+  }
+
+  @override
   Future<OnlinePlayerAction> submitPlayerAction({
     required String roomCode,
     required OnlinePlayerAction action,
   }) async {
     final normalizedRoomCode = normalizeRoomCode(roomCode);
-    final actions = [...(_roomActions[normalizedRoomCode] ?? const <OnlinePlayerAction>[])];
+    final actions = [
+      ...(_roomActions[normalizedRoomCode] ?? const <OnlinePlayerAction>[]),
+    ];
     actions.insert(0, action);
     _roomActions[normalizedRoomCode] = actions;
 
@@ -282,6 +306,68 @@ class MockOnlineRoomDataSource implements OnlineRoomDataSource {
       _roomActions[normalizedRoomCode] ?? const <OnlinePlayerAction>[],
     );
     yield* controller.stream;
+  }
+
+  @override
+  Stream<List<RemoteMatchPublicEvent>> watchPublicEvents(
+    String roomCode,
+  ) async* {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final controller = _publicEventControllers.putIfAbsent(
+      normalizedRoomCode,
+      () => StreamController<List<RemoteMatchPublicEvent>>.broadcast(),
+    );
+
+    yield List<RemoteMatchPublicEvent>.unmodifiable(
+      _roomPublicEvents[normalizedRoomCode] ?? const <RemoteMatchPublicEvent>[],
+    );
+    yield* controller.stream;
+  }
+
+  @override
+  Future<void> persistActionResolution({
+    required String roomCode,
+    required RemoteMatchActionResolution resolution,
+  }) async {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final actions = [
+      ...(_roomActions[normalizedRoomCode] ?? const <OnlinePlayerAction>[]),
+    ];
+    final index = actions.indexWhere(
+      (action) => action.actionId == resolution.resolvedAction.actionId,
+    );
+    if (index == -1) {
+      throw StateError(
+        'Mock queued action ${resolution.resolvedAction.actionId} was not found.',
+      );
+    }
+
+    actions[index] = resolution.resolvedAction;
+    actions.sort((left, right) => right.createdAt.compareTo(left.createdAt));
+    _roomActions[normalizedRoomCode] = actions;
+
+    final controller = _actionControllers.putIfAbsent(
+      normalizedRoomCode,
+      () => StreamController<List<OnlinePlayerAction>>.broadcast(),
+    );
+    controller.add(List<OnlinePlayerAction>.unmodifiable(actions));
+
+    final publicEvents = [
+      ...(_roomPublicEvents[normalizedRoomCode] ??
+          const <RemoteMatchPublicEvent>[]),
+      resolution.publicEvent,
+    ]..sort(
+        (left, right) => right.publishedAt.compareTo(left.publishedAt),
+      );
+    _roomPublicEvents[normalizedRoomCode] = publicEvents;
+
+    final publicEventController = _publicEventControllers.putIfAbsent(
+      normalizedRoomCode,
+      () => StreamController<List<RemoteMatchPublicEvent>>.broadcast(),
+    );
+    publicEventController.add(
+      List<RemoteMatchPublicEvent>.unmodifiable(publicEvents),
+    );
   }
 
   OnlineRoomSession _updateParticipantReady({

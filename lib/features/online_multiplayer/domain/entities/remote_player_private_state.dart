@@ -25,4 +25,28 @@ class RemotePlayerPrivateState {
 
   bool get hasPrivateHint =>
       lastPrivateHintText != null && lastPrivateHintText!.trim().isNotEmpty;
+
+  RemotePlayerPrivateState copyWith({
+    String? secretTraitId,
+    bool? secretTraitLocked,
+    bool? hasViewedSecret,
+    int? hintsUsed,
+    String? lastPrivateHintText,
+    DateTime? updatedAt,
+    bool clearLastPrivateHintText = false,
+  }) {
+    return RemotePlayerPrivateState(
+      participantId: participantId,
+      userId: userId,
+      secretTraitId: secretTraitId ?? this.secretTraitId,
+      secretTraitLocked: secretTraitLocked ?? this.secretTraitLocked,
+      hasViewedSecret: hasViewedSecret ?? this.hasViewedSecret,
+      hintsUsed: hintsUsed ?? this.hintsUsed,
+      lastPrivateHintText: clearLastPrivateHintText
+          ? null
+          : lastPrivateHintText ?? this.lastPrivateHintText,
+      selectedAt: selectedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

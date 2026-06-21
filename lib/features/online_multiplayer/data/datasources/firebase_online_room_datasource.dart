@@ -2,19 +2,25 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:anime_deduction_tower/app/firebase_app_initializer.dart';
+import 'package:anime_deduction_tower/core/enums/online_player_action_status.dart';
 import 'package:anime_deduction_tower/core/utils/id_generator.dart';
 import 'package:anime_deduction_tower/features/characters/domain/entities/character.dart';
 import 'package:anime_deduction_tower/features/game/domain/entities/trait_category.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/online_room_datasource.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/models/online_player_action_model.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_match_bootstrap_payload_model.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_match_public_event_model.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_match_public_state_model.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/models/remote_player_private_state_model.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/services/remote_match_backend_authority_service.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/data/services/remote_match_firestore_action_resolution_bundle_builder.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/services/remote_match_firestore_bundle_builder.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_participant.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_action_resolution.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_public_event.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_bootstrap_service.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_preview_seed_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,16 +36,32 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
     RemoteMatchBootstrapService? bootstrapService,
     RemoteMatchPreviewSeedService? previewSeedService,
     RemoteMatchFirestoreBundleBuilder? firestoreBundleBuilder,
+    RemoteMatchFirestoreActionResolutionBundleBuilder?
+        actionResolutionBundleBuilder,
+    RemoteMatchBackendAuthorityService? backendAuthorityService,
+    bool enableBackendAuthorityResolution = false,
     int hintsPerPlayer = 2,
   })  : _loadValidCategories = loadValidCategories,
         _loadCharacters = loadCharacters,
         _auth = auth ?? FirebaseAuth.instance,
         _firestore = firestore ?? FirebaseFirestore.instance,
         _random = random ?? Random(),
-        _bootstrapService = bootstrapService ?? const RemoteMatchBootstrapService(),
-        _previewSeedService = previewSeedService ?? const RemoteMatchPreviewSeedService(),
-        _firestoreBundleBuilder = firestoreBundleBuilder ??
-            const RemoteMatchFirestoreBundleBuilder(),
+        _bootstrapService =
+            bootstrapService ?? const RemoteMatchBootstrapService(),
+        _previewSeedService =
+            previewSeedService ?? const RemoteMatchPreviewSeedService(),
+        _firestoreBundleBuilder =
+            firestoreBundleBuilder ?? const RemoteMatchFirestoreBundleBuilder(),
+        _actionResolutionBundleBuilder = actionResolutionBundleBuilder ??
+            const RemoteMatchFirestoreActionResolutionBundleBuilder(),
+        _backendAuthorityService = enableBackendAuthorityResolution
+            ? (backendAuthorityService ??
+                RemoteMatchBackendAuthorityService(
+                  loadValidCategories: loadValidCategories,
+                  loadCharacters: loadCharacters,
+                ))
+            : null,
+        _enableBackendAuthorityResolution = enableBackendAuthorityResolution,
         _hintsPerPlayer = hintsPerPlayer;
 
   static const roomCodeLength = 6;
@@ -54,6 +76,11 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
   final RemoteMatchBootstrapService _bootstrapService;
   final RemoteMatchPreviewSeedService _previewSeedService;
   final RemoteMatchFirestoreBundleBuilder _firestoreBundleBuilder;
+  final RemoteMatchFirestoreActionResolutionBundleBuilder
+      _actionResolutionBundleBuilder;
+  final RemoteMatchBackendAuthorityService? _backendAuthorityService;
+  final bool _enableBackendAuthorityResolution;
+  final Set<String> _roomsWithBackendResolutionInFlight = <String>{};
   final int _hintsPerPlayer;
 
   CollectionReference<Map<String, dynamic>> get _roomsCollection =>
@@ -259,7 +286,8 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
       await _ensureSignedIn();
 
       Map<String, dynamic>? roomData;
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> participantDocs = const [];
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> participantDocs =
+          const [];
 
       void emitIfReady() {
         if (roomData == null || participantDocs.isEmpty) {
@@ -294,7 +322,8 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
         onError: controller.addError,
       );
 
-      final participantSub = roomRef.collection('participants').snapshots().listen(
+      final participantSub =
+          roomRef.collection('participants').snapshots().listen(
         (snapshot) {
           participantDocs = snapshot.docs;
           emitIfReady();
@@ -335,33 +364,14 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
           return;
         }
 
-        if (bootstrapData == null &&
-            publicStateData == null &&
-            privateStateData == null) {
-          controller.add(null);
-          return;
-        }
-
         try {
           controller.add(
-            RemoteMatchHandoffSnapshot(
+            _mapHandoffSnapshot(
               roomCode: normalizedRoomCode,
-              localParticipantId: participantId,
-              bootstrapPayload: bootstrapData == null
-                  ? null
-                  : RemoteMatchBootstrapPayloadModel.fromJson(
-                      bootstrapData!,
-                    ).toEntity(),
-              publicState: publicStateData == null
-                  ? null
-                  : RemoteMatchPublicStateModel.fromJson(
-                      publicStateData!,
-                    ).toEntity(),
-              privateState: privateStateData == null
-                  ? null
-                  : RemotePlayerPrivateStateModel.fromJson(
-                      privateStateData!,
-                    ).toEntity(),
+              participantId: participantId,
+              bootstrapData: bootstrapData,
+              publicStateData: publicStateData,
+              privateStateData: privateStateData,
             ),
           );
         } catch (error, stackTrace) {
@@ -417,6 +427,38 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
   }
 
   @override
+  Future<RemoteMatchHandoffSnapshot?> readMatchHandoff({
+    required String roomCode,
+    required String participantId,
+  }) async {
+    await FirebaseAppInitializer.ensureInitializedForOnlineBackend();
+    await _ensureSignedIn();
+
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final roomRef = _roomsCollection.doc(normalizedRoomCode);
+    final bootstrapFuture =
+        roomRef.collection('match_bootstrap').doc(_currentDocumentId).get();
+    final publicFuture =
+        roomRef.collection('match_public').doc(_currentDocumentId).get();
+    final privateFuture =
+        roomRef.collection('private_player_state').doc(participantId).get();
+
+    final results =
+        await Future.wait([bootstrapFuture, publicFuture, privateFuture]);
+    final bootstrapDoc = results[0];
+    final publicDoc = results[1];
+    final privateDoc = results[2];
+
+    return _mapHandoffSnapshot(
+      roomCode: normalizedRoomCode,
+      participantId: participantId,
+      bootstrapData: bootstrapDoc.data(),
+      publicStateData: publicDoc.data(),
+      privateStateData: privateDoc.data(),
+    );
+  }
+
+  @override
   Future<OnlinePlayerAction> submitPlayerAction({
     required String roomCode,
     required OnlinePlayerAction action,
@@ -427,7 +469,9 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
     final roomRef = _roomsCollection.doc(normalizedRoomCode);
 
     if (action.submittedByUserId != user.uid) {
-      throw StateError('Queued action user id does not match the signed-in Firebase user.');
+      throw StateError(
+        'Queued action user id does not match the signed-in Firebase user.',
+      );
     }
 
     final publicMatchDoc =
@@ -439,7 +483,12 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
     }
 
     final model = OnlinePlayerActionModel.fromEntity(action);
-    await roomRef.collection('player_actions').doc(action.actionId).set(model.toJson());
+    await roomRef
+        .collection('player_actions')
+        .doc(action.actionId)
+        .set(model.toJson());
+
+    _scheduleBackendAuthorityResolution(normalizedRoomCode);
     return action;
   }
 
@@ -456,10 +505,21 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
         (snapshot) {
           try {
             final actions = snapshot.docs
-                .map((doc) => OnlinePlayerActionModel.fromJson(doc.data()).toEntity())
+                .map(
+                  (doc) =>
+                      OnlinePlayerActionModel.fromJson(doc.data()).toEntity(),
+                )
                 .toList()
-              ..sort((left, right) => right.createdAt.compareTo(left.createdAt));
+              ..sort(
+                (left, right) => right.createdAt.compareTo(left.createdAt),
+              );
             controller.add(actions);
+
+            if (actions.any(
+              (action) => action.status == OnlinePlayerActionStatus.pending,
+            )) {
+              _scheduleBackendAuthorityResolution(normalizedRoomCode);
+            }
           } catch (error, stackTrace) {
             controller.addError(error, stackTrace);
           }
@@ -471,6 +531,204 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
         await actionSub.cancel();
       };
     });
+  }
+
+  @override
+  Stream<List<RemoteMatchPublicEvent>> watchPublicEvents(String roomCode) {
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final roomRef = _roomsCollection.doc(normalizedRoomCode);
+
+    return Stream.multi((controller) async {
+      await FirebaseAppInitializer.ensureInitializedForOnlineBackend();
+      await _ensureSignedIn();
+
+      final eventSub =
+          roomRef.collection('match_public_events').snapshots().listen(
+        (snapshot) {
+          try {
+            final events = snapshot.docs
+                .map(
+                  (doc) => RemoteMatchPublicEventModel.fromJson(doc.data())
+                      .toEntity(),
+                )
+                .toList()
+              ..sort(
+                (left, right) => right.publishedAt.compareTo(left.publishedAt),
+              );
+            controller.add(events);
+          } catch (error, stackTrace) {
+            controller.addError(error, stackTrace);
+          }
+        },
+        onError: controller.addError,
+      );
+
+      controller.onCancel = () async {
+        await eventSub.cancel();
+      };
+    });
+  }
+
+  @override
+  Future<void> persistActionResolution({
+    required String roomCode,
+    required RemoteMatchActionResolution resolution,
+  }) async {
+    await FirebaseAppInitializer.ensureInitializedForOnlineBackend();
+    await _ensureSignedIn();
+
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final roomRef = _roomsCollection.doc(normalizedRoomCode);
+    final publicRef =
+        roomRef.collection('match_public').doc(_currentDocumentId);
+    final actionRef = roomRef
+        .collection('player_actions')
+        .doc(resolution.resolvedAction.actionId);
+    final bundle = _actionResolutionBundleBuilder.build(resolution);
+    final publicEventRef =
+        roomRef.collection('match_public_events').doc(bundle.publicEventId);
+
+    await _firestore.runTransaction((transaction) async {
+      final publicSnapshot = await transaction.get(publicRef);
+      if (!publicSnapshot.exists) {
+        throw StateError(
+          'Remote public match state is missing for room $normalizedRoomCode.',
+        );
+      }
+
+      final currentPublicState = RemoteMatchPublicStateModel.fromJson(
+        publicSnapshot.data() ?? const {},
+      ).toEntity();
+      if (currentPublicState.matchVersion != resolution.baseMatchVersion) {
+        throw StateError(
+          'Remote public match version advanced before action ${resolution.resolvedAction.actionId} could be persisted.',
+        );
+      }
+
+      final actionSnapshot = await transaction.get(actionRef);
+      if (!actionSnapshot.exists) {
+        throw StateError(
+          'Queued action ${resolution.resolvedAction.actionId} no longer exists in room $normalizedRoomCode.',
+        );
+      }
+
+      final currentAction = OnlinePlayerActionModel.fromJson(
+        actionSnapshot.data() ?? const {},
+      ).toEntity();
+      if (currentAction.status != OnlinePlayerActionStatus.pending) {
+        throw StateError(
+          'Queued action ${resolution.resolvedAction.actionId} was already resolved remotely.',
+        );
+      }
+
+      transaction.set(publicRef, bundle.publicMatchDocument);
+      transaction.set(actionRef, bundle.actionDocument);
+      transaction.set(publicEventRef, bundle.publicEventDocument);
+
+      if (bundle.privatePlayerDocument != null &&
+          bundle.privateParticipantId != null) {
+        transaction.set(
+          roomRef
+              .collection('private_player_state')
+              .doc(bundle.privateParticipantId),
+          bundle.privatePlayerDocument!,
+        );
+      }
+    });
+  }
+
+  void _scheduleBackendAuthorityResolution(String roomCode) {
+    if (!_enableBackendAuthorityResolution || _backendAuthorityService == null) {
+      return;
+    }
+
+    if (_roomsWithBackendResolutionInFlight.contains(roomCode)) {
+      return;
+    }
+
+    _roomsWithBackendResolutionInFlight.add(roomCode);
+    unawaited(_drainBackendAuthorityQueue(roomCode));
+  }
+
+  Future<void> _drainBackendAuthorityQueue(String roomCode) async {
+    var shouldRetry = false;
+
+    try {
+      await _backendAuthorityService!.drainPendingActions(
+        roomCode: roomCode,
+        store: _FirebaseBackendAuthorityStore(dataSource: this),
+      );
+    } on StateError catch (error) {
+      shouldRetry = _isIgnorableBackendAuthorityConflict(error);
+    } finally {
+      _roomsWithBackendResolutionInFlight.remove(roomCode);
+    }
+
+    if (shouldRetry || await _hasPendingQueuedActions(roomCode)) {
+      _scheduleBackendAuthorityResolution(roomCode);
+    }
+  }
+
+  Future<bool> _hasPendingQueuedActions(String roomCode) async {
+    final pendingAction = await _readOldestPendingAction(roomCode);
+    return pendingAction != null;
+  }
+
+  Future<OnlinePlayerAction?> _readOldestPendingAction(String roomCode) async {
+    await FirebaseAppInitializer.ensureInitializedForOnlineBackend();
+    await _ensureSignedIn();
+
+    final normalizedRoomCode = normalizeRoomCode(roomCode);
+    final snapshot = await _roomsCollection
+        .doc(normalizedRoomCode)
+        .collection('player_actions')
+        .get();
+    final pendingActions = snapshot.docs
+        .map((doc) => OnlinePlayerActionModel.fromJson(doc.data()).toEntity())
+        .where((action) => action.status == OnlinePlayerActionStatus.pending)
+        .toList()
+      ..sort((left, right) => left.createdAt.compareTo(right.createdAt));
+
+    if (pendingActions.isEmpty) {
+      return null;
+    }
+
+    return pendingActions.first;
+  }
+
+  bool _isIgnorableBackendAuthorityConflict(StateError error) {
+    final message = error.toString();
+    return message.contains('advanced before action') ||
+        message.contains('already resolved remotely') ||
+        message.contains('no longer exists');
+  }
+
+  RemoteMatchHandoffSnapshot? _mapHandoffSnapshot({
+    required String roomCode,
+    required String participantId,
+    required Map<String, dynamic>? bootstrapData,
+    required Map<String, dynamic>? publicStateData,
+    required Map<String, dynamic>? privateStateData,
+  }) {
+    if (bootstrapData == null &&
+        publicStateData == null &&
+        privateStateData == null) {
+      return null;
+    }
+
+    return RemoteMatchHandoffSnapshot(
+      roomCode: roomCode,
+      localParticipantId: participantId,
+      bootstrapPayload: bootstrapData == null
+          ? null
+          : RemoteMatchBootstrapPayloadModel.fromJson(bootstrapData).toEntity(),
+      publicState: publicStateData == null
+          ? null
+          : RemoteMatchPublicStateModel.fromJson(publicStateData).toEntity(),
+      privateState: privateStateData == null
+          ? null
+          : RemotePlayerPrivateStateModel.fromJson(privateStateData).toEntity(),
+    );
   }
 
   Future<void> _persistBootstrapDocumentsIfNeeded(
@@ -544,7 +802,8 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
 
     for (final participantDoc in participantsSnapshot.docs) {
       final data = participantDoc.data();
-      final participantId = data['participantId'] as String? ?? participantDoc.id;
+      final participantId =
+          data['participantId'] as String? ?? participantDoc.id;
       final userId = (data['userId'] as String?)?.trim();
       if (userId != null && userId.isNotEmpty) {
         participantUserIds[participantId] = userId;
@@ -605,11 +864,13 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
           data['connectionState'] as String?,
         ),
         isLocalPlayer: currentUserId != null && userId == currentUserId,
+        userId: userId,
         isReady: data['isReady'] as bool? ?? false,
       );
     }).toList();
 
-    final localParticipant = participants.where((participant) => participant.isLocalPlayer);
+    final localParticipant =
+        participants.where((participant) => participant.isLocalPlayer);
     if (localParticipant.isEmpty) {
       throw StateError(
         'The signed-in Firebase user is not part of room $roomCode.',
@@ -688,5 +949,40 @@ class FirebaseOnlineRoomDataSource implements OnlineRoomDataSource {
     }
 
     return buffer.toString();
+  }
+}
+
+class _FirebaseBackendAuthorityStore
+    implements RemoteMatchBackendAuthorityStore {
+  const _FirebaseBackendAuthorityStore({required FirebaseOnlineRoomDataSource dataSource})
+      : _dataSource = dataSource;
+
+  final FirebaseOnlineRoomDataSource _dataSource;
+
+  @override
+  Future<OnlinePlayerAction?> readOldestPendingAction(String roomCode) {
+    return _dataSource._readOldestPendingAction(roomCode);
+  }
+
+  @override
+  Future<RemoteMatchHandoffSnapshot?> readMatchHandoff({
+    required String roomCode,
+    required String participantId,
+  }) {
+    return _dataSource.readMatchHandoff(
+      roomCode: roomCode,
+      participantId: participantId,
+    );
+  }
+
+  @override
+  Future<void> persistActionResolution({
+    required String roomCode,
+    required RemoteMatchActionResolution resolution,
+  }) {
+    return _dataSource.persistActionResolution(
+      roomCode: roomCode,
+      resolution: resolution,
+    );
   }
 }

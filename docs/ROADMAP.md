@@ -135,6 +135,12 @@
 - Saved backend step: Firestore bootstrap persistence for `match_bootstrap/current`, `match_public/current`, and per-player private bootstrap docs once a room reaches `readyToSync`
 - Saved backend step: live read/watch of persisted bootstrap/public/private docs plus reconnect-aware room-to-match handoff UX in the online lobby screen
 - Saved backend step: read-only remote match screen-state loader that hydrates a gameplay-ready online match model from persisted bootstrap/public/private docs and local catalog data
+- Saved backend step: queued online player action submission and live action-queue watch flow through the repository/datasource boundary, with lobby-side debug UX and no in-widget rule resolution
+- Saved backend step: pure Dart remote queued-action resolver/application layer that reads persisted bootstrap/public/private state, applies actions through the existing game engine, and persists public/private/action resolution updates back through the repository boundary
+- Saved backend step: explicit temporary action-resolution authority policy with host-only client ownership, plus gated resolver controls for non-authoritative clients
+- Saved backend step: dedicated backend-authority service flow for Firebase backend mode so pending actions can auto-resolve with `backendService` metadata and canonical public events while preserving current explicit action metadata
+- Saved backend step: persisted queued-action resolver metadata through `resolvedByParticipantId`, `resolvedByUserId`, and `resolutionSource` on resolved action docs
+- Saved backend step: canonical public online event contract persisted during queued-action resolution so future remote match/result timelines can watch explicit public event docs without changing existing action metadata
 
 ---
 

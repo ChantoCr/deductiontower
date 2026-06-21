@@ -8,17 +8,22 @@ import 'package:anime_deduction_tower/features/online_multiplayer/data/datasourc
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/supabase_online_room_preview_datasource.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/repositories/online_room_repository_impl.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/services/remote_match_firestore_bundle_builder.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_action_resolution_authority.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_bootstrap_result.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_public_event.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_screen_state.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/repositories/online_room_repository.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/online_action_resolution_policy.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_action_factory.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_action_resolver.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_bootstrap_service.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_preview_seed_service.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/services/remote_match_screen_state_loader.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/controllers/online_action_queue_controller.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/presentation/controllers/online_action_resolution_controller.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/controllers/online_lobby_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,15 +43,20 @@ final onlineRoomDataSourceProvider = Provider<OnlineRoomDataSource>((ref) {
         remoteMatchPreviewSeedServiceProvider,
       );
       final hintsPerPlayer = ref.watch(onlinePreviewHintsPerPlayerProvider);
+      final enableBackendAuthorityResolution = ref.watch(
+        onlineUseBackendResolutionAuthorityProvider,
+      );
       return FirebaseOnlineRoomDataSource(
         loadValidCategories: () async {
-          final validation = await ref.read(validatedTraitCatalogProvider.future);
+          final validation =
+              await ref.read(validatedTraitCatalogProvider.future);
           return validation.validCategories;
         },
         loadCharacters: () => ref.read(charactersProvider.future),
         bootstrapService: bootstrapService,
         previewSeedService: previewSeedService,
         firestoreBundleBuilder: const RemoteMatchFirestoreBundleBuilder(),
+        enableBackendAuthorityResolution: enableBackendAuthorityResolution,
         hintsPerPlayer: hintsPerPlayer,
       );
     case OnlineBackendTarget.supabasePreview:
@@ -81,10 +91,66 @@ final remoteMatchActionFactoryProvider = Provider<RemoteMatchActionFactory>(
   (ref) => const RemoteMatchActionFactory(),
 );
 
-final onlineActionQueueControllerProvider = Provider<OnlineActionQueueController>(
+final remoteMatchActionResolverProvider = Provider<RemoteMatchActionResolver>(
+  (ref) => const RemoteMatchActionResolver(),
+);
+
+final onlineUseBackendResolutionAuthorityProvider = Provider<bool>(
+  (ref) => false,
+);
+
+final onlineActionResolutionAuthorityProvider =
+    Provider<OnlineActionResolutionAuthority>((ref) {
+  final backendTarget = ref.watch(onlineBackendTargetProvider);
+  final useBackendAuthority = ref.watch(
+    onlineUseBackendResolutionAuthorityProvider,
+  );
+
+  if (useBackendAuthority &&
+      backendTarget == OnlineBackendTarget.firebaseBackend) {
+    return OnlineActionResolutionAuthority.backendService;
+  }
+
+  return OnlineActionResolutionAuthority.hostClient;
+});
+
+final onlineActionResolutionPolicyProvider =
+    Provider<OnlineActionResolutionPolicy>(
+  (ref) => const OnlineActionResolutionPolicy(),
+);
+
+final onlineCanResolveQueuedActionsProvider = Provider<bool>((ref) {
+  final session = ref.watch(
+    onlineLobbyControllerProvider.select((state) => state.activeSession),
+  );
+  return ref
+      .watch(onlineActionResolutionPolicyProvider)
+      .canLocalClientResolveQueuedActions(
+        authority: ref.watch(onlineActionResolutionAuthorityProvider),
+        session: session,
+      );
+});
+
+final onlineActionQueueControllerProvider =
+    Provider<OnlineActionQueueController>(
   (ref) => OnlineActionQueueController(
     repository: ref.watch(onlineRoomRepositoryProvider),
     actionFactory: ref.watch(remoteMatchActionFactoryProvider),
+  ),
+);
+
+final onlineActionResolutionControllerProvider =
+    Provider<OnlineActionResolutionController>(
+  (ref) => OnlineActionResolutionController(
+    repository: ref.watch(onlineRoomRepositoryProvider),
+    actionResolver: ref.watch(remoteMatchActionResolverProvider),
+    resolutionPolicy: ref.watch(onlineActionResolutionPolicyProvider),
+    resolutionAuthority: ref.watch(onlineActionResolutionAuthorityProvider),
+    loadValidCategories: () async {
+      final validation = await ref.read(validatedTraitCatalogProvider.future);
+      return validation.validCategories;
+    },
+    loadCharacters: () => ref.read(charactersProvider.future),
   ),
 );
 
@@ -104,7 +170,8 @@ final remoteMatchBootstrapPreviewProvider =
     return null;
   }
 
-  if (session.phase != OnlineRoomPhase.readyToSync || !session.isEveryoneReady) {
+  if (session.phase != OnlineRoomPhase.readyToSync ||
+      !session.isEveryoneReady) {
     return null;
   }
 
@@ -114,10 +181,11 @@ final remoteMatchBootstrapPreviewProvider =
   }
 
   final characters = await ref.watch(charactersProvider.future);
-  final playerSeeds = ref.watch(remoteMatchPreviewSeedServiceProvider).buildSeeds(
-        room: session,
-        validCategories: validation.validCategories,
-      );
+  final playerSeeds =
+      ref.watch(remoteMatchPreviewSeedServiceProvider).buildSeeds(
+            room: session,
+            validCategories: validation.validCategories,
+          );
 
   return ref.watch(remoteMatchBootstrapServiceProvider).build(
         room: session,
@@ -158,27 +226,31 @@ final remoteMatchScreenStateProvider =
 
   final loader = ref.watch(remoteMatchScreenStateLoaderProvider);
 
-  return ref.watch(onlineRoomRepositoryProvider).watchMatchHandoff(
+  return ref
+      .watch(onlineRoomRepositoryProvider)
+      .watchMatchHandoff(
         roomCode: session.roomCode,
         participantId: session.localParticipantId,
-      ).asyncMap((handoff) async {
-        if (handoff == null || !handoff.isComplete) {
-          return null;
-        }
+      )
+      .asyncMap((handoff) async {
+    if (handoff == null || !handoff.isComplete) {
+      return null;
+    }
 
-        final validation = await ref.read(validatedTraitCatalogProvider.future);
-        final categories = validation.validCategories;
-        final characters = await ref.read(charactersProvider.future);
+    final validation = await ref.read(validatedTraitCatalogProvider.future);
+    final categories = validation.validCategories;
+    final characters = await ref.read(charactersProvider.future);
 
-        return loader.load(
-          handoff: handoff,
-          categories: categories,
-          characters: characters,
-        );
-      });
+    return loader.load(
+      handoff: handoff,
+      categories: categories,
+      characters: characters,
+    );
+  });
 });
 
-final onlinePlayerActionsProvider = StreamProvider<List<OnlinePlayerAction>>((ref) {
+final onlinePlayerActionsProvider =
+    StreamProvider<List<OnlinePlayerAction>>((ref) {
   final backendTarget = ref.watch(onlineBackendTargetProvider);
   final session = ref.watch(
     onlineLobbyControllerProvider.select((state) => state.activeSession),
@@ -189,6 +261,22 @@ final onlinePlayerActionsProvider = StreamProvider<List<OnlinePlayerAction>>((re
   }
 
   return ref.watch(onlineRoomRepositoryProvider).watchPlayerActions(
+        session.roomCode,
+      );
+});
+
+final onlinePublicEventsProvider =
+    StreamProvider<List<RemoteMatchPublicEvent>>((ref) {
+  final backendTarget = ref.watch(onlineBackendTargetProvider);
+  final session = ref.watch(
+    onlineLobbyControllerProvider.select((state) => state.activeSession),
+  );
+
+  if (backendTarget != OnlineBackendTarget.firebaseBackend || session == null) {
+    return Stream.value(const <RemoteMatchPublicEvent>[]);
+  }
+
+  return ref.watch(onlineRoomRepositoryProvider).watchPublicEvents(
         session.roomCode,
       );
 });

@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:anime_deduction_tower/features/online_multiplayer/data/config/online_backend_target.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_action_resolution_authority.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_screen_state.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/providers/online_multiplayer_providers.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/widgets/online_bootstrap_preview_card.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/presentation/widgets/online_public_action_timeline_card.dart';
 import 'package:anime_deduction_tower/shared/styles/app_colors.dart';
 import 'package:anime_deduction_tower/shared/styles/app_spacing.dart';
 import 'package:anime_deduction_tower/shared/styles/app_text_styles.dart';
@@ -35,7 +39,8 @@ class OnlineRoomHandoffCard extends ConsumerWidget {
       );
     }
 
-    if (session.phase != OnlineRoomPhase.readyToSync || !session.isEveryoneReady) {
+    if (session.phase != OnlineRoomPhase.readyToSync ||
+        !session.isEveryoneReady) {
       return AppCard(
         glowColor: AppColors.accent,
         child: _FirebaseHandoffWaitingForLobby(session: session),
@@ -78,7 +83,10 @@ class _FirebaseHandoffEmpty extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Firebase room-to-match handoff', style: AppTextStyles.title),
+        const Text(
+          'Firebase room-to-match handoff',
+          style: AppTextStyles.title,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Create or join a Firebase room first. Once the live lobby exists, this panel will watch the persisted bootstrap, public match, and local private match documents.',
@@ -99,7 +107,10 @@ class _FirebaseHandoffWaitingForLobby extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Firebase room-to-match handoff', style: AppTextStyles.title),
+        const Text(
+          'Firebase room-to-match handoff',
+          style: AppTextStyles.title,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'The handoff watcher is ready, but this room still needs both participants connected and marked ready before bootstrap documents should exist.',
@@ -142,7 +153,10 @@ class _FirebaseHandoffLoading extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Firebase room-to-match handoff', style: AppTextStyles.title),
+        const Text(
+          'Firebase room-to-match handoff',
+          style: AppTextStyles.title,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Watching persisted room-to-match documents for ${session.roomCode}. This covers the bootstrap payload, public match state, and the local player\'s private document.',
@@ -165,7 +179,10 @@ class _FirebaseHandoffError extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Firebase room-to-match handoff', style: AppTextStyles.title),
+        const Text(
+          'Firebase room-to-match handoff',
+          style: AppTextStyles.title,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'The lobby reached live handoff watching, but the persisted documents could not be read safely.',
@@ -200,7 +217,10 @@ class _FirebaseHandoffPending extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Firebase room-to-match handoff', style: AppTextStyles.title),
+        const Text(
+          'Firebase room-to-match handoff',
+          style: AppTextStyles.title,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Both players are ready, so this room is now waiting for persisted bootstrap documents to appear. Keep this screen open to verify the room can reconnect without rebuilding the match in the UI.',
@@ -247,7 +267,10 @@ class _FirebaseHandoffPartial extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Firebase room-to-match handoff', style: AppTextStyles.title),
+        const Text(
+          'Firebase room-to-match handoff',
+          style: AppTextStyles.title,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Some persisted handoff documents are already visible. This is useful for reconnect verification because the screen can distinguish public/bootstrap progress from the local player\'s private document readiness.',
@@ -317,7 +340,10 @@ class _FirebaseHandoffReady extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Firebase room-to-match handoff', style: AppTextStyles.title),
+        const Text(
+          'Firebase room-to-match handoff',
+          style: AppTextStyles.title,
+        ),
         const SizedBox(height: AppSpacing.sm),
         Text(
           'Reconnect-ready handoff detected. The screen is now reading persisted bootstrap, public match, and local private state from Firestore instead of rebuilding that startup bundle locally.',
@@ -360,7 +386,8 @@ class _FirebaseHandoffReady extends StatelessWidget {
               _InfoRow(label: 'Match id', value: payload.matchId),
               _InfoRow(
                 label: 'Players',
-                value: '${payload.hostPlayerName} vs ${payload.guestPlayerName}',
+                value:
+                    '${payload.hostPlayerName} vs ${payload.guestPlayerName}',
               ),
               _InfoRow(
                 label: 'Starting turn',
@@ -380,7 +407,10 @@ class _FirebaseHandoffReady extends StatelessWidget {
           child: Column(
             children: [
               _InfoRow(label: 'Status', value: publicState.status.name),
-              _InfoRow(label: 'Turn number', value: '${publicState.turnNumber}'),
+              _InfoRow(
+                label: 'Turn number',
+                value: '${publicState.turnNumber}',
+              ),
               _InfoRow(
                 label: 'Current participant',
                 value: publicState.currentTurnPlayerState?.displayName ??
@@ -428,7 +458,8 @@ class _FirebaseHandoffReady extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.success.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.success.withValues(alpha: 0.16)),
+            border:
+                Border.all(color: AppColors.success.withValues(alpha: 0.16)),
           ),
           child: Text(
             'This lobby can now hand off or reconnect into a future remote match screen using persisted documents instead of regenerating startup state inside presentation code.',
@@ -521,6 +552,8 @@ class _RemoteMatchScreenStateSection extends ConsumerWidget {
               _RemoteActionQueueControls(screenState: screenState),
               const SizedBox(height: AppSpacing.md),
               const _RemoteActionQueueFeed(),
+              const SizedBox(height: AppSpacing.md),
+              const OnlinePublicActionTimelineCard(),
             ],
           );
         },
@@ -653,6 +686,9 @@ class _RemoteActionQueueFeed extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final actionsAsync = ref.watch(onlinePlayerActionsProvider);
+    final session = ref.watch(
+      onlineLobbyControllerProvider.select((state) => state.activeSession),
+    );
 
     return actionsAsync.when(
       loading: () => Column(
@@ -686,9 +722,70 @@ class _RemoteActionQueueFeed extends ConsumerWidget {
       ),
       data: (actions) {
         final visibleActions = actions.take(5).toList(growable: false);
-        final pendingCount = actions.where((action) => action.status.name == 'pending').length;
-        final appliedCount = actions.where((action) => action.status.name == 'applied').length;
-        final rejectedCount = actions.where((action) => action.status.name == 'rejected').length;
+        final pendingCount =
+            actions.where((action) => action.status.name == 'pending').length;
+        final appliedCount =
+            actions.where((action) => action.status.name == 'applied').length;
+        final rejectedCount =
+            actions.where((action) => action.status.name == 'rejected').length;
+        final controller = ref.watch(onlineActionResolutionControllerProvider);
+        final resolutionAuthority =
+            ref.watch(onlineActionResolutionAuthorityProvider);
+        final resolutionPolicy =
+            ref.watch(onlineActionResolutionPolicyProvider);
+        final canResolveQueuedActions =
+            ref.watch(onlineCanResolveQueuedActionsProvider);
+        final resolverLabel = resolutionPolicy.waitingLabel(
+          authority: resolutionAuthority,
+          session: session,
+        );
+
+        Future<void> resolveNextPendingAction() async {
+          if (session == null) {
+            return;
+          }
+
+          try {
+            final resolution = await controller.resolveNextPendingAction(
+              session: session,
+              roomCode: session.roomCode,
+              actions: actions,
+            );
+            if (!context.mounted) {
+              return;
+            }
+
+            final statusLabel = resolution.wasApplied ? 'applied' : 'rejected';
+            final errorSuffix = resolution.resolvedAction.errorCode == null
+                ? ''
+                : ' (${resolution.resolvedAction.errorCode})';
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Action ${resolution.resolvedAction.actionId} $statusLabel$errorSuffix.',
+                ),
+              ),
+            );
+          } catch (error) {
+            if (!context.mounted) {
+              return;
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('$error')),
+            );
+          }
+        }
+
+        final queueDescription = resolutionAuthority ==
+                OnlineActionResolutionAuthority.backendService
+            ? 'This feed reads queued online player actions through the datasource boundary. In backend-authority mode, local clients only inspect queue state while a dedicated backend authority service resolves and persists official public/private/action updates.'
+            : 'This feed reads queued online player actions through the datasource boundary. For the current foundation, queued actions are officially resolved by the host client, then persisted back as explicit public/private/action updates through the repository.';
+
+        final resolveButtonLabel = resolutionAuthority ==
+                OnlineActionResolutionAuthority.backendService
+            ? 'Backend authority owns resolution'
+            : 'Resolve Oldest Pending Action';
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -699,7 +796,7 @@ class _RemoteActionQueueFeed extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'This feed reads the queued online player actions through the datasource/repository boundary. Official resolution still belongs to later match-sync logic.',
+              queueDescription,
               style: AppTextStyles.subtitle.copyWith(height: 1.4),
             ),
             const SizedBox(height: AppSpacing.md),
@@ -722,7 +819,42 @@ class _RemoteActionQueueFeed extends ConsumerWidget {
                   label: 'Rejected: $rejectedCount',
                   accent: AppColors.error,
                 ),
+                AppBadge(
+                  icon: canResolveQueuedActions
+                      ? Icons.verified_user_outlined
+                      : Icons.hourglass_top_rounded,
+                  label: resolverLabel,
+                  accent: canResolveQueuedActions
+                      ? AppColors.secondary
+                      : AppColors.primary,
+                ),
               ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.secondary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: AppColors.secondary.withValues(alpha: 0.14),
+                ),
+              ),
+              child: Text(
+                resolutionAuthority.description,
+                style: AppTextStyles.body.copyWith(height: 1.4),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            AppButton(
+              label: resolveButtonLabel,
+              icon: Icons.gavel_outlined,
+              isPrimary: false,
+              onPressed:
+                  session != null && pendingCount > 0 && canResolveQueuedActions
+                      ? resolveNextPendingAction
+                      : null,
             ),
             const SizedBox(height: AppSpacing.md),
             if (visibleActions.isEmpty)
@@ -768,6 +900,27 @@ class _RemoteActionQueueFeed extends ConsumerWidget {
                           'Participant: ${action.submittedByParticipantId} · Expected version: ${action.expectedMatchVersion}',
                           style: AppTextStyles.subtitle.copyWith(height: 1.4),
                         ),
+                        if (action.resolvedByParticipantId != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Resolved by participant: ${action.resolvedByParticipantId}',
+                            style: AppTextStyles.subtitle.copyWith(height: 1.4),
+                          ),
+                        ],
+                        if (action.resolvedByUserId != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Resolved by user: ${action.resolvedByUserId}',
+                            style: AppTextStyles.subtitle.copyWith(height: 1.4),
+                          ),
+                        ],
+                        if (action.resolutionSource != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Resolution source: ${action.resolutionSource!.label}',
+                            style: AppTextStyles.subtitle.copyWith(height: 1.4),
+                          ),
+                        ],
                         if (action.submittedValue.isNotEmpty) ...[
                           const SizedBox(height: 4),
                           Text(

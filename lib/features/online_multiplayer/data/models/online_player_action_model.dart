@@ -1,5 +1,6 @@
 import 'package:anime_deduction_tower/core/enums/online_player_action_status.dart';
 import 'package:anime_deduction_tower/core/enums/turn_action_type.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_action_resolution_authority.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 
 class OnlinePlayerActionModel {
@@ -14,6 +15,9 @@ class OnlinePlayerActionModel {
     this.traitId,
     this.status = OnlinePlayerActionStatus.pending,
     this.errorCode,
+    this.resolvedByParticipantId,
+    this.resolvedByUserId,
+    this.resolutionSource,
     this.resolvedAt,
   });
 
@@ -26,6 +30,9 @@ class OnlinePlayerActionModel {
   final int expectedMatchVersion;
   final OnlinePlayerActionStatus status;
   final String? errorCode;
+  final String? resolvedByParticipantId;
+  final String? resolvedByUserId;
+  final OnlineActionResolutionAuthority? resolutionSource;
   final DateTime createdAt;
   final DateTime? resolvedAt;
 
@@ -43,6 +50,11 @@ class OnlinePlayerActionModel {
       expectedMatchVersion: json['expectedMatchVersion'] as int? ?? 0,
       status: _parseStatus(json['status'] as String?),
       errorCode: json['errorCode'] as String?,
+      resolvedByParticipantId: json['resolvedByParticipantId'] as String?,
+      resolvedByUserId: json['resolvedByUserId'] as String?,
+      resolutionSource: _parseResolutionSource(
+        json['resolutionSource'] as String?,
+      ),
       createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
           DateTime.now(),
       resolvedAt: DateTime.tryParse(json['resolvedAt'] as String? ?? ''),
@@ -60,6 +72,9 @@ class OnlinePlayerActionModel {
       expectedMatchVersion: entity.expectedMatchVersion,
       status: entity.status,
       errorCode: entity.errorCode,
+      resolvedByParticipantId: entity.resolvedByParticipantId,
+      resolvedByUserId: entity.resolvedByUserId,
+      resolutionSource: entity.resolutionSource,
       createdAt: entity.createdAt,
       resolvedAt: entity.resolvedAt,
     );
@@ -76,6 +91,9 @@ class OnlinePlayerActionModel {
       expectedMatchVersion: expectedMatchVersion,
       status: status,
       errorCode: errorCode,
+      resolvedByParticipantId: resolvedByParticipantId,
+      resolvedByUserId: resolvedByUserId,
+      resolutionSource: resolutionSource,
       createdAt: createdAt,
       resolvedAt: resolvedAt,
     );
@@ -91,6 +109,9 @@ class OnlinePlayerActionModel {
       'expectedMatchVersion': expectedMatchVersion,
       'status': status.name,
       'errorCode': errorCode,
+      'resolvedByParticipantId': resolvedByParticipantId,
+      'resolvedByUserId': resolvedByUserId,
+      'resolutionSource': resolutionSource?.name,
       'createdAt': createdAt.toIso8601String(),
       'resolvedAt': resolvedAt?.toIso8601String(),
     };
@@ -142,6 +163,21 @@ class OnlinePlayerActionModel {
         return OnlinePlayerActionStatus.pending;
       default:
         return OnlinePlayerActionStatus.pending;
+    }
+  }
+
+  static OnlineActionResolutionAuthority? _parseResolutionSource(String? value) {
+    switch (value) {
+      case 'hostClient':
+        return OnlineActionResolutionAuthority.hostClient;
+      case 'manualDebugClient':
+        return OnlineActionResolutionAuthority.manualDebugClient;
+      case 'backendService':
+        return OnlineActionResolutionAuthority.backendService;
+      case null:
+        return null;
+      default:
+        return null;
     }
   }
 }

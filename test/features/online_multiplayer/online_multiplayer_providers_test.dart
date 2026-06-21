@@ -2,6 +2,7 @@ import 'package:anime_deduction_tower/features/online_multiplayer/data/config/on
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/firebase_online_room_preview_datasource.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/mock_online_room_datasource.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/supabase_online_room_preview_datasource.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_action_resolution_authority.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/presentation/providers/online_multiplayer_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,6 +67,58 @@ void main() {
       expect(dataSource, isA<SupabaseOnlineRoomPreviewDataSource>());
       expect(updated.localParticipant.isReady, isTrue);
       expect(updated.phase, OnlineRoomPhase.waitingForOpponent);
+    });
+
+    test('keeps host-client authority by default on the Firebase backend', () {
+      final container = ProviderContainer(
+        overrides: [
+          onlineBackendTargetProvider.overrideWithValue(
+            OnlineBackendTarget.firebaseBackend,
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      expect(
+        container.read(onlineActionResolutionAuthorityProvider),
+        OnlineActionResolutionAuthority.hostClient,
+      );
+    });
+
+    test(
+        'can switch the Firebase backend into backend-authority migration mode',
+        () {
+      final container = ProviderContainer(
+        overrides: [
+          onlineBackendTargetProvider.overrideWithValue(
+            OnlineBackendTarget.firebaseBackend,
+          ),
+          onlineUseBackendResolutionAuthorityProvider.overrideWithValue(true),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      expect(
+        container.read(onlineActionResolutionAuthorityProvider),
+        OnlineActionResolutionAuthority.backendService,
+      );
+    });
+
+    test('does not activate backend authority for preview adapters', () {
+      final container = ProviderContainer(
+        overrides: [
+          onlineBackendTargetProvider.overrideWithValue(
+            OnlineBackendTarget.firebasePreview,
+          ),
+          onlineUseBackendResolutionAuthorityProvider.overrideWithValue(true),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      expect(
+        container.read(onlineActionResolutionAuthorityProvider),
+        OnlineActionResolutionAuthority.hostClient,
+      );
     });
   });
 }

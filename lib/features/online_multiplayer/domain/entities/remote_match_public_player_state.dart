@@ -14,4 +14,18 @@ class RemoteMatchPublicPlayerState {
   final int traitGuessCount;
 
   int get totalGuessCount => characterGuessCount + traitGuessCount;
+
+  RemoteMatchPublicPlayerState copyWith({
+    int? hintsRemaining,
+    int? characterGuessCount,
+    int? traitGuessCount,
+  }) {
+    return RemoteMatchPublicPlayerState(
+      participantId: participantId,
+      displayName: displayName,
+      hintsRemaining: hintsRemaining ?? this.hintsRemaining,
+      characterGuessCount: characterGuessCount ?? this.characterGuessCount,
+      traitGuessCount: traitGuessCount ?? this.traitGuessCount,
+    );
+  }
 }

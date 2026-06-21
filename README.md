@@ -478,6 +478,10 @@ Current implemented state includes:
 - online room UX polish with host-vs-guest path switching, clearer readiness messaging, formatted room-code presentation, and one-tap room-code copy flow
 - backend-ready online datasource/repository abstraction with mock, Firebase-preview, and Supabase-preview adapters that preserve the same lobby contract before realtime sync is wired
 - explicit remote online match contract models for bootstrap payloads, public match state, private player state, and queued player actions ahead of Firebase-backed room/match syncing
+- pure Dart remote queued-action resolver/application flow that reads persisted bootstrap/public/private contracts, applies queued actions through the existing game engine, and persists public/private/action updates back through the repository boundary
+- explicit temporary host-only ownership for online action resolution remains the current default, while Firebase backend mode now also has a dedicated backend-authority service path that auto-resolves queued actions with preserved resolver metadata and canonical public events without leaving official backend-mode ownership in widget-driven flows
+- persisted action-resolution metadata now includes resolver-participant tracing through `resolvedByParticipantId`, resolver-user tracing through `resolvedByUserId`, and explicit `resolutionSource`
+- canonical public online event contract now persists alongside action resolution so future remote match/result timelines can read explicit public event docs instead of deriving timeline text from queued action payloads in widgets
 - pure Dart remote match bootstrap service that converts a ready online room plus secret selections into initial payload/public/private match state without moving official rules into the UI
 - mock remote lobby event simulation for guest join and remote ready toggling so pre-backend room previews can mimic a more realistic second-device lifecycle
 - on-screen remote bootstrap preview summary that assembles payload/public/private online match state from a ready mock room while keeping secret trait values masked in the UI
@@ -504,5 +508,5 @@ If the app is already running after JSON asset updates, use a full restart so th
 The runtime catalog now includes the original starter roster plus every currently approved external-import character batch. The live runtime catalog currently contains 1276 characters. The tag catalog currently contains 40 tags, and the secret-tag selection flow now exposes every playable tag in the current catalog. The import preview currently contains 1264 records, the approval asset currently contains 1263 reviewed entries, and the curated promotion preview currently contains 1276 total characters. The current saved gameplay/UI state now includes the earlier premium gameplay retake passes plus animated result celebration, filterable/collapsible timelines, searchable series chips in the pool, shared presentation helpers, Flame-backed presentation-only polish, and stronger privacy-safe local multiplayer browser reset behavior.
 
 For the next handoff, see:
-- `docs/PR16_HANDOFF.md`
+- `docs/PR32_HANDOFF.md`
 - `NEXT_CHAT_PROMPT.md`

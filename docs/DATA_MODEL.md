@@ -132,6 +132,35 @@ Fields:
 - guessedValue
 - actionType
 
+## Remote Online Public Event
+
+Represents a canonical public timeline event persisted after official queued-action resolution.
+
+Fields:
+
+- eventId
+- roomCode
+- matchId
+- actionId
+- participantId
+- participantName
+- actionType
+- status
+- shortLabel
+- actionSummary
+- resultSummary
+- submittedValueLabel
+- resultingMatchVersion
+- createdAt
+- publishedAt
+- resolutionSource
+
+Notes:
+
+- this contract is public-facing and should not contain private hint text
+- explicit action docs still keep transport / resolver metadata
+- future online match and result timelines should prefer this canonical public event payload over rebuilding summaries in widgets
+
 ## External Import Models
 
 ### ExternalCharacterImportModel

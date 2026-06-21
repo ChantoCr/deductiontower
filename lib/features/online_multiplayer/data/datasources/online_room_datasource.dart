@@ -1,6 +1,8 @@
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_action_resolution.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_public_event.dart';
 
 abstract class OnlineRoomDataSource {
   String normalizeRoomCode(String value);
@@ -49,10 +51,22 @@ abstract class OnlineRoomDataSource {
     required String participantId,
   });
 
+  Future<RemoteMatchHandoffSnapshot?> readMatchHandoff({
+    required String roomCode,
+    required String participantId,
+  });
+
   Future<OnlinePlayerAction> submitPlayerAction({
     required String roomCode,
     required OnlinePlayerAction action,
   });
 
   Stream<List<OnlinePlayerAction>> watchPlayerActions(String roomCode);
+
+  Stream<List<RemoteMatchPublicEvent>> watchPublicEvents(String roomCode);
+
+  Future<void> persistActionResolution({
+    required String roomCode,
+    required RemoteMatchActionResolution resolution,
+  });
 }

@@ -1,7 +1,9 @@
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/online_room_datasource.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_action_resolution.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_public_event.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/repositories/online_room_repository.dart';
 
 class OnlineRoomRepositoryImpl implements OnlineRoomRepository {
@@ -112,6 +114,17 @@ class OnlineRoomRepositoryImpl implements OnlineRoomRepository {
   }
 
   @override
+  Future<RemoteMatchHandoffSnapshot?> readMatchHandoff({
+    required String roomCode,
+    required String participantId,
+  }) {
+    return _dataSource.readMatchHandoff(
+      roomCode: roomCode,
+      participantId: participantId,
+    );
+  }
+
+  @override
   Future<OnlinePlayerAction> submitPlayerAction({
     required String roomCode,
     required OnlinePlayerAction action,
@@ -125,5 +138,21 @@ class OnlineRoomRepositoryImpl implements OnlineRoomRepository {
   @override
   Stream<List<OnlinePlayerAction>> watchPlayerActions(String roomCode) {
     return _dataSource.watchPlayerActions(roomCode);
+  }
+
+  @override
+  Stream<List<RemoteMatchPublicEvent>> watchPublicEvents(String roomCode) {
+    return _dataSource.watchPublicEvents(roomCode);
+  }
+
+  @override
+  Future<void> persistActionResolution({
+    required String roomCode,
+    required RemoteMatchActionResolution resolution,
+  }) {
+    return _dataSource.persistActionResolution(
+      roomCode: roomCode,
+      resolution: resolution,
+    );
   }
 }

@@ -2,7 +2,9 @@ import 'package:anime_deduction_tower/features/online_multiplayer/data/datasourc
 import 'package:anime_deduction_tower/features/online_multiplayer/data/datasources/online_room_datasource.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_player_action.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/online_room_session.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_action_resolution.dart';
 import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_handoff_snapshot.dart';
+import 'package:anime_deduction_tower/features/online_multiplayer/domain/entities/remote_match_public_event.dart';
 
 class FirebaseOnlineRoomPreviewDataSource implements OnlineRoomDataSource {
   FirebaseOnlineRoomPreviewDataSource({
@@ -115,6 +117,17 @@ class FirebaseOnlineRoomPreviewDataSource implements OnlineRoomDataSource {
   }
 
   @override
+  Future<RemoteMatchHandoffSnapshot?> readMatchHandoff({
+    required String roomCode,
+    required String participantId,
+  }) {
+    return _previewDataSource.readMatchHandoff(
+      roomCode: roomCode,
+      participantId: participantId,
+    );
+  }
+
+  @override
   Future<OnlinePlayerAction> submitPlayerAction({
     required String roomCode,
     required OnlinePlayerAction action,
@@ -128,5 +141,21 @@ class FirebaseOnlineRoomPreviewDataSource implements OnlineRoomDataSource {
   @override
   Stream<List<OnlinePlayerAction>> watchPlayerActions(String roomCode) {
     return _previewDataSource.watchPlayerActions(roomCode);
+  }
+
+  @override
+  Stream<List<RemoteMatchPublicEvent>> watchPublicEvents(String roomCode) {
+    return _previewDataSource.watchPublicEvents(roomCode);
+  }
+
+  @override
+  Future<void> persistActionResolution({
+    required String roomCode,
+    required RemoteMatchActionResolution resolution,
+  }) {
+    return _previewDataSource.persistActionResolution(
+      roomCode: roomCode,
+      resolution: resolution,
+    );
   }
 }

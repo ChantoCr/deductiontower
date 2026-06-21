@@ -230,6 +230,13 @@ Important rules:
 - remote bootstrap document persistence should reuse the pure Dart bootstrap service and explicit contract models instead of rebuilding match rules inside Firebase-specific code
 - room-to-match handoff UI should read explicit persisted bootstrap/public/private contracts instead of reconstructing them ad hoc in presentation code
 - a read-only remote match screen-state loader can convert persisted bootstrap/public/private docs plus local catalog data into a gameplay-ready screen model without moving official rule resolution into widgets
+- queued online player actions should be submitted and watched through the datasource/repository boundary as explicit transport contracts, while official action resolution remains outside Firebase transport glue and outside widgets
+- a pure Dart remote action resolver/application layer can read persisted bootstrap/public/private contracts, apply queued actions through the existing game engine, and then persist explicit public/private/action resolution updates back through the repository boundary
+- the current saved authority policy still defaults to host-owned client resolution, but Firebase backend sessions can now switch into a dedicated backend-authority service path that auto-resolves queued actions with `backendService` metadata while preserving existing action contracts
+- resolved action docs can also persist explicit resolver metadata such as `resolvedByParticipantId`, `resolvedByUserId`, and `resolutionSource` so later debugging, authority migration, and online result summaries remain traceable
+- action resolution can also persist a canonical public event contract so future remote match and result timelines read explicit public event docs instead of re-deriving summaries in widgets
+- backend-authority mode should keep official resolution ownership in a dedicated authority service layer instead of widget-triggered presentation flows
+- Firebase persistence can guard action-resolution writes with match-version and action-status checks, but the datasource should still avoid owning official match rules itself
 - remote match sync should eventually feed the existing game engine instead of duplicating rule resolution in the online layer
 - lobby state should model participants, readiness, and room phase explicitly so backend swap work does not depend on ad-hoc UI strings
 - backend-target selection belongs in the data/presentation boundary, not in the game domain
